@@ -1,0 +1,130 @@
+/* Container for the payment form */
+.payment-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f0f2f5;
+    perspective: 1500px; /* Creates 3D perspective */
+  }
+  
+  /* Centering the form and adding 3D effect */
+  .payment-form-wrapper {
+    width: 100%;
+    max-width: 500px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  
+  /* Add 3D rotation on hover */
+  .payment-form-wrapper:hover {
+    transform: rotateX(5deg) rotateY(5deg);
+  }
+  
+  /* Title of the payment form */
+  .payment-title {
+    font-size: 28px;
+    margin: 20px 0;
+    color: #333;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form styles */
+  .payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  /* Container for the amount input */
+  .amount-input-container {
+    position: relative;
+  }
+  
+  .amount-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+  }
+  
+  .amount-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+  }
+  
+  /* Card element container */
+  .card-element-container {
+    margin-top: 20px;
+  }
+  
+  .card-element {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Submit button styles */
+  .submit-button {
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #007bff, #00d084);
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .submit-button:hover {
+    background: linear-gradient(135deg, #0056b3, #00a572);
+    transform: scale(1.05);
+  }
+  
+  .submit-button.processing {
+    background: linear-gradient(135deg, #6c757d, #6c757d);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  /* Message styles */
+  .message {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #d9534f; /* Error color */
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    .payment-form-wrapper {
+      padding: 15px;
+    }
+  
+    .amount-input {
+      font-size: 14px;
+    }
+  
+    .submit-button {
+      font-size: 16px;
+    }
+  
+    .message {
+      font-size: 14px;
+    }
+  }
+  

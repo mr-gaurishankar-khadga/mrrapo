@@ -1,0 +1,167 @@
+
+.slider-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.slider-wrapper {
+  /* margin-top: ; */
+  /* background-color: ; */
+  height: 100vh; 
+  overflow: hidden;
+}
+
+.slick-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.slick-track {
+  display: flex;
+  align-items: center;
+  transition: transform 0.8s ease-in-out; 
+}
+
+.slider-image {
+  /* width: 100%;
+  height: 100%; */
+  transition: transform 1s ease-out;
+  object-fit: cover;
+}
+
+.zoom-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.zoom-effect .slider-image {
+  transform: scale(1.1);
+  transition: transform 1s ease-out; 
+}
+
+.zoom-effect.zoomed .slider-image {
+  transform: scale(1);
+}
+
+.slick-dots {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex !important;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.slick-dots li {
+  margin: 0 5px;
+}
+
+.slick-dots li button {
+  font-size: 0;
+  line-height: 0;
+  display: block;
+  width: 10px;
+  height: 10px;
+  padding: 5px;
+  cursor: pointer;
+  border: 0;
+  outline: none;
+  background: #ddd;
+  border-radius: 50%;
+}
+
+.slick-dots li.slick-active button {
+  background: #000;
+}
+
+.main-bottom-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.bottom-content {
+  width: 80%;
+  max-width: 600px;
+  letter-spacing: 0.05em;
+}
+
+.bottom-content h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  animation: fadeIn 2s ease-in;
+}
+
+.bottom-content p {
+  letter-spacing: 0.06em;
+  animation: fadeIn 3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@media (max-width: 768px) {
+  .slider-wrapper {
+    height: 30vh; 
+  }
+
+  .slick-slide {
+    height: 100%; 
+  }
+
+  .slider-image {
+    width: 100%;
+    height: 100%; 
+  }
+
+  .main-bottom-container {
+    display: none; 
+  }
+}
+
+
+
+
+@media (min-width: 769px) {
+  .slider-wrapper {
+    height: 100vh; 
+  }
+
+  .slider-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  .main-bottom-container {
+    margin-top: 40px;
+  }
+
+  .bottom-content {
+    width: 100%;
+  }
+
+  .bottom-content h1 {
+    font-size: 2.1em;
+  }
+
+  .bottom-content p {
+    font-size: 1.3em;
+  }
+}

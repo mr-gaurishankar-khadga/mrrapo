@@ -1,0 +1,91 @@
+/* Login.css */
+
+.Loginform {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.loginform {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  animation: loginFadeIn 1s ease-in-out;
+}
+
+.loginform .form-group {
+  margin-bottom: 20px;
+}
+
+.loginform .form-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
+}
+
+.loginform .form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.loginform .form-input:focus {
+  border-color: #ff7e5f;
+  outline: none;
+}
+
+.loginform .form-button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #ff7e5f;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.loginform .form-button:hover {
+  background-color: #feb47b;
+}
+
+.loginform .signup {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.loginform .signup .signup-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ff7e5f;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.loginform .signup .signup-button:hover {
+  color: #feb47b;
+}
+
+/* Animation */
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
