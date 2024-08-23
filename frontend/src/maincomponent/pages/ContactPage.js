@@ -23,7 +23,7 @@ function ContactPage() {
     setSuccess(null);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/messages', { name, email, message });
+      const response = await axios.post('https://rappo.onrender.com/api/messages', { name, email, message });
       if (response.data.success) {
         setSuccess('Message sent successfully!');
         setName('');

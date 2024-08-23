@@ -17,7 +17,7 @@ const ProductGrid = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/products');
+        const response = await axios.get('https://rappo.onrender.com/api/products');
         setProducts(response.data.products);
       } catch (err) {
         setError(err);
@@ -89,8 +89,8 @@ const ProductGrid = () => {
                 <img
                   src={
                     hoveredIndex === index && product.backImage
-                      ? `http://localhost:8000/${product.backImage}`
-                      : `http://localhost:8000/${product.frontImage}`
+                      ? `https://rappo.onrender.com/${product.backImage}`
+                      : `https://rappo.onrender.com/${product.frontImage}`
                   }
                   alt={product.title}
                   className="product-image"

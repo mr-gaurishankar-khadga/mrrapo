@@ -23,7 +23,7 @@ const Checkout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8000/checkout', {
+      const response = await fetch('https://rappo.onrender.com/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -85,7 +85,7 @@ const CompleteView = () => {
             >
 
               <img
-                src={`http://localhost:8000/${src}`}
+                src={`https://rappo.onrender.com/${src}`}
                 alt={product.title}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}

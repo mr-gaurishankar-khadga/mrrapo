@@ -28,7 +28,7 @@ const PaymentForm = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:8000/create-payment-intent', {
+      const response = await fetch('https://rappo.onrender.com/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: amount }),
@@ -60,7 +60,7 @@ const PaymentForm = () => {
 
   const updatePaymentStatus = async (paymentId, status) => {
     try {
-      await fetch('http://localhost:8000/update-payment-status', {
+      await fetch('https://rappo.onrender.com/update-payment-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paymentId, status }),

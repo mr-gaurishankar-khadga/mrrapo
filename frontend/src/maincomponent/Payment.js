@@ -64,7 +64,7 @@ const Payment = () => {
   };
 
   try {
-    const response = await fetch('http://localhost:8000/api/payments', {
+    const response = await fetch('https://rappo.onrender.com/api/payments', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const Payment = () => {
           <tbody>
             <tr>
               <td className="product-image-cell">
-                <img src={`http://localhost:8000/${product.frontImage}`} alt={product.title} className="product-image" />
+                <img src={`https://rappo.onrender.com/${product.frontImage}`} alt={product.title} className="product-image" />
               </td>
               <td>{product.title}</td>
               <td>Rs.{product.price}</td>

@@ -9,7 +9,7 @@ const ImageUploader = () => {
 
   const fetchImages = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/images');
+      const response = await axios.get('https://rappo.onrender.com/images');
       setUploadedImages(response.data);
     } catch (error) {
       console.error('Error fetching images:', error);
@@ -35,7 +35,7 @@ const ImageUploader = () => {
     });
 
     try {
-      await axios.post('http://localhost:8000/upload', formData, {
+      await axios.post('https://rappo.onrender.com/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -86,7 +86,7 @@ const ImageUploader = () => {
           slide.images.map((image, idx) => (
             <img
               key={idx}
-              src={`http://localhost:8000${image}`}
+              src={`https://rappo.onrender.com${image}`}
               alt={`Slide ${index}-${idx}`}
               className="gallery-image"
             />

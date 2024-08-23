@@ -10,7 +10,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/payments');
+        const response = await fetch('https://rappo.onrender.com/api/payments');
         if (!response.ok) {
           throw new Error('Failed to fetch orders');
         }

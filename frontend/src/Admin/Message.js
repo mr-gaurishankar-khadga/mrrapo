@@ -1,7 +1,7 @@
 // Message.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Message.css'; // Import your custom CSS file
+import './Message.css';
 
 function Message() {
   const [messages, setMessages] = useState([]);
@@ -12,7 +12,7 @@ function Message() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/messages');
+        const response = await axios.get('https://rappo.onrender.com/api/messages');
         setMessages(response.data);
       } catch (error) {
         setError('Failed to fetch messages.');
@@ -30,7 +30,7 @@ function Message() {
     const email = messages[currentMessageId].email;
 
     try {
-      await axios.post('http://localhost:8000/api/reply', {
+      await axios.post('https://rappo.onrender.com/api/reply', {
         email: email,
         message: replyMessage,
       });
