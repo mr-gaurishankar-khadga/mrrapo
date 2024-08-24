@@ -34,7 +34,7 @@ mongoose.connect(mongoDbUrl)
 
 
 
-// API endpoint to create a new payment
+// API end * this is end point of payment getway
 app.post('/api/payments', async (req, res) => {
   const { product, quantity, paymentMethod, price, cardNumber, expiryDate, cvv } = req.body;
 
@@ -575,7 +575,7 @@ app.post('/api/messages', async (req, res) => {
   }
 });
 
-// Fetch messages from MongoDB
+// Fetch all user messages from MongoDB
 app.get('/api/messages', async (req, res) => {
   try {
     const messages = await Message.find();
@@ -588,7 +588,7 @@ app.get('/api/messages', async (req, res) => {
 
 
 
-// Replace with your actual credentials
+
 const EMAIL_USER = 'ggs699000@gmail.com';
 const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
 
