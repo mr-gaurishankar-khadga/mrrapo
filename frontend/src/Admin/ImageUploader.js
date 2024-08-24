@@ -47,6 +47,8 @@ const ImageUploader = () => {
     }
   };
 
+  
+
   return (
     <div className="upload-container">
       <input
