@@ -1,9 +1,10 @@
+// routes/signupRoutes.js
 const express = require('express');
 const router = express.Router();
-const signupController = require('../controllers/signupController');
 
-router.post('/signup', signupController.createSignup);
-router.get('/signups', signupController.getSignups);
-router.delete('/signups/:id', signupController.deleteSignup);
+// Define your signup routes here
+router.get('/', (req, res) => {
+  res.send('Signup route is working');
+});
 
 module.exports = router;

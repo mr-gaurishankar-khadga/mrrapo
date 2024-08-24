@@ -1,10 +1,10 @@
+// routes/productRoutes.js
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/productController');
 
-router.post('/upload', productController.uploadProduct);
-router.get('/products', productController.getProducts);
-router.put('/products/:id', productController.updateProduct);
-router.delete('/products/:id', productController.deleteProduct);
+// Define your product routes here
+router.get('/', (req, res) => {
+  res.send('Product route is working');
+});
 
 module.exports = router;

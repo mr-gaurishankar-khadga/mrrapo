@@ -1,8 +1,10 @@
+// routes/messageRoutes.js
 const express = require('express');
 const router = express.Router();
-const messageController = require('../controllers/messageController');
 
-router.post('/messages', messageController.createMessage);
-router.get('/messages', messageController.getMessages);
+// Define your message routes here
+router.get('/', (req, res) => {
+  res.send('Message route is working');
+});
 
 module.exports = router;

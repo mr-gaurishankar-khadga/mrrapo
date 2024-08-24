@@ -1,8 +1,10 @@
+// routes/paymentRoutes.js
 const express = require('express');
 const router = express.Router();
-const paymentController = require('../controllers/paymentController');
 
-router.post('/payments', paymentController.createPayment);
-router.get('/payments', paymentController.getPayments);
+// Define your payment routes here
+router.get('/', (req, res) => {
+  res.send('Payment route is working');
+});
 
 module.exports = router;
