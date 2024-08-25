@@ -133,7 +133,7 @@ const MyProduct = () => {
                   }
                   alt={product.title}
                   className="product-showcase-image"
-                  style={{ height: '100%', marginTop: '', objectFit: 'cover', width: '100%' }}
+                  style={{ height: ''}}
                 />
               </LazyLoad>
               <div className="product-showcase-categories">

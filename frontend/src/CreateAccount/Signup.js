@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./Checkout.css";
+import "./Signup.css";
 
-const Checkout = () => {
+const Signup = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -47,7 +47,7 @@ const Checkout = () => {
     <div className="checkout-container">
       <div className="form-section" style={{display:'flex'}}>
           <form className="checkout-form" onSubmit={handleSubmit}>
-            <h3>Shipping Information</h3>
+            <h3 className="shippinginfo">Shipping Information</h3>
             <input
               type="email"
               name="email"
@@ -75,6 +75,7 @@ const Checkout = () => {
                 onChange={handleChange}
                 required
                 className="form-input half-width"
+                style={{marginRight:'30px',marginLeft:'10px'}}
               />
               <input
                 type="text"
@@ -84,6 +85,7 @@ const Checkout = () => {
                 onChange={handleChange}
                 required
                 className="form-input half-width"
+                style={{marginLeft:''}}
               />
             </div>
             <input
@@ -113,6 +115,7 @@ const Checkout = () => {
                 onChange={handleChange}
                 required
                 className="form-input half-width"
+                style={{marginRight:'30px',marginLeft:'10px'}}
               />
               <input
                 type="text"
@@ -126,19 +129,6 @@ const Checkout = () => {
             </div>
           <button type="submit" className="confirm-payment-btn">Confirm</button>
         </form>
-
-        <div className="contact-right">
-        <div className="contact-3d">
-          <div className="cube">
-            <div className="face front">Contact</div>
-            <div className="face back">Get in Touch</div>
-            <div className="face right">Info</div>
-            <div className="face left">Details</div>
-            <div className="face top">Support</div>
-            <div className="face bottom">Help</div>
-          </div>
-        </div>
-      </div>
       </div>
 
 
@@ -153,4 +143,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default Signup;

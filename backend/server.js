@@ -16,13 +16,18 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const { Schema } = mongoose;
 const Payment = require('./models/paymentModel');
+const signupRoutes = require('./routes/signupRoutes');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+
+
 const mongoDbUrl = process.env.MONGO_DB_CONNECTION_MY_DATABASE;
+
+app.use(signupRoutes);
 
 mongoose.connect(mongoDbUrl)
 .then(() => {
@@ -465,79 +470,81 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-
-// const client = new MongoClient(uri, { useUnifiedTopology: true });
-//Product upload page
-const signupSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  phoneNumber: { type: String, required: true },
-  addressLine1: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-}, { collection: 'signup' }); 
+// //Product upload page
+// const signupSchema = new mongoose.Schema({
+//   email: { type: String, required: true },
+//   password: { type: String, required: true },
+//   firstName: { type: String, required: true },
+//   lastName: { type: String, required: true },
+//   phoneNumber: { type: String, required: true },
+//   addressLine1: { type: String, required: true },
+//   city: { type: String, required: true },
+//   state: { type: String, required: true },
+// }, { collection: 'signup' }); 
 
 
-const Signup = mongoose.model('Signup', signupSchema);
+// const Signup = mongoose.model('Signup', signupSchema);
 
 
-app.post('/checkout', async (req, res) => {
-  const formData = req.body;
-  try {
-    const newSignup = new Signup(formData);
-    await newSignup.save();
-    res.status(200).send('Data inserted successfully');
-  } catch (error) {
-    console.error('Error inserting data:', error);
-    res.status(500).send('Error inserting data');
-  }
-});
-
-app.get('/api/signups', async (req, res) => {
-  try {
-    const signups = await Signup.find();
-    res.status(200).json(signups);
-  } catch (error) {
-    console.error('Error fetching messages:', errorsignups);
-    res.status(500).json({ message: 'Failed to fetch messages.' });
-  }
-});
+// app.post('/checkout', async (req, res) => {
+//   const formData = req.body;
+//   try {
+//     const newSignup = new Signup(formData);
+//     await newSignup.save();
+//     res.status(200).send('Data inserted successfully');
+//   } catch (error) {
+//     console.error('Error inserting data:', error);
+//     res.status(500).send('Error inserting data');
+//   }
+// });
 
 
 
 
 
+// app.get('/api/signups', async (req, res) => {
+//   try {
+//     const signups = await Signup.find();
+//     res.status(200).json(signups);
+//   } catch (error) {
+//     console.error('Error fetching messages:', errorsignups);
+//     res.status(500).json({ message: 'Failed to fetch messages.' });
+//   }
+// });
 
 
-// DELETE endpoint to delete a signup by ID
-// DELETE endpoint to delete a signup by ID
-app.delete('/api/signups/:id', async (req, res) => {
-  try {
-    const userId = req.params.id;
 
-    // Check if the ID is valid
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: 'Invalid user ID' });
-    }
 
-    // Convert to ObjectId
-    const objectId = new mongoose.Types.ObjectId(userId);
 
-    // Delete the user
-    const result = await Signup.deleteOne({ _id: objectId });
 
-    if (result.deletedCount === 1) {
-      res.status(200).json({ message: 'User deleted successfully' });
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ message: 'Failed to delete user.' });
-  }
-});
+
+// // DELETE endpoint to delete a signup by ID
+// // DELETE endpoint to delete a signup by ID
+// app.delete('/api/signups/:id', async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+
+//     // Check if the ID is valid
+//     if (!mongoose.Types.ObjectId.isValid(userId)) {
+//       return res.status(400).json({ message: 'Invalid user ID' });
+//     }
+
+//     // Convert to ObjectId
+//     const objectId = new mongoose.Types.ObjectId(userId);
+
+//     // Delete the user
+//     const result = await Signup.deleteOne({ _id: objectId });
+
+//     if (result.deletedCount === 1) {
+//       res.status(200).json({ message: 'User deleted successfully' });
+//     } else {
+//       res.status(404).json({ message: 'User not found' });
+//     }
+//   } catch (error) {
+//     console.error('Error deleting user:', error);
+//     res.status(500).json({ message: 'Failed to delete user.' });
+//   }
+// });
 
 
 

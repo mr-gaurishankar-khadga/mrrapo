@@ -23,10 +23,10 @@ import CompleteView from '../src/maincomponent/CompleteView';
 import ShoppingCart from '../src/maincomponent/ShoppingCart';
 import DisplayPage from './DisplayPage';
 
-import Login from '../src/CreateAccount/Login';
 
 import ProductDetail from '../src/maincomponent/ProductDetail';
-import Checkout from '../src/maincomponent/Checkout';
+
+import Signup from './CreateAccount/Signup';
 import CartItem from '../src/maincomponent/CartItem';
 import Setup from './Admin/Setup';
 import ProfileMenu from './maincomponent/ProfileMenu';
@@ -42,6 +42,9 @@ import Logout from './CreateAccount/Logout';
 import Slider1 from './maincomponent/images/aa1.webp'
 
 import ImageZoom from './ImageZoom';
+import ShoppingCartView from './maincomponent/ShoppingCartView';
+import LoginPage from './CreateAccount/LoginPage';
+import Profile from './User/Profile';
 
 
 
@@ -78,11 +81,10 @@ const handleShopClose = () => {
 
   return (
     <Router>
+      {/* <div className="logo" style={{ marginTop: '-5px',fontFamily:'Twentieth Century sans-serif',fontSize:' ',color:'',fontWeight:'',justifyContent:'center',display:'flex' }}> WENLI </div> */}
       <nav className="navbar">
         {/* Desktop View */}
         <div className="nav-desktop" style={{backgroundColor:''}}>
-        <div className="logo" style={{ marginTop: '-5px',fontFamily:'Twentieth Century sans-serif',fontSize:' ',color:'',fontWeight:'' }}> WENLI! </div>
-
           <ul className="nav-links">
             <li><Link to="/ContactPage" style={{fontFamily:'Twentieth Century sans-serif',fontSize:'20px',color:'RGBA(40, 40, 40, 0.7)'}}> Contact </Link></li>
             <li><Link to="/" style={{fontFamily:'Twentieth Century sans-serif',fontSize:'20px',color:'RGBA(40, 40, 40, 0.7)'}}>Home</Link></li>
@@ -117,6 +119,7 @@ const handleShopClose = () => {
                       <Paper style={{ maxWidth: 300, padding: 10, color:'white',backgroundColor:'rgb(15,15,15)' }}>
                           <Box display="flex" alignItems="center" mb={2}>
                               <Avatar alt="User Avatar" src={slider1} style={{border:'2px solid white'}}/> 
+                              
                               <Box ml={2}>
                                   <Typography variant="h6">
                                       gshankar
@@ -130,7 +133,7 @@ const handleShopClose = () => {
                           <div className="divider"></div>
 
                           <List>
-                            <ListItem button component={Link} to="/Login">
+                            <ListItem button component={Link} to="/LoginPage">
                                 <ListItemIcon style={{color:'white'}}>
                                     <LoginIcon />
                                 </ListItemIcon>
@@ -142,6 +145,13 @@ const handleShopClose = () => {
                                     <ArrowCircleLeftIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Logout" />
+                            </ListItem>
+
+                            <ListItem button component={Link} to="/Profile">
+                                <ListItemIcon style={{color:'white'}}>
+                                    <PersonIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Profile" />
                             </ListItem>
                           </List>
                         </Paper>
@@ -226,7 +236,7 @@ const handleShopClose = () => {
                   <ListItemText primary="Home" style={{color:'black'}}/>
                 </ListItem>
 
-                <ListItem button component={Link} to="/Login" onClick={toggleSidebar} >
+                <ListItem button component={Link} to="/LoginPage" onClick={toggleSidebar} >
                   <ListItemIcon><LoginIcon style={{color:'black'}}/></ListItemIcon>
                   <ListItemText primary="Login" style={{color:'black'}}/>
                 </ListItem>
@@ -265,8 +275,7 @@ const handleShopClose = () => {
           <Route path="/ProductDetail" element={<ProductDetail />} />
           <Route path="/CartItem" element={<CartItem />} />
           <Route path="/Setup" element={<Setup />} />
-          <Route path="/Login" element={<Login setToken={setToken} setIsAdmin={setIsAdmin} />} />
-          <Route path="/Checkout" element={<Checkout />} />
+          <Route path="/Signup" element={<Signup />} />
           <Route path="/SalesPage" element={<SalesPage />} />
           <Route path="/MensWearPage" element={<MensWearPage />} />
           <Route path="/WomensWearPage" element={<WomensWearPage />} />
@@ -278,7 +287,10 @@ const handleShopClose = () => {
           <Route path="/PaymentPublish" element={<PaymentPublish />} />
           <Route path="/MobilePayment" element={<MobilePayment />} />
           <Route path="/Logout" element={<Logout />} />
+          <Route path="/ShoppingCartView" element={<ShoppingCartView />} />
           <Route path="/ImageZoom" element={<ImageZoom />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
         
       </div>

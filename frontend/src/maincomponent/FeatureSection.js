@@ -3,19 +3,16 @@ import { Grid, Typography, Box, Avatar } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import './FeatureSection.css'; 
+import './FeatureSection.css';
 
 const FeatureCard = ({ icon, title, description }) => {
   return (
     <Box className="feature-card">
-      <Avatar className="feature-avatar" style={{fontSize:''}}>
+      <Avatar className="feature-avatar">
         {icon}
       </Avatar>
-
       <Box>
-        <Typography fontWeight="bold">
-          {title}
-        </Typography>
+        <Typography fontWeight="bold">{title}</Typography>
         <Typography variant="body2" color="textSecondary">
           {description}
         </Typography>
@@ -41,16 +38,29 @@ const FeatureSection = () => {
       title: 'Easy Returns',
       description: 'on every order',
     },
+    // Add more features here if needed
   ];
 
   return (
-    <Grid container spacing={1} justifyContent="center" sx={{ padding: '40px 0', backgroundColor: '' }}>
-      {features.map((feature, index) => (
-        <Grid item key={index} xs={1} sm={2} md={4}>
-          <FeatureCard icon={feature.icon} title={feature.title} description={feature.description} />
-        </Grid>
-      ))}
-    </Grid>
+    <div className="featurecontainer">
+      <div
+        sx={{
+          maxwidth:'500px',
+        }}
+      >
+        <div style={{display:'flex',width:'300px'}}>
+          {features.map((feature, index) => (
+            <div item key={index} style={{margin:'10px',width:'300px'}}>
+              <FeatureCard
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

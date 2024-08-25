@@ -10,7 +10,8 @@ const Payment = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
-  
+  const [showNotification, setShowNotification] = useState(false);
+
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
   };
@@ -52,36 +53,39 @@ const Payment = () => {
   };
 
   const handlePaymentSubmission = async () => {
-  const totalPrice = product.price * quantity;
-  const paymentData = {
-    product,
-    quantity,
-    paymentMethod,
-    price: totalPrice, 
-    cardNumber: paymentMethod === 'Card Payment' ? cardNumber : undefined,
-    expiryDate: paymentMethod === 'Card Payment' ? expiryDate : undefined,
-    cvv: paymentMethod === 'Card Payment' ? cvv : undefined,
-  };
+    const totalPrice = product.price * quantity;
+    const paymentData = {
+      product,
+      quantity,
+      paymentMethod,
+      price: totalPrice,
+      cardNumber: paymentMethod === 'Card Payment' ? cardNumber : undefined,
+      expiryDate: paymentMethod === 'Card Payment' ? expiryDate : undefined,
+      cvv: paymentMethod === 'Card Payment' ? cvv : undefined,
+    };
 
-  try {
-    const response = await fetch('https://rappo.onrender.com/api/payments', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(paymentData),
-    });
+    try {
+      const response = await fetch('https://rappo.onrender.com/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentData),
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Payment stored:', data);
-    } else {
-      throw new Error('Failed to store payment data');
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Payment stored:', data);
+
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 4000);
+      } else {
+        throw new Error('Failed to store payment data');
+      }
+    } catch (error) {
+      console.error('Error submitting payment:', error);
     }
-  } catch (error) {
-    console.error('Error submitting payment:', error);
-  }
-};
+  };
 
   if (!product) {
     return <p className="no-product">No product selected.</p>;
@@ -105,7 +109,11 @@ const Payment = () => {
           <tbody>
             <tr>
               <td className="product-image-cell">
-                <img src={`https://rappo.onrender.com/${product.frontImage}`} alt={product.title} className="product-image" />
+                <img
+                  src={`https://rappo.onrender.com/${product.frontImage}`}
+                  alt={product.title}
+                  className="product-image"
+                />
               </td>
               <td>{product.title}</td>
               <td>Rs.{product.price}</td>
@@ -119,37 +127,26 @@ const Payment = () => {
         <h3 className="payment-method-title">Select Payment Method</h3>
         <div className="payment-methods">
           <div className={`payment-option ${paymentMethod === 'COD' ? 'selected' : ''}`}>
-            <input 
-              type="radio" 
-              id="cod" 
-              name="paymentMethod" 
-              value="COD" 
+            <input
+              type="radio"
+              id="cod"
+              name="paymentMethod"
+              value="COD"
               checked={paymentMethod === 'COD'}
-              onChange={handlePaymentMethodChange} 
+              onChange={handlePaymentMethodChange}
             />
             <label htmlFor="cod">Cash on Delivery (COD)</label>
           </div>
 
-          <div className={`payment-option ${paymentMethod === 'QR Code' ? 'selected' : ''}`}>
-            <input 
-              type="radio" 
-              id="qr" 
-              name="paymentMethod" 
-              value="QR Code" 
-              checked={paymentMethod === 'QR Code'}
-              onChange={handlePaymentMethodChange} 
-            />
-            <label htmlFor="qr">QR Code</label>
-          </div>
 
           <div className={`payment-option ${paymentMethod === 'Card Payment' ? 'selected' : ''}`}>
-            <input 
-              type="radio" 
-              id="card" 
-              name="paymentMethod" 
-              value="Card Payment" 
+            <input
+              type="radio"
+              id="card"
+              name="paymentMethod"
+              value="Card Payment"
               checked={paymentMethod === 'Card Payment'}
-              onChange={handlePaymentMethodChange} 
+              onChange={handlePaymentMethodChange}
             />
             <label htmlFor="card">Card Payment</label>
           </div>
@@ -161,13 +158,13 @@ const Payment = () => {
             <form>
               <div className="form-group">
                 <label htmlFor="cardNumber">Card Number</label>
-                <input 
-                  type="text" 
-                  id="cardNumber" 
-                  placeholder="Enter your card number" 
-                  value={cardNumber} 
-                  onChange={(e) => formatCardNumber(e.target.value)} 
-                  required 
+                <input
+                  type="text"
+                  id="cardNumber"
+                  placeholder="Enter your card number"
+                  value={cardNumber}
+                  onChange={(e) => formatCardNumber(e.target.value)}
+                  required
                 />
                 {!validateCardNumber(cardNumber) && cardNumber.length > 0 && (
                   <span className="error-message">Invalid card number.</span>
@@ -175,24 +172,24 @@ const Payment = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="expiryDate">Expiry Date</label>
-                <input 
-                  type="text" 
-                  id="expiryDate" 
-                  placeholder="MM/YY" 
-                  value={expiryDate} 
-                  onChange={(e) => formatExpiryDate(e.target.value)} 
-                  required 
+                <input
+                  type="text"
+                  id="expiryDate"
+                  placeholder="MM/YY"
+                  value={expiryDate}
+                  onChange={(e) => formatExpiryDate(e.target.value)}
+                  required
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="cvv">CVV</label>
-                <input 
-                  type="text" 
-                  id="cvv" 
-                  placeholder="Enter CVV" 
-                  value={cvv} 
-                  onChange={(e) => formatCvv(e.target.value)} 
-                  required 
+                <input
+                  type="text"
+                  id="cvv"
+                  placeholder="Enter CVV"
+                  value={cvv}
+                  onChange={(e) => formatCvv(e.target.value)}
+                  required
                 />
               </div>
             </form>
@@ -210,6 +207,16 @@ const Payment = () => {
           <button className="proceed-to-cancel" onClick={() => {/* Handle cancel */}}>Cancel</button>
           <button className="proceed-to-payment" onClick={handlePaymentSubmission}>Proceed to Payment</button>
         </div>
+
+        {showNotification && (
+          <div className="notification">
+            Order confirmed successfully!
+            <button className="close-btn" onClick={() => setShowNotification(false)}>
+              &times; 
+            </button>
+          </div>
+        )}
+
       </div>
     </div>
   );

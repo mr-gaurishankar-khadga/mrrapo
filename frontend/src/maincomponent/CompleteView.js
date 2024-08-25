@@ -61,17 +61,7 @@ const CompleteView = () => {
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const handleMouseMove = (e) => {
-    const { left, top, width, height } = e.target.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-    setZoomPosition({ x, y });
-    setIsZoomed(true);
-  };
 
-  const handleMouseLeave = () => {
-    setIsZoomed(false);
-  };
 
   return (
     <>
@@ -87,22 +77,13 @@ const CompleteView = () => {
               <img
                 src={`https://rappo.onrender.com/${src}`}
                 alt={product.title}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
                 className={initialLoad ? 'initial-zoom' : ''}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  transition: 'transform 0.3s ease',
-                  transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                  transform: isZoomed ? 'scale(5)' : 'scale(1)',
-                }}
               />
             </div>
           ))}
         </div>
 
-        <div className="product-info" style={{ marginTop: '-120px', marginLeft: '50px' }}>
+        <div className="product-info" style={{marginTop:'20px',backgroundColor:''}}>  
           <h1 style={{ fontFamily: 'Twentieth Century sans-serif' }}>{product.title}</h1>
           <div className="price">
             <span className="current-price">Rs.{product.price}</span>
@@ -149,32 +130,27 @@ const CompleteView = () => {
             </button>
           </div>
 
-          <div style={{ marginLeft: '-20px' }}>
-            <FeatureSection />
-          </div>
+
+
+          <div className="featuresection" style={{ backgroundColor: '', overflowX: 'auto', maxWidth: '770px', marginLeft: '-25px', marginTop: '20px' }}>
+  <FeatureSection />
+</div>
+
+
+
+
+
+
+
 
           <div className="features" style={{ marginTop: '10px' }}>
             <h4 style={{ fontFamily: 'Twentieth Century sans-serif' }}>Features</h4>
             <ul>
-              <li>{product.description}</li>
+              <li style={{paddingRight:'20px',letterSpacing:'2px'}}>{product.description}</li>
             </ul>
           </div>
         </div>
       </div>
-
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-
-      <ProductGrid />
     </>
   );
 };

@@ -250,3 +250,56 @@
   font-size: 0.9rem;
   margin-top: 5px;
 }
+
+
+.notification {
+  position: fixed;
+  top: 20px; /* Distance from the top */
+  right: 20px; /* Distance from the right */
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  padding: 15px 25px; /* Padding around the text */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow effect */
+  z-index: 1000; /* Ensures it appears on top of other elements */
+  opacity: 0; /* Start invisible */
+  transform: translateY(-20px); /* Start from above */
+  animation: slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards; /* Animation sequence */
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0; /* Fade in */
+    transform: translateY(-20px); /* Slide down */
+  }
+  to {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* End position */
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1; /* Start fully visible */
+  }
+  to {
+    opacity: 0; /* Fade out */
+    transform: translateY(-20px); /* Slide back up */
+  }
+}
+
+/* Optional: Add a close button for manual dismissal */
+.notification .close-btn {
+  background: transparent; /* Transparent background */
+  border: none; /* No border */
+  color: white; /* White color */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  margin-left: 10px; /* Space between text and button */
+  transition: color 0.3s; /* Smooth color change */
+}
+
+.notification .close-btn:hover {
+  color: #ffdddd; /* Change color on hover */
+}
+

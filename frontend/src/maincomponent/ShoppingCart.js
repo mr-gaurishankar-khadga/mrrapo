@@ -46,10 +46,12 @@ const ShoppingCart = () => {
         </div>
         <h2>${cartTotal.toFixed(2)}</h2>
       </div>
+
       <div className="cart-buttons">
-        <button className="view-cart">View cart</button>
-        <button className="checkout">Check out</button>
+        <button className="view-cart"> View cart </button>
+        <button className="checkout"> Check out </button>
       </div>
+
     </div>
   );
 };

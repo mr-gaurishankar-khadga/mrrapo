@@ -11,4 +11,6 @@ const signupSchema = new mongoose.Schema({
   state: { type: String, required: true },
 }, { collection: 'signup' });
 
-module.exports = mongoose.model('Signup', signupSchema);
+const Signup = mongoose.model('Signup', signupSchema);
+
+module.exports = Signup;

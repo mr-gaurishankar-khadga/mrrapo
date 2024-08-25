@@ -12,6 +12,7 @@ const ProductGrid = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [loadedImages, setLoadedImages] = useState(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,39 +38,33 @@ const ProductGrid = () => {
     setHoveredIndex(null);
   };
 
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const handleClick = (product) => {
     navigate('/CompleteView', { state: { product } });
   };
 
-  if (loading) return <p>Loading...</p>;
+  // Function to handle image load
+  const handleImageLoad = (index) => {
+    setLoadedImages((prev) => new Set(prev).add(index));
+  };
+
+  if (loading) {
+    return (
+      <div className="product-grid">
+        <h2>New Arrivals</h2>
+        <div className="products">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div className="product-card" key={index}>
+              <div className="skeleton-wave" />
+              <div className="skeleton-wave" />
+              <div className="skeleton-wave" />
+              <div className="skeleton-wave" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <p>Error loading products: {error.message}</p>;
 
   return (
@@ -93,8 +88,8 @@ const ProductGrid = () => {
                       : `https://rappo.onrender.com/${product.frontImage}`
                   }
                   alt={product.title}
-                  className="product-image"
-                  
+                  className={`product-image ${loadedImages.has(index) ? 'fade-in' : 'hidden'}`} 
+                  onLoad={() => handleImageLoad(index)}
                 />
               </LazyLoad>
 
@@ -108,32 +103,30 @@ const ProductGrid = () => {
             </div>
 
             <div className="product-details">
-              <h3 style={{fontFamily:'Twentieth Century'}}>{product.title}</h3>
+              <h3 style={{ fontFamily: 'Twentieth Century' }}>{product.title}</h3>
 
               <div className="price">
-                <span className="current-price" style={{fontFamily:'Twentieth Century sans-serif'}}>Rs. {product.price}</span>
+                <span className="current-price" style={{ fontFamily: 'Twentieth Century sans-serif' }}>
+                  Rs. {product.price}
+                </span>
               </div>
 
-              <div className="rating" style={{backgroundColor:'',width:'50%',textAlign:'center',marginLeft:'-5px'}}>
-                <span> <GradeIcon className='ratingicon'/> </span>
-                <span> <GradeIcon className='ratingicon'/> </span>
-                <span> <GradeIcon className='ratingicon'/> </span>
-                <span> <GradeIcon className='ratingicon'/> </span>
-                <span> <GradeIcon className='ratingicon'/> </span>
+              <div className="rating" style={{ width: '50%', textAlign: 'center', marginLeft: '-15px',justifyContent:'flex-start' }}>
+                <span><GradeIcon className="ratingicon" /></span>
+                <span><GradeIcon className="ratingicon" /></span>
+                <span><GradeIcon className="ratingicon" /></span>
+                <span><GradeIcon className="ratingicon" /></span>
+                <span><GradeIcon className="ratingicon" /></span>
               </div>
 
               <div className="Size-options">
-                {/* {product.sizes.map((size) => ( */}
-                  <button className="size">S</button>
-                  <button className="size">M</button>
-                  <button className="size">L</button>
-                  <button className="size">XL</button>
-                  <ShoppingCartIcon className='cart-icon'/>
-                {/* ))} */}
+                <button className="size">S</button>
+                <button className="size">M</button>
+                <button className="size">L</button>
+                <button className="size">XL</button>
+                <ShoppingCartIcon className="cart-icon" />
               </div>
-              
             </div>
-            
           </div>
         ))}
       </div>

@@ -27,8 +27,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
-    height: 620px;
+    height: 100%;
     width: 300px;
+
   }
   
   .product-showcase-card:hover {
@@ -42,10 +43,11 @@
   }
   
   .product-showcase-image {
+    height: 350px;
     width: 100%;
-    height: 90%;
     object-fit: cover;
     border-bottom: 2px solid #e0e0e0;
+
   }
   
   .product-showcase-categories {
@@ -57,6 +59,11 @@
     border-radius: 5px;
     color: #fff;
     font-size: 0.9em;
+
+  }
+
+  .product-showcase-details {
+    padding: 10px;
   }
 
 
@@ -87,15 +94,16 @@
   
   .product-showcase-edit-button {
     padding: 10px;
-    background-color: black;
+    background-color: rgb(37, 33, 33);
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
     margin-top: 10px;
+   outline: none;
+   color: white;
   }
   
   .product-showcase-edit-button:hover {
-    background-color: #1976d2;
+    background-color: #7fbdfc;
   }
   
   .product-showcase-edit-form {
@@ -104,9 +112,8 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
     margin-top: 10px;
+    outline: none;
   }
   
   .product-showcase-delete-button {

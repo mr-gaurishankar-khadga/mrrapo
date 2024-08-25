@@ -40,14 +40,13 @@ function ContactPage() {
 
 
   return (
-    <div className="contact-page">
+    <div className="contact-page" style={{justifyContent:'center',display:'flex'}}>
       <div className="contact-left">
         <div className="contact-form">
 
           <div className="contact-info">
-            <h1>Contact To Admin</h1>
+            <h1 style={{fontFamily:'Twentieth Century sans-serif'}}> Help Desk</h1>
             <p>Email: admin@gmail.com</p>
-            <p>Phone: +9779813737842</p>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -90,7 +89,7 @@ function ContactPage() {
 
 
 
-      <div className="contact-right">
+      {/* <div className="contact-right">
         <div className="contact-3d">
           <div className="cube">
             <div className="face front" style={{ backgroundImage: `url(${slider1})` }}>Contact</div>
@@ -101,8 +100,7 @@ function ContactPage() {
             <div className="face bottom" style={{ backgroundImage: `url(${slider6})` }}>Help</div>
           </div>
         </div>
-        
-      </div>
+      </div> */}
     </div>
   );
 }
