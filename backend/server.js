@@ -17,6 +17,7 @@ const nodemailer = require('nodemailer');
 const { Schema } = mongoose;
 const Payment = require('./models/paymentModel');
 const signupRoutes = require('./routes/signupRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(express.json());
 const mongoDbUrl = process.env.MONGO_DB_CONNECTION_MY_DATABASE;
 
 app.use(signupRoutes);
+app.use(authRoutes);
 
 mongoose.connect(mongoDbUrl)
 .then(() => {
@@ -36,6 +38,13 @@ mongoose.connect(mongoDbUrl)
 .catch((err) => {
   console.error('Failed to connect to MongoDB', err);
 });
+
+
+
+
+
+
+
 
 
 
@@ -103,64 +112,64 @@ app.get('/api/payments', async (req, res) => {
 
 
 
-const userSchema = new mongoose.Schema({
-  firstname: { 
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  }
-});
+// const userSchema = new mongoose.Schema({
+//   firstname: { 
+//     type: String,
+//     required: true,
+//     unique: true
+//   },
+//   password: {
+//     type: String,
+//     required: true
+//   },
+//   role: {
+//     type: String,
+//     enum: ['user', 'admin'],
+//     default: 'user'
+//   }
+// });
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
+// userSchema.pre('save', async function (next) {
+//   if (!this.isModified('password')) {
+//     return next();
+//   }
+//   const salt = await bcrypt.genSalt(10);
+//   this.password = await bcrypt.hash(this.password, salt);
+//   next();
+// });
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
+// userSchema.methods.matchPassword = async function (enteredPassword) {
+//   return await bcrypt.compare(enteredPassword, this.password);
+// };
 
-const User = mongoose.model('User', userSchema);
+// const User = mongoose.model('User', userSchema);
 
-// JWT Token Generation for 30 days
-const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, 'your_jwt_secret', { expiresIn: '30d' });
-};
+// // JWT Token Generation for 30 days
+// const generateToken = (id, role) => {
+//   return jwt.sign({ id, role }, 'your_jwt_secret', { expiresIn: '30d' });
+// };
 
-// Login Route
-app.post('/login', async (req, res) => {
-  const { firstname, password } = req.body;
+// // Login Route
+// app.post('/login', async (req, res) => {
+//   const { firstname, password } = req.body;
 
-  try {
-    const user = await User.findOne({ firstname });
+//   try {
+//     const user = await User.findOne({ firstname });
 
-    if (user && await user.matchPassword(password)) {
-      const token = generateToken(user._id, user.role);
-      res.json({
-        token,
-        role: user.role
-      });
-    } else {
-      res.status(401).json({ message: 'Invalid credentials' });
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+//     if (user && await user.matchPassword(password)) {
+//       const token = generateToken(user._id, user.role);
+//       res.json({
+//         token,
+//         role: user.role
+//       });
+//     } else {
+//       res.status(401).json({ message: 'Invalid credentials' });
+//     }
+//   } catch (error) {
+//     console.error('Error during login:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// });
 
 
 
@@ -460,109 +469,6 @@ app.post('/upload', upload1.array('images', 5), async (req, res) => {
 
 // you images all data 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-
-
-
-
-
-
-
-
-
-// //Product upload page
-// const signupSchema = new mongoose.Schema({
-//   email: { type: String, required: true },
-//   password: { type: String, required: true },
-//   firstName: { type: String, required: true },
-//   lastName: { type: String, required: true },
-//   phoneNumber: { type: String, required: true },
-//   addressLine1: { type: String, required: true },
-//   city: { type: String, required: true },
-//   state: { type: String, required: true },
-// }, { collection: 'signup' }); 
-
-
-// const Signup = mongoose.model('Signup', signupSchema);
-
-
-// app.post('/checkout', async (req, res) => {
-//   const formData = req.body;
-//   try {
-//     const newSignup = new Signup(formData);
-//     await newSignup.save();
-//     res.status(200).send('Data inserted successfully');
-//   } catch (error) {
-//     console.error('Error inserting data:', error);
-//     res.status(500).send('Error inserting data');
-//   }
-// });
-
-
-
-
-
-// app.get('/api/signups', async (req, res) => {
-//   try {
-//     const signups = await Signup.find();
-//     res.status(200).json(signups);
-//   } catch (error) {
-//     console.error('Error fetching messages:', errorsignups);
-//     res.status(500).json({ message: 'Failed to fetch messages.' });
-//   }
-// });
-
-
-
-
-
-
-
-// // DELETE endpoint to delete a signup by ID
-// // DELETE endpoint to delete a signup by ID
-// app.delete('/api/signups/:id', async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-
-//     // Check if the ID is valid
-//     if (!mongoose.Types.ObjectId.isValid(userId)) {
-//       return res.status(400).json({ message: 'Invalid user ID' });
-//     }
-
-//     // Convert to ObjectId
-//     const objectId = new mongoose.Types.ObjectId(userId);
-
-//     // Delete the user
-//     const result = await Signup.deleteOne({ _id: objectId });
-
-//     if (result.deletedCount === 1) {
-//       res.status(200).json({ message: 'User deleted successfully' });
-//     } else {
-//       res.status(404).json({ message: 'User not found' });
-//     }
-//   } catch (error) {
-//     console.error('Error deleting user:', error);
-//     res.status(500).json({ message: 'Failed to delete user.' });
-//   }
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
