@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Signup.css";
+import Popup from "./Popup";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,12 +13,20 @@ const Signup = () => {
     city: '',
     state: '',
   });
+  
+  const [otp, setOtp] = useState('');
+  const [isOtpVisible, setIsOtpVisible] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleOtpChange = (e) => {
+    setOtp(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -33,6 +42,7 @@ const Signup = () => {
 
       if (response.ok) {
         alert('Checkout data submitted successfully');
+        setIsPopupOpen(true); // Open the OTP popup
       } else {
         alert('Failed to submit checkout data');
       }
@@ -42,10 +52,17 @@ const Signup = () => {
     }
   };
 
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    console.log('OTP submitted:', otp);
+    // Implement OTP verification logic here
+    setIsPopupOpen(false); // Close the popup after submitting OTP
+  };
+
   return (
     <>
-    <div className="checkout-container">
-      <div className="form-section" style={{display:'flex'}}>
+      <div className="checkout-container">
+        <div className="form-section" style={{ display: 'flex' }}>
           <form className="checkout-form" onSubmit={handleSubmit}>
             <h3 className="shippinginfo">Shipping Information</h3>
             <input
@@ -75,7 +92,7 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 className="form-input half-width"
-                style={{marginRight:'30px',marginLeft:'10px'}}
+                style={{ marginRight: '30px', marginLeft: '10px' }}
               />
               <input
                 type="text"
@@ -85,7 +102,6 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 className="form-input half-width"
-                style={{marginLeft:''}}
               />
             </div>
             <input
@@ -115,7 +131,7 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 className="form-input half-width"
-                style={{marginRight:'30px',marginLeft:'10px'}}
+                style={{ marginRight: '30px', marginLeft: '10px' }}
               />
               <input
                 type="text"
@@ -127,18 +143,25 @@ const Signup = () => {
                 className="form-input half-width"
               />
             </div>
-          <button type="submit" className="confirm-payment-btn">Confirm</button>
-        </form>
+            <button type="submit" className="confirm-payment-btn">Confirm</button>
+          </form>
+        </div>
+
+        <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
+          <form onSubmit={handleOtpSubmit}>
+            <input
+              type="text"
+              name="otp"
+              placeholder="Enter your OTP"
+              value={otp}
+              onChange={handleOtpChange}
+              required
+              className="form-input"
+            />
+            <button type="submit" className="confirm-payment-btn">Verify OTP</button>
+          </form>
+        </Popup>
       </div>
-
-
-
-
-    </div>
-     
-
-
-      
     </>
   );
 };
