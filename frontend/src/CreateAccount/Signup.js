@@ -175,24 +175,24 @@ const Signup = () => {
                 className="form-input half-width"
               />
             </div>
+              <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
+                <form onSubmit={handleOtpSubmit}>
+                  <input
+                    type="text"
+                    name="otp"
+                    placeholder="Enter your OTP"
+                    value={otp}
+                    onChange={handleOtpChange}
+                    required
+                    className="form-input"
+                  />
+                  <button type="submit" className="confirm-payment-btn">Verify OTP</button>
+                </form>
+              </Popup>
             <button type="submit" className="confirm-payment-btn">Confirm</button>
           </form>
         </div>
 
-        <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
-          <form onSubmit={handleOtpSubmit}>
-            <input
-              type="text"
-              name="otp"
-              placeholder="Enter your OTP"
-              value={otp}
-              onChange={handleOtpChange}
-              required
-              className="form-input"
-            />
-            <button type="submit" className="confirm-payment-btn">Verify OTP</button>
-          </form>
-        </Popup>
       </div>
     </>
   );

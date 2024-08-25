@@ -187,8 +187,8 @@ app.post('/login', async (req, res) => {
 
 
 
-// Define the signup schema
 const signupSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
   firstName: { type: String, required: true },
@@ -201,52 +201,52 @@ const signupSchema = new mongoose.Schema({
 
 const Signup = mongoose.model('Signup', signupSchema);
 
-
-// Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-
-// POST endpoint to insert data and send OTP
-app.post('/checkout', async (req, res) => {
+// POST endpoint to register a new user
+app.post('/signup', async (req, res) => {
   const formData = req.body;
-
+  
   try {
-    const newSignup = new Signup(formData);
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(formData.password, 10);
+    const newSignup = new Signup({ ...formData, password: hashedPassword });
     await newSignup.save();
-
-    // Send OTP
-    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-    await sendOTP(formData.email, otp); // Send OTP to user's email
-
-    res.status(200).send('Data inserted successfully. An OTP has been sent to your email.');
+    
+    // Optionally send OTP here
+    // const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+    // await sendOTP(formData.email, otp); // Send OTP to user's email
+    
+    res.status(200).send('User registered successfully.');
   } catch (error) {
-    console.error('Error inserting data:', error);
-    res.status(500).send('Error inserting data');
+    console.error('Error during signup:', error);
+    res.status(500).send('Error during signup');
   }
 });
 
-// Function to send OTP via email
-const sendOTP = async (email, otp) => {
-  // Configure the email transport using SMTP
-  const transporter = nodemailer.createTransport({
-    service: 'gmail', // Use your email service
-    auth: {
-      user: EMAIL_USER, // Your email address
-      pass: EMAIL_PASS, // Your email password or app password
-    },
-  });
+// POST endpoint for user login
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
 
-  const mailOptions = {
-    from: EMAIL_USER,
-    to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is ${otp}`,
-  };
+  try {
+    // Find user by username
+    const user = await Signup.findOne({ username });
+    if (!user) {
+      return res.status(401).send('Invalid username or password');
+    }
 
-  // Send email
-  await transporter.sendMail(mailOptions);
-};
+    // Check if the password matches
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).send('Invalid username or password');
+    }
+
+    // If the credentials are valid, return user profile
+    res.status(200).json({ message: 'Login successful', profile: user });
+    // You can redirect in the frontend based on the response
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).send('Error during login');
+  }
+});
 
 // GET endpoint to fetch all signups
 app.get('/api/signups', async (req, res) => {
@@ -283,8 +283,27 @@ app.delete('/api/signups/:id', async (req, res) => {
   }
 });
 
+// Function to send OTP via email (optional, implement if needed)
+const sendOTP = async (email, otp) => {
+  // Configure the email transport using SMTP
+  const transporter = nodemailer.createTransport({
+    service: 'gmail', // Use your email service
+    auth: {
+      user: process.env.EMAIL_USER, // Your email address
+      pass: process.env.EMAIL_PASS, // Your email password or app password
+    },
+  });
 
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Your OTP Code',
+    text: `Your OTP code is ${otp}`,
+  };
 
+  // Send email
+  await transporter.sendMail(mailOptions);
+};
 
 
 
