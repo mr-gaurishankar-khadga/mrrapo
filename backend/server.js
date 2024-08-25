@@ -18,6 +18,9 @@ const { Schema } = mongoose;
 const Payment = require('./models/paymentModel');
 const signupRoutes = require('./routes/signupRoutes');
 const authRoutes = require('./routes/authRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+
+// dotenv.config();
 
 const app = express();
 
@@ -30,6 +33,7 @@ const mongoDbUrl = process.env.MONGO_DB_CONNECTION_MY_DATABASE;
 
 app.use(signupRoutes);
 app.use(authRoutes);
+app.use(messageRoutes);
 
 mongoose.connect(mongoDbUrl)
 .then(() => {
@@ -87,105 +91,6 @@ app.get('/api/payments', async (req, res) => {
     res.status(500).json({ message: 'Error fetching payment data', error });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const userSchema = new mongoose.Schema({
-//   firstname: { 
-//     type: String,
-//     required: true,
-//     unique: true
-//   },
-//   password: {
-//     type: String,
-//     required: true
-//   },
-//   role: {
-//     type: String,
-//     enum: ['user', 'admin'],
-//     default: 'user'
-//   }
-// });
-
-// userSchema.pre('save', async function (next) {
-//   if (!this.isModified('password')) {
-//     return next();
-//   }
-//   const salt = await bcrypt.genSalt(10);
-//   this.password = await bcrypt.hash(this.password, salt);
-//   next();
-// });
-
-// userSchema.methods.matchPassword = async function (enteredPassword) {
-//   return await bcrypt.compare(enteredPassword, this.password);
-// };
-
-// const User = mongoose.model('User', userSchema);
-
-// // JWT Token Generation for 30 days
-// const generateToken = (id, role) => {
-//   return jwt.sign({ id, role }, 'your_jwt_secret', { expiresIn: '30d' });
-// };
-
-// // Login Route
-// app.post('/login', async (req, res) => {
-//   const { firstname, password } = req.body;
-
-//   try {
-//     const user = await User.findOne({ firstname });
-
-//     if (user && await user.matchPassword(password)) {
-//       const token = generateToken(user._id, user.role);
-//       res.json({
-//         token,
-//         role: user.role
-//       });
-//     } else {
-//       res.status(401).json({ message: 'Invalid credentials' });
-//     }
-//   } catch (error) {
-//     console.error('Error during login:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -369,58 +274,6 @@ app.delete('/api/products/:id', async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Multer setup for image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -472,73 +325,88 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-const messageSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  message: String
-});
-
-const Message = mongoose.model('Message', messageSchema);
-
-// API endpoint to handle form submission
-app.post('/api/messages', async (req, res) => {
-  const { name, email, message } = req.body;
-
-  try {
-    const newMessage = new Message({ name, email, message });
-    await newMessage.save();
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error saving message:', error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
-
-// Fetch all user messages from MongoDB
-app.get('/api/messages', async (req, res) => {
-  try {
-    const messages = await Message.find();
-    res.status(200).json(messages);
-  } catch (error) {
-    console.error('Error fetching messages:', error.message);
-    res.status(500).json({ message: 'Failed to fetch messages.' });
-  }
-});
 
 
 
 
-const EMAIL_USER = 'ggs699000@gmail.com';
-const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
 
-// Create a transporter using SMTP
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-});
 
-// API endpoint to handle reply email
-app.post('/api/reply', async (req, res) => {
-  const { email, message: replyMessage } = req.body;
 
-  const mailOptions = {
-    from: EMAIL_USER,
-    to: email,
-    subject: 'Reply to Your Message',
-    text: replyMessage,
-  };
 
-  try {
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'Reply sent successfully!' });
-  } catch (error) {
-    console.error('Error sending email:', error.message);
-    res.status(500).json({ error: 'Failed to send reply.' });
-  }
-});
+
+
+
+
+
+
+
+// const messageSchema = new mongoose.Schema({
+//   name: String,
+//   email: String,
+//   message: String
+// });
+
+// const Message = mongoose.model('Message', messageSchema);
+
+// // API endpoint to handle form submission
+// app.post('/api/messages', async (req, res) => {
+//   const { name, email, message } = req.body;
+
+//   try {
+//     const newMessage = new Message({ name, email, message });
+//     await newMessage.save();
+//     res.status(200).json({ success: true });
+//   } catch (error) {
+//     console.error('Error saving message:', error.message);
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// });
+
+// // Fetch all user messages from MongoDB
+// app.get('/api/messages', async (req, res) => {
+//   try {
+//     const messages = await Message.find();
+//     res.status(200).json(messages);
+//   } catch (error) {
+//     console.error('Error fetching messages:', error.message);
+//     res.status(500).json({ message: 'Failed to fetch messages.' });
+//   }
+// });
+
+
+
+
+// const EMAIL_USER = 'ggs699000@gmail.com';
+// const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
+
+// // Create a transporter using SMTP
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: EMAIL_USER,
+//     pass: EMAIL_PASS,
+//   },
+// });
+
+// // API endpoint to handle reply email
+// app.post('/api/reply', async (req, res) => {
+//   const { email, message: replyMessage } = req.body;
+
+//   const mailOptions = {
+//     from: EMAIL_USER,
+//     to: email,
+//     subject: 'Reply to Your Message',
+//     text: replyMessage,
+//   };
+
+//   try {
+//     await transporter.sendMail(mailOptions);
+//     res.status(200).json({ message: 'Reply sent successfully!' });
+//   } catch (error) {
+//     console.error('Error sending email:', error.message);
+//     res.status(500).json({ error: 'Failed to send reply.' });
+//   }
+// });
 
 
 
