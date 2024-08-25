@@ -369,9 +369,6 @@ app.get('/api/messages', async (req, res) => {
   }
 });
 
-
-
-
 const EMAIL_USER = 'ggs699000@gmail.com';
 const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
 
