@@ -187,151 +187,6 @@ app.post('/login', async (req, res) => {
 
 
 
-const signupSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  phoneNumber: { type: String, required: true },
-  addressLine1: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-}, { collection: 'signup' });
-
-const Signup = mongoose.model('Signup', signupSchema);
-
-// POST endpoint to register a new user
-app.post('/signup', async (req, res) => {
-  const formData = req.body;
-  
-  try {
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(formData.password, 10);
-    const newSignup = new Signup({ ...formData, password: hashedPassword });
-    await newSignup.save();
-    
-    // Optionally send OTP here
-    // const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-    // await sendOTP(formData.email, otp); // Send OTP to user's email
-    
-    res.status(200).send('User registered successfully.');
-  } catch (error) {
-    console.error('Error during signup:', error);
-    res.status(500).send('Error during signup');
-  }
-});
-
-// POST endpoint for user login
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    // Find user by username
-    const user = await Signup.findOne({ username });
-    if (!user) {
-      return res.status(401).send('Invalid username or password');
-    }
-
-    // Check if the password matches
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.status(401).send('Invalid username or password');
-    }
-
-    // If the credentials are valid, return user profile
-    res.status(200).json({ message: 'Login successful', profile: user });
-    // You can redirect in the frontend based on the response
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).send('Error during login');
-  }
-});
-
-// GET endpoint to fetch all signups
-app.get('/api/signups', async (req, res) => {
-  try {
-    const signups = await Signup.find();
-    res.status(200).json(signups);
-  } catch (error) {
-    console.error('Error fetching signups:', error);
-    res.status(500).json({ message: 'Failed to fetch signups.' });
-  }
-});
-
-// DELETE endpoint to delete a signup by ID
-app.delete('/api/signups/:id', async (req, res) => {
-  try {
-    const userId = req.params.id;
-
-    // Check if the ID is valid
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: 'Invalid user ID' });
-    }
-
-    // Delete the user
-    const result = await Signup.deleteOne({ _id: userId });
-
-    if (result.deletedCount === 1) {
-      res.status(200).json({ message: 'User deleted successfully' });
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ message: 'Failed to delete user.' });
-  }
-});
-
-// Function to send OTP via email (optional, implement if needed)
-const sendOTP = async (email, otp) => {
-  // Configure the email transport using SMTP
-  const transporter = nodemailer.createTransport({
-    service: 'gmail', // Use your email service
-    auth: {
-      user: process.env.EMAIL_USER, // Your email address
-      pass: process.env.EMAIL_PASS, // Your email password or app password
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is ${otp}`,
-  };
-
-  // Send email
-  await transporter.sendMail(mailOptions);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -668,6 +523,106 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
+
+
+
+
+
+// Define the signup schema
+const signupSchema = new mongoose.Schema({
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
+  addressLine1: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+}, { collection: 'signup' });
+
+const Signup = mongoose.model('Signup', signupSchema);
+
+
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+// POST endpoint to insert data and send OTP
+app.post('/checkout', async (req, res) => {
+  const formData = req.body;
+
+  try {
+    const newSignup = new Signup(formData);
+    await newSignup.save();
+
+    // Send OTP
+    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+    await sendOTP(formData.email, otp); // Send OTP to user's email
+
+    res.status(200).send('Data inserted successfully. An OTP has been sent to your email.');
+  } catch (error) {
+    console.error('Error inserting data:', error);
+    res.status(500).send('Error inserting data');
+  }
+});
+
+// Function to send OTP via email
+const sendOTP = async (email, otp) => {
+  // Configure the email transport using SMTP
+  const transporter = nodemailer.createTransport({
+    service: 'gmail', // Use your email service
+    auth: {
+      user: EMAIL_USER, // Your email address
+      pass: EMAIL_PASS, // Your email password or app password
+    },
+  });
+
+  const mailOptions = {
+    from: EMAIL_USER,
+    to: email,
+    subject: 'Your OTP Code',
+    text: `Your OTP code is ${otp}`,
+  };
+
+  // Send email
+  await transporter.sendMail(mailOptions);
+};
+
+// GET endpoint to fetch all signups
+app.get('/api/signups', async (req, res) => {
+  try {
+    const signups = await Signup.find();
+    res.status(200).json(signups);
+  } catch (error) {
+    console.error('Error fetching signups:', error);
+    res.status(500).json({ message: 'Failed to fetch signups.' });
+  }
+});
+
+// DELETE endpoint to delete a signup by ID
+app.delete('/api/signups/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Check if the ID is valid
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    // Delete the user
+    const result = await Signup.deleteOne({ _id: userId });
+
+    if (result.deletedCount === 1) {
+      res.status(200).json({ message: 'User deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Failed to delete user.' });
+  }
+});
 
 
 
