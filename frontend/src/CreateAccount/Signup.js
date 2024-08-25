@@ -17,6 +17,7 @@ const Signup = () => {
   const [otp, setOtp] = useState('');
   const [isOtpVisible, setIsOtpVisible] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isOtpVerified, setIsOtpVerified] = useState(false); // State for OTP verification
 
   const handleChange = (e) => {
     setFormData({
@@ -55,7 +56,38 @@ const Signup = () => {
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     console.log('OTP submitted:', otp);
-    // Implement OTP verification logic here
+
+    // Here, implement your OTP verification logic
+    const isVerified = true; // Replace this with actual verification logic
+
+    if (isVerified) {
+      setIsOtpVerified(true);
+      alert('OTP verified successfully!');
+
+      // Now submit the data to your database
+      try {
+        const response = await fetch('https://rappo.onrender.com/storeData', { // Change to your data storage endpoint
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          alert('Data stored successfully');
+          // Optionally, reset form or redirect user
+        } else {
+          alert('Failed to store data');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while storing data');
+      }
+    } else {
+      alert('Invalid OTP. Please try again.');
+    }
+
     setIsPopupOpen(false); // Close the popup after submitting OTP
   };
 
