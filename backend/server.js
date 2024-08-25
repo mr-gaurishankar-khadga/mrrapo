@@ -14,6 +14,7 @@ const multer = require('multer');
 const path = require('path');
 const cors = require('cors'); 
 const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 const { Schema } = mongoose;
 const Payment = require('./models/paymentModel');
 
@@ -465,7 +466,69 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-//Product upload page
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Define the signup schema
 const signupSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
@@ -475,45 +538,68 @@ const signupSchema = new mongoose.Schema({
   addressLine1: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
-}, { collection: 'signup' }); 
-
+}, { collection: 'signup' });
 
 const Signup = mongoose.model('Signup', signupSchema);
 
 
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+// POST endpoint to insert data and send OTP
 app.post('/checkout', async (req, res) => {
   const formData = req.body;
+
   try {
     const newSignup = new Signup(formData);
     await newSignup.save();
-    res.status(200).send('Data inserted successfully');
+
+    // Send OTP
+    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+    await sendOTP(formData.email, otp); // Send OTP to user's email
+
+    res.status(200).send('Data inserted successfully. An OTP has been sent to your email.');
   } catch (error) {
     console.error('Error inserting data:', error);
     res.status(500).send('Error inserting data');
   }
 });
 
+// Function to send OTP via email
+const sendOTP = async (email, otp) => {
+  // Configure the email transport using SMTP
+  const transporter = nodemailer.createTransport({
+    service: 'gmail', // Use your email service
+    auth: {
+      user: EMAIL_USER, // Your email address
+      pass: EMAIL_PASS, // Your email password or app password
+    },
+  });
 
+  const mailOptions = {
+    from: EMAIL_USER,
+    to: email,
+    subject: 'Your OTP Code',
+    text: `Your OTP code is ${otp}`,
+  };
 
+  // Send email
+  await transporter.sendMail(mailOptions);
+};
 
-
+// GET endpoint to fetch all signups
 app.get('/api/signups', async (req, res) => {
   try {
     const signups = await Signup.find();
     res.status(200).json(signups);
   } catch (error) {
-    console.error('Error fetching messages:', errorsignups);
-    res.status(500).json({ message: 'Failed to fetch messages.' });
+    console.error('Error fetching signups:', error);
+    res.status(500).json({ message: 'Failed to fetch signups.' });
   }
 });
 
-
-
-
-
-
-
-// DELETE endpoint to delete a signup by ID
 // DELETE endpoint to delete a signup by ID
 app.delete('/api/signups/:id', async (req, res) => {
   try {
@@ -524,11 +610,8 @@ app.delete('/api/signups/:id', async (req, res) => {
       return res.status(400).json({ message: 'Invalid user ID' });
     }
 
-    // Convert to ObjectId
-    const objectId = new mongoose.Types.ObjectId(userId);
-
     // Delete the user
-    const result = await Signup.deleteOne({ _id: objectId });
+    const result = await Signup.deleteOne({ _id: userId });
 
     if (result.deletedCount === 1) {
       res.status(200).json({ message: 'User deleted successfully' });
@@ -628,6 +711,57 @@ app.post('/api/reply', async (req, res) => {
     res.status(500).json({ error: 'Failed to send reply.' });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
