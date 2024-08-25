@@ -7,30 +7,31 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import UserOrders from './UserOrders';
 import UserReturns from './UserReturns';
 import Likes from './Likes';
-import axios from 'axios';
-
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [selectedItem, setSelectedItem] = useState('UserOrders');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [selectedItem, setSelectedItem] = useState('Dashboard');
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem('token'); // Get token from localStorage
-        const response = await axios.get('/api/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Set the Authorization header
-          },
-        });
-        setUser(response.data); 
+        // Get the logged-in user's email from local storage or a session
+        const userEmail = localStorage.getItem('userEmail');
+        
+        // Fetch all users, or ideally, fetch just the one user based on the stored email
+        const response = await fetch(`https://rappo.onrender.com/api/signups?email=${userEmail}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.length > 0) {
+            setUser(data[0]); // Assuming the API returns an array of users
+          } else {
+            console.error('User not found');
+          }
+        } else {
+          console.error('Failed to fetch user data');
+        }
       } catch (error) {
-        console.error('Error fetching profile:', error);
-        setError('Failed to load user data. Please try again later.');
-      } finally {
-        setLoading(false); 
+        console.error('Error:', error);
       }
     };
 
@@ -54,17 +55,18 @@ const Profile = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>; 
-  if (error) return <div>{error}</div>; 
+  if (!user) {
+    return <p>Loading...</p>; // or a loading spinner
+  }
 
   return (
     <div className='create' style={{ marginLeft: '-20px', height: '' }}>
       <Box sx={{ display: 'flex', backgroundColor: '' }}>
         <Box sx={{ height: '150vh', width: '240px', backgroundColor: '', color: 'black', padding: '10px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '2px 0 5px rgba(0,0,0,0.1)', position: 'fixed' }}>
           <Box sx={{ marginBottom: '20px', textAlign: 'center' }}>
-            <Avatar src="" alt={user.firstname} sx={{ width: 140, height: 110 }} style={{ margin: '10px', borderRadius: '10%' }} />
+            <Avatar src="" alt={user.firstName} sx={{ width: 140, height: 110 }} style={{ marginLeft: '', margin: '10px', borderRadius: '10%' }} />
             <Typography variant="body2" sx={{ color: 'gray' }}>
-              {user.firstname}
+              {user.firstName}
             </Typography>
             <Typography variant="body2" sx={{ color: 'gray' }}>
               {user.email}
@@ -92,9 +94,9 @@ const Profile = () => {
           </List>
         </Box>
 
-        <Box sx={{ flex: 1, marginTop: '16px', width: '1300px', position: 'static', height: '', marginLeft: '300px' }}>
+        <Box sx={{ flex: 1, marginTop: '16px', backgroundColor: '', width: '1300px', position: 'static', height: '', marginLeft: '300px' }}>
           <div className="divider" style={{ borderTop: '1px solid #333', width: '100%', marginLeft: '-40px', marginTop: '-20px' }}></div>
-          {renderContent()} 
+          {renderContent()}
         </Box>
       </Box>
     </div>
