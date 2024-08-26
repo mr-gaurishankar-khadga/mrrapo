@@ -16,6 +16,7 @@ const Signup = () => {
   
   const [otp, setOtp] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -31,7 +32,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://rappo.onrender.com/signup', {
+      const response = await fetch('https://rappo.onrender.com/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,16 +41,17 @@ const Signup = () => {
       });
 
       if (response.ok) {
-        alert('Signup successful. OTP sent to your email.');
+        alert('Data submitted successfully. OTP sent to your email.');
         setIsPopupOpen(true); 
       } else {
-        alert('Signup failed.');
+        alert('Failed to submit data.');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred during signup.');
+      alert('An error occurred while submitting data.');
     }
   };
+
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
@@ -64,6 +66,7 @@ const Signup = () => {
       });
   
       if (response.ok) {
+        const data = await response.json();
         alert('OTP verified successfully!');
         window.location.href = `/profile/${formData.email}`;
       } else {
@@ -75,13 +78,17 @@ const Signup = () => {
       alert('An error occurred while verifying OTP.');
     }
   };
+  
+  
+  
 
   return (
     <>
       <div className="checkout-container">
-        <div className="form-section">
+        <div className="form-section" style={{ display: 'flex' }}>
           <form className="checkout-form" onSubmit={handleSubmit}>
             <h3 className="shippinginfo">Shipping Information</h3>
+            {/* Form fields for user details */}
             <input
               type="email"
               name="email"
@@ -160,7 +167,7 @@ const Signup = () => {
                 className="form-input half-width"
               />
             </div>
-            <button type="submit" className="confirm-payment-btn">Sign Up</button>
+            <button type="submit" className="confirm-payment-btn">Send</button>
             <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
               <form onSubmit={handleOtpSubmit}>
                 <input
