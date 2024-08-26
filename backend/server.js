@@ -540,8 +540,8 @@ console.log(`Generated JWT Secret Key: ${JWT_SECRET}`);
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: 'your-email@gmail.com', // Replace with your email
-      pass: 'your-email-password', // Replace with your email password
+      user: 'ggs699000@gmail.com', // Replace with your email
+      pass: 'ggxe sjmy hqyn byjp', // Replace with your email password
   },
 });
 
@@ -573,6 +573,10 @@ app.post('/api/signup', async (req, res) => {
       res.status(500).json({ message: 'An error occurred during signup. Please try again.' });
   }
 });
+
+
+
+
 
 // Verify OTP Route
 app.post('/api/verify-otp', async (req, res) => {
