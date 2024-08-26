@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import "./Signup.css";
 import Popup from "./Popup";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Signup = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstname] = useState('');
   const [lastName, setLastname] = useState('');
   const [phoneNumber, setNumber] = useState('');
-  const [addressLine, setAddressLine] = useState('');
+  const [addressLine, setaddressline] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [otp, setOtp] = useState('');
@@ -17,13 +19,11 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
 
-  // Handle Signup Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // API request to the signup route
       const response = await axios.post('https://rappo.onrender.com/api/signup', {
         email,
         firstName,
@@ -34,28 +34,27 @@ const Signup = () => {
         city,
         state,
       });
-      // Display success message and open OTP popup
       setSuccess(response.data.message);
       setIsPopupOpen(true);
     } catch (error) {
-      alert('Signup failed: ' + (error.response?.data?.message || error.message));
+      alert('Signup failed: ' + error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle OTP Form Submission
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // API request to verify OTP
       const response = await axios.post('https://rappo.onrender.com/api/verify-otp', { email, otp });
       alert(response.data.message);
-      setIsPopupOpen(false); // Close OTP popup on success
+      
+      // Navigate to the Profile page on successful OTP verification
+      navigate('/profile');
     } catch (error) {
-      alert('OTP verification failed: ' + (error.response?.data?.message || error.message));
+      alert('OTP verification failed: ' + error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
@@ -119,7 +118,7 @@ const Signup = () => {
             name="addressLine"
             placeholder="Enter Your Address"
             value={addressLine}
-            onChange={(e) => setAddressLine(e.target.value)}
+            onChange={(e) => setaddressline(e.target.value)}
             required
             className="form-input"
           />
