@@ -531,11 +531,11 @@ const signupSchema = new mongoose.Schema({
   firstName: String, 
   lastName: String,
   phoneNumber: String,
-  addressLine1: String,
+  addressLine: String,
   city: String,
   state: String, 
   otp: String ,
-}, { collection: 'signups' });
+});
 
 const Signup = mongoose.model('Signups', signupSchema);
 
