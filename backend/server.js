@@ -544,7 +544,6 @@ const signupSchema = new mongoose.Schema({
   addressLine1: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
-  otp: { type: String, required: true },  // Add OTP field
   isVerified: { type: Boolean, default: false },  // Add verification status
 }, { collection: 'signup' });
 
