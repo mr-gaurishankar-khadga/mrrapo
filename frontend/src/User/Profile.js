@@ -143,12 +143,12 @@ const Profile = () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('No token found. Please login again.');
-                navigate('/Profile'); // Redirect to the login page
+                navigate('/Profile'); 
                 return;
             }
 
             try {
-                const response = await axios.get('http://localhost:3000/api/profile', {
+                const response = await axios.get('https://rappo.onrender.com/api/profile', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
