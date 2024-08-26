@@ -526,100 +526,91 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Define the signup schema
 const signupSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  phoneNumber: { type: String, required: true },
-  addressLine1: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  otp: { type: String }, // Store OTP in the database
-  otpExpires: { type: Date }, // Store OTP expiration time
-}, { collection: 'signup' });
+  email: String,
+  password: String,
+  firstName: String, 
+  lastName: String,
+  phoneNumber: String,
+  addressLine1: String,
+  city: String,
+  state: String, 
+  otp: String ,
+}, { collection: 'signups' });
 
-const Signup = mongoose.model('Signup', signupSchema);
+const Signup = mongoose.model('Signups', signupSchema);
 
-// Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-// POST endpoint to insert data and send OTP
-app.post('/checkout', async (req, res) => {
-  const formData = req.body;
-
-  try {
-    // Check if user already exists
-    const existingUser = await Signup.findOne({ email: formData.email });
-    if (existingUser) {
-      return res.status(400).send('Email is already registered. Please use a different email.');
-    }
-
-    // Generate a 6-digit OTP and set expiration time
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = Date.now() + 15 * 60 * 1000; // OTP expires in 15 minutes
-
-    // Include OTP and expiration time in the signup data
-    const newSignup = new Signup({ ...formData, otp, otpExpires });
-    await newSignup.save();
-
-    // Send OTP
-    await sendOTP(formData.email, otp);
-
-    res.status(200).send('Data inserted successfully. An OTP has been sent to your email.');
-  } catch (error) {
-    console.error('Error inserting data:', error);
-    res.status(500).send('Error inserting data');
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: 'ggs699000@gmail.com', 
+      pass: 'ggxe sjmy hqyn byjp'  
   }
 });
 
-// Function to send OTP via email
-const sendOTP = async (email, otp) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail', // Use your email service
-    auth: {
-      user: 'ggs699000@gmail.com', // Your email address
-      pass: 'ggxe sjmy hqyn byjp', // Your email password or app password
-    },
-  });
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is ${otp}`,
-  };
-
-  // Send email
-  await transporter.sendMail(mailOptions);
-};
-
-// OTP verification route
-app.post('/verifyOtp', async (req, res) => {
-  const { email, otp } = req.body; // Get email and OTP from the request
+// Signup Route
+app.post('/api/checkout', async (req, res) => {
+  const { email, password, firstName } = req.body;
 
   try {
-    // Find the user by email
-    const user = await Signup.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'No user found for this email.' });
-    }
+      const userExists = await Signup.findOne({ email });
+      if (userExists) {
+          return res.status(400).json({ message: 'User already exists' });
+      }
 
-    // Check if OTP is valid and not expired
-    if (user.otp === otp && Date.now() < user.otpExpires) {
-      user.otp = null; // Clear the OTP after verification
-      user.otpExpires = null;
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      const newUser = new Signup({ firstName, email, password, otp });
+
+      await newUser.save();
+
+      // Send OTP
+      await transporter.sendMail({
+          to: email,
+          subject: 'OTP Verification',
+          text: `Your OTP is ${otp}`
+      });
+
+      res.status(200).json({ message: 'User created. Check your email for OTP.' });
+  } catch (error) {
+      console.error('Signup error:', error);
+      res.status(500).json({ message: 'An error occurred during signup. Please try again.' });
+  }
+});
+
+
+
+
+
+
+
+
+
+// Verify OTP Route
+app.post('/api/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+      const user = await Signup.findOne({ email });
+      if (!user) {
+          return res.status(400).json({ message: 'User not found' });
+      }
+
+      if (user.otp !== otp) {
+          return res.status(400).json({ message: 'Invalid OTP' });
+      }
+
+      user.otp = null; 
       await user.save();
 
-      return res.status(200).json({ message: 'OTP verified successfully!' });
-    } else {
-      return res.status(400).json({ message: 'Invalid or expired OTP.' });
-    }
+      res.status(200).json({ message: 'OTP verified successfully' });
   } catch (error) {
-    console.error('Error during OTP verification:', error);
-    res.status(500).json({ message: 'Error during OTP verification. Please try again.' });
+      console.error('Verify OTP error:', error);
+      res.status(500).json({ message: 'An error occurred during OTP verification. Please try again.' });
   }
 });
+
 
 
 
@@ -688,74 +679,6 @@ app.delete('/api/signups/:id', async (req, res) => {
 
 
 
-
-const messageSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  message: String
-});
-
-const Message = mongoose.model('Message', messageSchema);
-
-// API endpoint to handle form submission
-app.post('/api/messages', async (req, res) => {
-  const { name, email, message } = req.body;
-
-  try {
-    const newMessage = new Message({ name, email, message });
-    await newMessage.save();
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error saving message:', error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
-
-// Fetch all user messages from MongoDB
-app.get('/api/messages', async (req, res) => {
-  try {
-    const messages = await Message.find();
-    res.status(200).json(messages);
-  } catch (error) {
-    console.error('Error fetching messages:', error.message);
-    res.status(500).json({ message: 'Failed to fetch messages.' });
-  }
-});
-
-
-
-
-const EMAIL_USER = 'ggs699000@gmail.com';
-const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
-
-// Create a transporter using SMTP
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-});
-
-// API endpoint to handle reply email
-app.post('/api/reply', async (req, res) => {
-  const { email, message: replyMessage } = req.body;
-
-  const mailOptions = {
-    from: EMAIL_USER,
-    to: email,
-    subject: 'Reply to Your Message',
-    text: replyMessage,
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'Reply sent successfully!' });
-  } catch (error) {
-    console.error('Error sending email:', error.message);
-    res.status(500).json({ error: 'Failed to send reply.' });
-  }
-});
 
 
 

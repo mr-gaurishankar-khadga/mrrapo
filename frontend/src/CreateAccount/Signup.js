@@ -1,88 +1,83 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Signup.css";
 import Popup from "./Popup";
-import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    addressLine1: '',
-    city: '',
-    state: '',
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstname] = useState('')
+  const [lastName, setLastname]= useState('');
+  const [phoneNumber, setNumber]= useState('');
+  const [addressLine, setaddressline]= useState('');
+  const [city, setCity]= useState('');
+  const [state, setState]= useState('');
 
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp]= useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const verifyOtp = async (email, otp) => {
-    try {
-      const response = await fetch('https://rappo.onrender.com/api/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, otp }),
-      });
+  const [loading, setLoading] = useState(false);
 
-      const result = await response.json();
-      console.log(result); // For debugging
 
-      return result.message === 'OTP verified successfully';
-    } catch (error) {
-      console.error('Error verifying OTP:', error);
-      return false;
-    }
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('https://rappo.onrender.com/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    setError('');
+    setSuccess('');
+    setLoading(true);
 
-      if (response.ok) {
-        alert('Checkout data submitted successfully');
-        setIsPopupOpen(true);
-      } else {
-        alert('Failed to submit checkout data');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while submitting checkout data');
+    try {
+      const response = await axios.post('http://localhost:5000/api/checkout', {
+        email,
+        firstName,
+        password,
+        lastName,
+        phoneNumber,
+        addressLine,
+        city,
+      });
+      setSuccess(response.data.message);
+      setIsOtpSent(true);
+    }catch (error) {
+      setError(error.response ? error.response.data.message : 'Signup failed');
+    } finally {
+      setLoading(false);
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
 
-    const isVerified = await verifyOtp(formData.email, otp);
-
-    if (isVerified) {
-      alert('OTP verified successfully!');
-      navigate('/profile'); // Navigate to profile after verification
-    } else {
-      alert('Invalid OTP. Please try again.');
+    try {
+        const response = await axios.post('https://rappo.onrender.com/api/checkout', {
+            email, 
+            otp,
+        });
+        setSuccess(response.data.message);
+    } catch (error) {
+        setError(error.response ? error.response.data.message : 'OTP verification failed');
+    } finally {
+        setLoading(false);
     }
+};
 
-    setIsPopupOpen(false);
-  };
+
+
 
   return (
     <div className="checkout-container">
@@ -93,8 +88,8 @@ const Signup = () => {
             type="email"
             name="email"
             placeholder="Email address"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="form-input"
           />
@@ -102,8 +97,8 @@ const Signup = () => {
             type="password"
             name="password"
             placeholder="Enter Password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className="form-input"
           />
@@ -112,8 +107,8 @@ const Signup = () => {
               type="text"
               name="firstName"
               placeholder="First name"
-              value={formData.firstName}
-              onChange={handleChange}
+              value={firstName}
+              onChange={(e) => setFirstname(e.target.value)}
               required
               className="form-input half-width"
               style={{ marginRight: '30px', marginLeft: '10px' }}
@@ -122,8 +117,8 @@ const Signup = () => {
               type="text"
               name="lastName"
               placeholder="Last name"
-              value={formData.lastName}
-              onChange={handleChange}
+              value={lastName}
+              onChange={(e) => setLastname(e.target.value)}
               required
               className="form-input half-width"
             />
@@ -132,17 +127,17 @@ const Signup = () => {
             type="text"
             name="phoneNumber"
             placeholder="Phone number"
-            value={formData.phoneNumber}
-            onChange={handleChange}
+            value={phoneNumber}
+            onChange={(e) => setNumber(e.target.value)}
             required
             className="form-input"
           />
           <input
             type="text"
-            name="addressLine1"
+            name="addressLine"
             placeholder="Enter Your Address"
-            value={formData.addressLine1}
-            onChange={handleChange}
+            value={addressLine}
+            onChange={(e) => setaddressline(e.target.value)}
             required
             className="form-input"
           />
@@ -151,8 +146,8 @@ const Signup = () => {
               type="text"
               name="city"
               placeholder="City"
-              value={formData.city}
-              onChange={handleChange}
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
               required
               className="form-input half-width"
               style={{ marginRight: '30px', marginLeft: '10px' }}
@@ -161,13 +156,20 @@ const Signup = () => {
               type="text"
               name="state"
               placeholder="State"
-              value={formData.state}
-              onChange={handleChange}
+              value={state}
+              onChange={(e) => setState(e.target.value)}
               required
               className="form-input half-width"
             />
           </div>
-          <button type="submit" className="confirm-payment-btn">Send</button>
+
+
+
+
+          <button type="submit" className="confirm-payment-btn" disabled={loading}>
+            {loading ? 'Signing Up...' : 'Signup'}
+          </button>
+          
           <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
             <form onSubmit={handleOtpSubmit}>
               <input
@@ -175,7 +177,7 @@ const Signup = () => {
                 name="otp"
                 placeholder="Enter your OTP"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => setOtp(e.target.value)}
                 required
                 className="form-input"
               />
