@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "./Signup.css";
 import Popup from "./Popup";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 const Signup = () => {
+  const navigate = useNavigate(); // Initialize navigate for redirection
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -55,9 +57,9 @@ const Signup = () => {
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    console.log('OTP submitted:', otp);
 
-    const isVerified = true;
+    // Add logic to verify OTP here
+    const isVerified = await verifyOtp(otp); // Function to verify OTP
 
     if (isVerified) {
       setIsOtpVerified(true);
@@ -75,7 +77,8 @@ const Signup = () => {
 
         if (response.ok) {
           alert('Data stored successfully');
-          // Optionally, reset form or redirect user
+          // Redirect to Profile page after successful signup
+          navigate('/profile'); // Use navigate for redirection
         } else {
           alert('Failed to store data');
         }
@@ -88,6 +91,18 @@ const Signup = () => {
     }
 
     setIsPopupOpen(false); // Close the popup after submitting OTP
+  };
+
+  const verifyOtp = async (otp) => {
+    // Call your OTP verification endpoint
+    const response = await fetch('https://rappo.onrender.com/verifyOtp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ otp }),
+    });
+    return response.ok; // Return true if verified, false otherwise
   };
 
   return (
@@ -191,7 +206,6 @@ const Signup = () => {
             </Popup>
           </form>
         </div>
-
       </div>
     </>
   );

@@ -589,6 +589,43 @@ const sendOTP = async (email, otp) => {
   await transporter.sendMail(mailOptions);
 };
 
+
+
+
+
+// OTP verification route
+app.post('/verifyOtp', (req, res) => {
+  const { email, otp } = req.body; // Get email and OTP from the request
+  const storedOtpData = otpStore[email];
+
+  // Check if the OTP exists and is still valid
+  if (!storedOtpData) {
+    return res.status(400).json({ message: 'No OTP found for this email.' });
+  }
+
+  const { otp: storedOtp, expires } = storedOtpData;
+
+  // Check if OTP is valid and not expired
+  if (otp === storedOtp && Date.now() < expires) {
+    delete otpStore[email]; // Clear the OTP after verification
+    return res.status(200).json({ message: 'OTP verified successfully!' });
+  } else {
+    return res.status(400).json({ message: 'Invalid or expired OTP.' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 // GET endpoint to fetch all signups
 app.get('/api/signups', async (req, res) => {
   try {
