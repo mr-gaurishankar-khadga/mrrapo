@@ -524,10 +524,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-
-
-
-
 // Define the signup schema
 const signupSchema = new mongoose.Schema({
   email: { type: String, required: true },
@@ -538,27 +534,37 @@ const signupSchema = new mongoose.Schema({
   addressLine1: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
+  otp: { type: String }, // Store OTP in the database
+  otpExpires: { type: Date }, // Store OTP expiration time
 }, { collection: 'signup' });
 
 const Signup = mongoose.model('Signup', signupSchema);
 
-
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 // POST endpoint to insert data and send OTP
 app.post('/checkout', async (req, res) => {
   const formData = req.body;
 
   try {
-    const newSignup = new Signup(formData);
+    // Check if user already exists
+    const existingUser = await Signup.findOne({ email: formData.email });
+    if (existingUser) {
+      return res.status(400).send('Email is already registered. Please use a different email.');
+    }
+
+    // Generate a 6-digit OTP and set expiration time
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = Date.now() + 15 * 60 * 1000; // OTP expires in 15 minutes
+
+    // Include OTP and expiration time in the signup data
+    const newSignup = new Signup({ ...formData, otp, otpExpires });
     await newSignup.save();
 
     // Send OTP
-    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-    await sendOTP(formData.email, otp); 
+    await sendOTP(formData.email, otp);
 
     res.status(200).send('Data inserted successfully. An OTP has been sent to your email.');
   } catch (error) {
@@ -569,17 +575,16 @@ app.post('/checkout', async (req, res) => {
 
 // Function to send OTP via email
 const sendOTP = async (email, otp) => {
-  // Configure the email transport using SMTP
   const transporter = nodemailer.createTransport({
     service: 'gmail', // Use your email service
     auth: {
-      user: EMAIL_USER, // Your email address
-      pass: EMAIL_PASS, // Your email password or app password
+      user: process.env.EMAIL_USER, // Your email address
+      pass: process.env.EMAIL_PASS, // Your email password or app password
     },
   });
 
   const mailOptions = {
-    from: EMAIL_USER,
+    from: process.env.EMAIL_USER,
     to: email,
     subject: 'Your OTP Code',
     text: `Your OTP code is ${otp}`,
@@ -589,30 +594,33 @@ const sendOTP = async (email, otp) => {
   await transporter.sendMail(mailOptions);
 };
 
-
-
-
-
 // OTP verification route
-app.post('/verifyOtp', (req, res) => {
+app.post('/verifyOtp', async (req, res) => {
   const { email, otp } = req.body; // Get email and OTP from the request
-  const storedOtpData = otpStore[email];
 
-  // Check if the OTP exists and is still valid
-  if (!storedOtpData) {
-    return res.status(400).json({ message: 'No OTP found for this email.' });
-  }
+  try {
+    // Find the user by email
+    const user = await Signup.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'No user found for this email.' });
+    }
 
-  const { otp: storedOtp, expires } = storedOtpData;
+    // Check if OTP is valid and not expired
+    if (user.otp === otp && Date.now() < user.otpExpires) {
+      user.otp = null; // Clear the OTP after verification
+      user.otpExpires = null;
+      await user.save();
 
-  // Check if OTP is valid and not expired
-  if (otp === storedOtp && Date.now() < expires) {
-    delete otpStore[email]; // Clear the OTP after verification
-    return res.status(200).json({ message: 'OTP verified successfully!' });
-  } else {
-    return res.status(400).json({ message: 'Invalid or expired OTP.' });
+      return res.status(200).json({ message: 'OTP verified successfully!' });
+    } else {
+      return res.status(400).json({ message: 'Invalid or expired OTP.' });
+    }
+  } catch (error) {
+    console.error('Error during OTP verification:', error);
+    res.status(500).json({ message: 'Error during OTP verification. Please try again.' });
   }
 });
+
 
 
 
