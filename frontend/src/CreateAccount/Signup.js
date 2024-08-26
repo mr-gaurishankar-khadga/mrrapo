@@ -66,7 +66,7 @@ const Signup = () => {
   // Function to fetch user data
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`https://rappo.onrender.com/api/profile/${email}`);
+      const response = await axios.get(`https://rappo.onrender.com/api/user/${email}`);
       console.log("Fetched User Data:", response.data);
       // Here you can set the user data to state or context if needed
     } catch (error) {
