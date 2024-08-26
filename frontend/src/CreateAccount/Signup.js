@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import "./Signup.css";
 import Popup from "./Popup";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstname] = useState('');
   const [lastName, setLastname] = useState('');
   const [phoneNumber, setNumber] = useState('');
-  const [addressLine, setaddressline] = useState('');
+  const [addressLine, setAddressLine] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [otp, setOtp] = useState('');
@@ -37,7 +37,7 @@ const Signup = () => {
       setSuccess(response.data.message);
       setIsPopupOpen(true);
     } catch (error) {
-      alert('Signup failed: ' + error.response?.data?.message || error.message);
+      alert('Signup failed: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -51,26 +51,16 @@ const Signup = () => {
       const response = await axios.post('https://rappo.onrender.com/api/verify-otp', { email, otp });
       alert(response.data.message);
 
-      // Fetch user data after successful OTP verification
-      await fetchUserData();
+      // Store token if your backend sends one after OTP verification
+      const { token } = response.data;
+      localStorage.setItem('token', token);
 
       // Navigate to the Profile page on successful OTP verification
       navigate('/Profile');
     } catch (error) {
-      alert('OTP verification failed: ' + error.response?.data?.message || error.message);
+      alert('OTP verification failed: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Function to fetch user data
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get(`https://rappo.onrender.com/api/profile/${email}`);
-      console.log("Fetched User Data:", response.data);
-      // Here you can set the user data to state or context if needed
-    } catch (error) {
-      console.error('Error fetching user data:', error.response?.data?.message || error.message);
     }
   };
 
@@ -81,7 +71,6 @@ const Signup = () => {
           <h3 className="shippinginfo">Shipping Information</h3>
           <input
             type="email"
-            name="email"
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -90,7 +79,6 @@ const Signup = () => {
           />
           <input
             type="password"
-            name="password"
             placeholder="Enter Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -100,7 +88,6 @@ const Signup = () => {
           <div className="name-fields">
             <input
               type="text"
-              name="firstName"
               placeholder="First name"
               value={firstName}
               onChange={(e) => setFirstname(e.target.value)}
@@ -110,7 +97,6 @@ const Signup = () => {
             />
             <input
               type="text"
-              name="lastName"
               placeholder="Last name"
               value={lastName}
               onChange={(e) => setLastname(e.target.value)}
@@ -120,7 +106,6 @@ const Signup = () => {
           </div>
           <input
             type="text"
-            name="phoneNumber"
             placeholder="Phone number"
             value={phoneNumber}
             onChange={(e) => setNumber(e.target.value)}
@@ -129,17 +114,15 @@ const Signup = () => {
           />
           <input
             type="text"
-            name="addressLine"
             placeholder="Enter Your Address"
             value={addressLine}
-            onChange={(e) => setaddressline(e.target.value)}
+            onChange={(e) => setAddressLine(e.target.value)}
             required
             className="form-input"
           />
           <div className="location-fields">
             <input
               type="text"
-              name="city"
               placeholder="City"
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -149,7 +132,6 @@ const Signup = () => {
             />
             <input
               type="text"
-              name="state"
               placeholder="State"
               value={state}
               onChange={(e) => setState(e.target.value)}
@@ -167,7 +149,6 @@ const Signup = () => {
         <form onSubmit={handleOtpSubmit}>
           <input
             type="text"
-            name="otp"
             placeholder="Enter your OTP"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
