@@ -528,6 +528,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
+
+
+
+
+
+
+
 const signupSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
@@ -544,85 +551,6 @@ const signupSchema = new mongoose.Schema({
 const Signup = mongoose.model('Signup', signupSchema);
 
 
-
-// Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-
-
-// POST endpoint to insert data and send OTP
-app.post('/checkout', async (req, res) => {
-  const formData = req.body;
-
-  try {
-    // Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString(); 
-    
-    // Include OTP in form data
-    formData.otp = otp;
-    
-    // Create new signup entry with OTP and unverified status
-    const newSignup = new Signup(formData);
-    await newSignup.save();
-
-    // Send OTP
-    await sendOTP(formData.email, otp);
-
-    res.status(200).send('Data inserted successfully. An OTP has been sent to your email.');
-  } catch (error) {
-    console.error('Error inserting data:', error);
-    res.status(500).send('Error inserting data');
-  }
-});
-
-// POST endpoint to verify OTP
-app.post('/verifyOtp', async (req, res) => {
-  const { email, otp } = req.body;
-
-  try {
-    const user = await Signup.findOne({ email });
-
-    if (user && user.otp === otp) {
-      // OTP matches, update the user as verified
-      user.isVerified = true;
-      await user.save();
-
-      res.status(200).send('OTP verified successfully.');
-    } else {
-      res.status(400).send('Invalid OTP.');
-    }
-  } catch (error) {
-    console.error('Error verifying OTP:', error);
-    res.status(500).send('Error verifying OTP.');
-  }
-});
-
-
-
-
-// Function to send OTP via email
-const sendOTP = async (email, otp) => {
-  // Configure the email transport using SMTP
-  const transporter = nodemailer.createTransport({
-    service: 'gmail', 
-    auth: {
-      user: EMAIL_USER,
-      pass: EMAIL_PASS, 
-    },
-  });
-
-  const mailOptions = {
-    from: EMAIL_USER,
-    to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is ${otp}`,
-  };
-
-  // Send email
-  await transporter.sendMail(mailOptions);
-};
-
 // GET endpoint to fetch all signups
 app.get('/api/signups', async (req, res) => {
   try {
@@ -633,6 +561,36 @@ app.get('/api/signups', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch signups.' });
   }
 });
+
+
+
+
+app.post('/verifyOtp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    // Find the user by email
+    const user = await Signup.findOne({ email });
+
+    if (user && user.otp === otp) {
+      // OTP matches, update the user as verified
+      user.isVerified = true;
+      await user.save();
+
+      // Respond with success and the user data
+      res.status(200).json({ message: 'OTP verified successfully.', user });
+    } else {
+      res.status(400).json({ message: 'Invalid OTP.' });
+    }
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ message: 'Error verifying OTP.' });
+  }
+});
+
+
+
+
 
 // DELETE endpoint to delete a signup by ID
 app.delete('/api/signups/:id', async (req, res) => {
