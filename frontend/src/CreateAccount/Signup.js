@@ -50,13 +50,27 @@ const Signup = () => {
     try {
       const response = await axios.post('https://rappo.onrender.com/api/verify-otp', { email, otp });
       alert(response.data.message);
-      
+
+      // Fetch user data after successful OTP verification
+      await fetchUserData();
+
       // Navigate to the Profile page on successful OTP verification
-      navigate('/profile');
+      navigate('/Profile');
     } catch (error) {
       alert('OTP verification failed: ' + error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Function to fetch user data
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`https://rappo.onrender.com/api/user/${email}`);
+      console.log("Fetched User Data:", response.data);
+      // Here you can set the user data to state or context if needed
+    } catch (error) {
+      console.error('Error fetching user data:', error.response?.data?.message || error.message);
     }
   };
 

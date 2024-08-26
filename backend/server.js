@@ -16,6 +16,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const { Schema } = mongoose;
+const crypto = require('crypto');
 const Payment = require('./models/paymentModel');
 
 const app = express();
@@ -517,11 +518,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-
-
-
-
-
+// MongoDB schema
 const signupSchema = new mongoose.Schema({
   email: String,
   password: String,
@@ -536,11 +533,15 @@ const signupSchema = new mongoose.Schema({
 
 const Signup = mongoose.model('Signup', signupSchema);
 
+// Hardcoded JWT secret key
+const JWT_SECRET = 'a9f24f9fa19b8e3460d432b120e3d74c1f69b5f6e0d0b781bc85a9e0d10f1c6e1b36c9a1f85b6e8a9e982b73de5ef7a8';
+
+// Nodemailer setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: 'ggs699000@gmail.com', 
-      pass: 'ggxe sjmy hqyn byjp', 
+      user: 'ggs699000@gmail.com', // Replace with your email
+      pass: 'ggxe sjmy hqyn byjp', // Replace with your email password
   },
 });
 
@@ -563,7 +564,7 @@ app.post('/api/signup', async (req, res) => {
       await transporter.sendMail({
           to: email,
           subject: 'OTP Verification',
-          text: `Your OTP is ${otp}`
+          text: `Your OTP is ${otp}`,
       });
 
       res.status(200).json({ message: 'User created. Check your email for OTP.' });
@@ -587,22 +588,47 @@ app.post('/api/verify-otp', async (req, res) => {
           return res.status(400).json({ message: 'Invalid OTP' });
       }
 
-      user.otp = null; 
+      user.otp = null; // Clear the OTP after verification
       await user.save();
 
-      res.status(200).json({ message: 'OTP verified successfully' });
+      // Generate a JWT token
+      const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+
+      res.status(200).json({ message: 'OTP verified successfully', token });
   } catch (error) {
       console.error('Verify OTP error:', error);
       res.status(500).json({ message: 'An error occurred during OTP verification. Please try again.' });
   }
 });
 
+// Middleware to verify token
+const authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
+  if (!token) return res.sendStatus(401); // Unauthorized
 
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+      if (err) {
+          console.error('Token verification error:', err);
+          return res.sendStatus(403); // Forbidden
+      }
+      req.user = user; // Attach user data to request
+      next(); // Proceed to the next middleware/route handler
+  });
+};
 
+// Profile Route
+app.get('/api/profile', authenticateToken, async (req, res) => {
+  try {
+      const user = await Signup.findOne({ email: req.user.email });
+      if (!user) return res.status(404).json({ message: 'User not found' });
 
-
-
-
+      const { password, otp, ...userData } = user.toObject(); // Exclude sensitive data
+      res.status(200).json({ message: 'Welcome to your profile!', user: userData });
+  } catch (error) {
+      console.error('Profile fetch error:', error);
+      res.status(500).json({ message: 'An error occurred while fetching profile data.' });
+  }
+});
 
 
 
@@ -622,21 +648,11 @@ app.get('/api/signups', async (req, res) => {
 });
 
 
-// Profile Route
-app.get('/api/profile', async (req, res) => {
-  const userId = req.user._id; // Assume you are using some kind of authentication middleware that sets req.user
 
-  try {
-    const user = await Signup.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    console.error('Profile fetch error:', error);
-    res.status(500).json({ message: 'An error occurred while fetching profile.' });
-  }
-});
+
+
+
+
 
 
 

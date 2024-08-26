@@ -120,70 +120,71 @@
 
 
 
-// Profile.js
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+
+
+
+
+
+
+
+
+
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('https://rappo.onrender.com/api/profile', {
-          // Include any necessary authentication token or headers if required
-        });
-        setUser(response.data);
-      } catch (err) {
-        setError('Failed to fetch user data.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('No token found. Please login again.');
+                navigate('/signup'); // Redirect to the signup or login page
+                return;
+            }
 
-    fetchUserData();
-  }, []);
+            try {
+                const response = await axios.get('https://rappo.onrender.com/api/profile', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setUserData(response.data.user);
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+                alert('Failed to fetch user data. Please login again.');
+                navigate('/signup');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+        fetchUserData();
+    }, [navigate]);
 
-  return (
-    <div className="profile-container">
-      <h2>User Profile</h2>
-      {user ? (
-        <div className="profile-info">
-          <p>Email: {user.email}</p>
-          <p>First Name: {user.firstName}</p>
-          <p>Last Name: {user.lastName}</p>
-          <p>Phone Number: {user.phoneNumber}</p>
-          <p>Address: {user.addressLine}, {user.city}, {user.state}</p>
+    if (loading) return <div>Loading...</div>;
+
+    return (
+        <div className="profile-container">
+            <h1>User Profile</h1>
+            {userData ? (
+                <div className="profile-info">
+                    <p><strong>First Name:</strong> {userData.firstName}</p>
+                    <p><strong>Last Name:</strong> {userData.lastName}</p>
+                    <p><strong>Email:</strong> {userData.email}</p>
+                    <p><strong>Phone Number:</strong> {userData.phoneNumber}</p>
+                    <p><strong>Address:</strong> {userData.addressLine}, {userData.city}, {userData.state}</p>
+                </div>
+            ) : (
+                <p>No user data found.</p>
+            )}
         </div>
-      ) : (
-        <p>No user information found.</p>
-      )}
-    </div>
-  );
+    );
 };
 
 export default Profile;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
