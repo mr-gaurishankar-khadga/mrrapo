@@ -52,9 +52,10 @@ const Signup = () => {
     }
   };
 
+
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch('https://rappo.onrender.com/verifyOtp', {
         method: 'POST',
@@ -63,19 +64,23 @@ const Signup = () => {
         },
         body: JSON.stringify({ email: formData.email, otp }),
       });
-
+  
       if (response.ok) {
+        const data = await response.json();
         alert('OTP verified successfully!');
-        setIsOtpVerified(true);
-        setIsPopupOpen(false);
+        window.location.href = `/profile/${formData.email}`;
       } else {
-        alert('Invalid OTP. Please try again.');
+        const data = await response.json();
+        alert(data.message || 'Invalid OTP. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred while verifying OTP.');
     }
   };
+  
+  
+  
 
   return (
     <>

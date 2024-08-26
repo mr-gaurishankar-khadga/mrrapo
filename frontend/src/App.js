@@ -44,7 +44,8 @@ import Slider1 from './maincomponent/images/aa1.webp'
 import ImageZoom from './ImageZoom';
 import ShoppingCartView from './maincomponent/ShoppingCartView';
 import LoginPage from './CreateAccount/LoginPage';
-import Profile from './User/Profile';
+
+import Profile from './Profile';
 
 
 
@@ -295,7 +296,7 @@ const handleShopClose = () => {
           <Route path="/Logout" element={<Logout />} />
           <Route path="/ShoppingCartView" element={<ShoppingCartView />} />
           <Route path="/ImageZoom" element={<ImageZoom />} />
-          <Route path="/Profile" element={<Profile />} />
+          <Route path="/Profile/:email" element={<Profile />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
         
