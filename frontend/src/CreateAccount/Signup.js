@@ -15,9 +15,8 @@ const Signup = () => {
   });
   
   const [otp, setOtp] = useState('');
-  const [isOtpVisible, setIsOtpVisible] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isOtpVerified, setIsOtpVerified] = useState(false); // State for OTP verification
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -42,53 +41,40 @@ const Signup = () => {
       });
 
       if (response.ok) {
-        alert('Checkout data submitted successfully');
-        setIsPopupOpen(true); // Open the OTP popup
+        alert('Data submitted successfully. OTP sent to your email.');
+        setIsPopupOpen(true); 
       } else {
-        alert('Failed to submit checkout data');
+        alert('Failed to submit data.');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred while submitting checkout data');
+      alert('An error occurred while submitting data.');
     }
   };
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    console.log('OTP submitted:', otp);
 
-    // Here, implement your OTP verification logic
-    const isVerified = true; // Replace this with actual verification logic
+    try {
+      const response = await fetch('https://rappo.onrender.com/verifyOtp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email, otp }),
+      });
 
-    if (isVerified) {
-      setIsOtpVerified(true);
-      alert('OTP verified successfully!');
-
-      // Now submit the data to your database
-      try {
-        const response = await fetch('https://rappo.onrender.com/storeData', { // Change to your data storage endpoint
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-          alert('Data stored successfully');
-          // Optionally, reset form or redirect user
-        } else {
-          alert('Failed to store data');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while storing data');
+      if (response.ok) {
+        alert('OTP verified successfully!');
+        setIsOtpVerified(true);
+        setIsPopupOpen(false);
+      } else {
+        alert('Invalid OTP. Please try again.');
       }
-    } else {
-      alert('Invalid OTP. Please try again.');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while verifying OTP.');
     }
-
-    setIsPopupOpen(false); // Close the popup after submitting OTP
   };
 
   return (
@@ -97,6 +83,7 @@ const Signup = () => {
         <div className="form-section" style={{ display: 'flex' }}>
           <form className="checkout-form" onSubmit={handleSubmit}>
             <h3 className="shippinginfo">Shipping Information</h3>
+            {/* Form fields for user details */}
             <input
               type="email"
               name="email"
@@ -175,24 +162,23 @@ const Signup = () => {
                 className="form-input half-width"
               />
             </div>
-              <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
-                <form onSubmit={handleOtpSubmit}>
-                  <input
-                    type="text"
-                    name="otp"
-                    placeholder="Enter your OTP"
-                    value={otp}
-                    onChange={handleOtpChange}
-                    required
-                    className="form-input"
-                  />
-                  <button type="submit" className="confirm-payment-btn">Verify OTP</button>
-                </form>
-              </Popup>
-            <button type="submit" className="confirm-payment-btn">Confirm</button>
+            <button type="submit" className="confirm-payment-btn">Send</button>
+            <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
+              <form onSubmit={handleOtpSubmit}>
+                <input
+                  type="text"
+                  name="otp"
+                  placeholder="Enter your OTP"
+                  value={otp}
+                  onChange={handleOtpChange}
+                  required
+                  className="form-input"
+                />
+                <button type="submit" className="confirm-payment-btn">Verify OTP</button>
+              </form>
+            </Popup>
           </form>
         </div>
-
       </div>
     </>
   );

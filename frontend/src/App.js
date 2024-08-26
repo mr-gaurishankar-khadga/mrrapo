@@ -260,6 +260,12 @@ const handleShopClose = () => {
                   <ListItemIcon><SubscriptionsIcon style={{color:'black'}}/></ListItemIcon>
                   <ListItemText primary="Sales" style={{color:'black'}}/>
                 </ListItem>
+
+                <ListItem button component={Link} to="/Profile" onClick={toggleSidebar}>
+                  <ListItemIcon><PersonIcon style={{color:'black'}}/></ListItemIcon>
+                  <ListItemText primary="Profile" style={{color:'black'}}/>
+                </ListItem>
+
               </List>
             </div>
           </Drawer>

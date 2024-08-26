@@ -528,7 +528,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-// Define the signup schema
 const signupSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
@@ -538,9 +537,12 @@ const signupSchema = new mongoose.Schema({
   addressLine1: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
+  otp: { type: String, required: true },  // Add OTP field
+  isVerified: { type: Boolean, default: false },  // Add verification status
 }, { collection: 'signup' });
 
 const Signup = mongoose.model('Signup', signupSchema);
+
 
 
 // Middleware
@@ -548,17 +550,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+
 // POST endpoint to insert data and send OTP
 app.post('/checkout', async (req, res) => {
   const formData = req.body;
 
   try {
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); 
+    
+    // Include OTP in form data
+    formData.otp = otp;
+    
+    // Create new signup entry with OTP and unverified status
     const newSignup = new Signup(formData);
     await newSignup.save();
 
     // Send OTP
-    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-    await sendOTP(formData.email, otp); // Send OTP to user's email
+    await sendOTP(formData.email, otp);
 
     res.status(200).send('Data inserted successfully. An OTP has been sent to your email.');
   } catch (error) {
@@ -567,14 +576,39 @@ app.post('/checkout', async (req, res) => {
   }
 });
 
+// POST endpoint to verify OTP
+app.post('/verifyOtp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await Signup.findOne({ email });
+
+    if (user && user.otp === otp) {
+      // OTP matches, update the user as verified
+      user.isVerified = true;
+      await user.save();
+
+      res.status(200).send('OTP verified successfully.');
+    } else {
+      res.status(400).send('Invalid OTP.');
+    }
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).send('Error verifying OTP.');
+  }
+});
+
+
+
+
 // Function to send OTP via email
 const sendOTP = async (email, otp) => {
   // Configure the email transport using SMTP
   const transporter = nodemailer.createTransport({
-    service: 'gmail', // Use your email service
+    service: 'gmail', 
     auth: {
-      user: EMAIL_USER, // Your email address
-      pass: EMAIL_PASS, // Your email password or app password
+      user: EMAIL_USER,
+      pass: EMAIL_PASS, 
     },
   });
 

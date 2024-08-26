@@ -89,13 +89,13 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                     </div>
 
                     <div className="input-field animated-input">
-                        <input type="text"
-                            name="firstname"
-                            value={credentials.firstname}
-                            onChange={handleChange}
-                            required
-                            placeholder='Username'
-                        />
+                      <input type="text"
+                          name="firstname"
+                          value={credentials.firstname}
+                          onChange={handleChange}
+                          required
+                          placeholder='Username'
+                      />
                     </div>
 
                     <div className="input-field animated-input">
@@ -112,6 +112,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                         </span>
 
                     </div>
+
                     <button className="login-button animated-button">LOGIN</button>
                     <p className="forgot-password animated-text" onClick={openModal}>Forgot password?</p> {/* Open modal on click */}
                     <p className="register animated-text">
