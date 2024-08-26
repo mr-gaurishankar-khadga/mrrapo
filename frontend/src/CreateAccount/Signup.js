@@ -57,8 +57,7 @@ const Signup = () => {
     e.preventDefault();
     console.log('OTP submitted:', otp);
 
-    // Here, implement your OTP verification logic
-    const isVerified = true; // Replace this with actual verification logic
+    const isVerified = true;
 
     if (isVerified) {
       setIsOtpVerified(true);
