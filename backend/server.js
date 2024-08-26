@@ -533,8 +533,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-
-
+// Signup Schema
 const signupSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
@@ -544,10 +543,62 @@ const signupSchema = new mongoose.Schema({
   addressLine1: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
-  isVerified: { type: Boolean, default: false },  // Add verification status
+  isVerified: { type: Boolean, default: false },
+  otp: { type: String, required: true }, // Add OTP field
 }, { collection: 'signup' });
 
 const Signup = mongoose.model('Signup', signupSchema);
+
+// Verify OTP Endpoint
+app.post('/verifyOtp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await Signup.findOne({ email });
+
+    if (user && user.otp === otp) {
+      user.isVerified = true;
+      await user.save();
+      res.status(200).json({ message: 'OTP verified successfully.', user });
+    } else {
+      res.status(400).json({ message: 'Invalid OTP.' });
+    }
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ message: 'Error verifying OTP.' });
+  }
+});
+
+// Example OTP generation logic (this should be in your signup or OTP sending route)
+app.post('/signup', async (req, res) => {
+  const { email, password, firstName, lastName, phoneNumber, addressLine1, city, state } = req.body;
+  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit OTP
+
+  try {
+    const newUser = new Signup({
+      email,
+      password,
+      firstName,
+      lastName,
+      phoneNumber,
+      addressLine1,
+      city,
+      state,
+      otp,
+    });
+
+    await newUser.save();
+    // Send OTP via email or SMS (this part needs to be implemented)
+    res.status(200).json({ message: 'Signup successful. OTP sent to your email.' });
+  } catch (error) {
+    console.error('Error during signup:', error);
+    res.status(500).json({ message: 'Signup failed.' });
+  }
+});
+
+
+
+
 
 
 // GET endpoint to fetch all signups
@@ -560,34 +611,6 @@ app.get('/api/signups', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch signups.' });
   }
 });
-
-
-
-
-app.post('/verifyOtp', async (req, res) => {
-  const { email, otp } = req.body;
-
-  try {
-    // Find the user by email
-    const user = await Signup.findOne({ email });
-
-    if (user && user.otp === otp) {
-      // OTP matches, update the user as verified
-      user.isVerified = true;
-      await user.save();
-
-      // Respond with success and the user data
-      res.status(200).json({ message: 'OTP verified successfully.', user });
-    } else {
-      res.status(400).json({ message: 'Invalid OTP.' });
-    }
-  } catch (error) {
-    console.error('Error verifying OTP:', error);
-    res.status(500).json({ message: 'Error verifying OTP.' });
-  }
-});
-
-
 
 
 
