@@ -522,17 +522,15 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-
-// Define the signup schema
 const signupSchema = new mongoose.Schema({
   email: String,
   password: String,
-  firstName: String, 
+  firstName: String,
   lastName: String,
   phoneNumber: String,
   addressLine: String,
   city: String,
-  state: String, 
+  state: String,
   otp: String,
 });
 
@@ -542,8 +540,8 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
       user: 'ggs699000@gmail.com', 
-      pass: 'ggxe sjmy hqyn byjp'  
-  }
+      pass: 'ggxe sjmy hqyn byjp', 
+  },
 });
 
 // Signup Route
@@ -622,6 +620,27 @@ app.get('/api/signups', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch signups.' });
   }
 });
+
+
+// Profile Route
+app.get('/api/profile', async (req, res) => {
+  const userId = req.user._id; // Assume you are using some kind of authentication middleware that sets req.user
+
+  try {
+    const user = await Signup.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Profile fetch error:', error);
+    res.status(500).json({ message: 'An error occurred while fetching profile.' });
+  }
+});
+
+
+
+
 
 // DELETE endpoint to delete a signup by ID
 app.delete('/api/signups/:id', async (req, res) => {
