@@ -1,87 +1,63 @@
 import React, { useState } from "react";
 import "./Signup.css";
 import Popup from "./Popup";
+import axios from 'axios';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstName, setFirstname] = useState('')
-  const [lastName, setLastname]= useState('');
-  const [phoneNumber, setNumber]= useState('');
-  const [addressLine, setaddressline]= useState('');
-  const [city, setCity]= useState('');
-  const [state, setState]= useState('');
-
-  const [otp, setOtp]= useState(false);
+  const [firstName, setFirstname] = useState('');
+  const [lastName, setLastname] = useState('');
+  const [phoneNumber, setNumber] = useState('');
+  const [addressLine, setaddressline] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [otp, setOtp] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
   const [loading, setLoading] = useState(false);
-
-
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/checkout', {
+      const response = await axios.post('https://rappo.onrender.com/api/signup', {
         email,
         firstName,
-        password,
         lastName,
+        password,
         phoneNumber,
         addressLine,
         city,
+        state,
       });
       setSuccess(response.data.message);
-      setIsOtpSent(true);
-    }catch (error) {
-      setError(error.response ? error.response.data.message : 'Signup failed');
+      setIsPopupOpen(true);
+    } catch (error) {
+      alert('Signup failed: ' + error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
     setLoading(true);
 
     try {
-        const response = await axios.post('https://rappo.onrender.com/api/checkout', {
-            email, 
-            otp,
-        });
-        setSuccess(response.data.message);
+      const response = await axios.post('https://rappo.onrender.com/api/verify-otp', { email, otp });
+      alert(response.data.message);
     } catch (error) {
-        setError(error.response ? error.response.data.message : 'OTP verification failed');
+      alert('OTP verification failed: ' + error.response?.data?.message || error.message);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
-
-
+  };
 
   return (
     <div className="checkout-container">
-      <div className="form-section" style={{ display: 'flex' }}>
+      <div className="form-section">
         <form className="checkout-form" onSubmit={handleSubmit}>
           <h3 className="shippinginfo">Shipping Information</h3>
           <input
@@ -111,7 +87,7 @@ const Signup = () => {
               onChange={(e) => setFirstname(e.target.value)}
               required
               className="form-input half-width"
-              style={{ marginRight: '30px', marginLeft: '10px' }}
+              style={{ marginRight: '10px' }}
             />
             <input
               type="text"
@@ -150,7 +126,7 @@ const Signup = () => {
               onChange={(e) => setCity(e.target.value)}
               required
               className="form-input half-width"
-              style={{ marginRight: '30px', marginLeft: '10px' }}
+              style={{ marginRight: '10px' }}
             />
             <input
               type="text"
@@ -162,30 +138,28 @@ const Signup = () => {
               className="form-input half-width"
             />
           </div>
-
-
-
-
           <button type="submit" className="confirm-payment-btn" disabled={loading}>
             {loading ? 'Signing Up...' : 'Signup'}
           </button>
-          
-          <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
-            <form onSubmit={handleOtpSubmit}>
-              <input
-                type="text"
-                name="otp"
-                placeholder="Enter your OTP"
-                value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                required
-                className="form-input"
-              />
-              <button type="submit" className="confirm-payment-btn">Verify OTP</button>
-            </form>
-          </Popup>
         </form>
       </div>
+
+      <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Enter OTP">
+        <form onSubmit={handleOtpSubmit}>
+          <input
+            type="text"
+            name="otp"
+            placeholder="Enter your OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            required
+            className="form-input"
+          />
+          <button type="submit" className="confirm-payment-btn" disabled={loading}>
+            {loading ? 'Verifying...' : 'Verify OTP'}
+          </button>
+        </form>
+      </Popup>
     </div>
   );
 };

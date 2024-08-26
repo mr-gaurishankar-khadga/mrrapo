@@ -523,7 +523,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-
 // Define the signup schema
 const signupSchema = new mongoose.Schema({
   email: String,
@@ -534,11 +533,10 @@ const signupSchema = new mongoose.Schema({
   addressLine: String,
   city: String,
   state: String, 
-  otp: String ,
+  otp: String,
 });
 
-const Signup = mongoose.model('Signups', signupSchema);
-
+const Signup = mongoose.model('Signup', signupSchema);
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -548,10 +546,9 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-
 // Signup Route
-app.post('/api/checkout', async (req, res) => {
-  const { email, password, firstName } = req.body;
+app.post('/api/signup', async (req, res) => {
+  const { email, password, firstName, lastName, phoneNumber, addressLine, city, state } = req.body;
 
   try {
       const userExists = await Signup.findOne({ email });
@@ -561,8 +558,7 @@ app.post('/api/checkout', async (req, res) => {
 
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-      const newUser = new Signup({ firstName, email, password, otp });
-
+      const newUser = new Signup({ email, password, firstName, lastName, phoneNumber, addressLine, city, state, otp });
       await newUser.save();
 
       // Send OTP
@@ -578,14 +574,6 @@ app.post('/api/checkout', async (req, res) => {
       res.status(500).json({ message: 'An error occurred during signup. Please try again.' });
   }
 });
-
-
-
-
-
-
-
-
 
 // Verify OTP Route
 app.post('/api/verify-otp', async (req, res) => {
@@ -610,7 +598,6 @@ app.post('/api/verify-otp', async (req, res) => {
       res.status(500).json({ message: 'An error occurred during OTP verification. Please try again.' });
   }
 });
-
 
 
 
