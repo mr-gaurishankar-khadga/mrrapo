@@ -517,7 +517,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-
 // MongoDB schema
 const signupSchema = new mongoose.Schema({
   email: String,
@@ -534,14 +533,15 @@ const signupSchema = new mongoose.Schema({
 const Signup = mongoose.model('Signup', signupSchema);
 
 // Hardcoded JWT secret key
-const JWT_SECRET = 'a9f24f9fa19b8e3460d432b120e3d74c1f69b5f6e0d0b781bc85a9e0d10f1c6e1b36c9a1f85b6e8a9e982b73de5ef7a8';
+const JWT_SECRET = crypto.randomBytes(64).toString('hex');
+console.log(`Generated JWT Secret Key: ${JWT_SECRET}`);
 
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: 'ggs699000@gmail.com', // Replace with your email
-      pass: 'ggxe sjmy hqyn byjp', // Replace with your email password
+      user: 'your-email@gmail.com', // Replace with your email
+      pass: 'your-email-password', // Replace with your email password
   },
 });
 

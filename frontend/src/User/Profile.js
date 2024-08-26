@@ -129,7 +129,6 @@
 
 
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -144,12 +143,12 @@ const Profile = () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('No token found. Please login again.');
-                navigate('/signup'); // Redirect to the signup or login page
+                navigate('/Profile'); // Redirect to the login page
                 return;
             }
 
             try {
-                const response = await axios.get('https://rappo.onrender.com/api/profile', {
+                const response = await axios.get('http://localhost:3000/api/profile', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
