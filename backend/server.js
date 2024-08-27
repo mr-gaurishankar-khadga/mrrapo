@@ -1,4 +1,10 @@
 
+
+
+
+
+
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -11,7 +17,6 @@ const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const { Schema } = mongoose;
 const crypto = require('crypto');
-
 const Payment = require('./models/paymentModel');
 
 const app = express();
@@ -70,34 +75,6 @@ app.get('/api/payments', async (req, res) => {
     res.status(500).json({ message: 'Error fetching payment data', error });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -577,9 +554,6 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 
 
 
-
-
-
 const users = {};
 
 // Setup transporter for Nodemailer
@@ -634,61 +608,6 @@ app.post('/api/verify-otp1', (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-app.post('/login', async (req, res) => {
-  const { firstname, password } = req.body;
-
-  try {
-      // Find the user by firstname
-      const user = await Signup.findOne({ firstname });
-      if (!user) {
-          return res.status(400).json({ message: 'Invalid credentials' });
-      }
-
-      // Compare passwords
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-          return res.status(400).json({ message: 'Invalid credentials' });
-      }
-
-      // Create JWT token
-      const token = jwt.sign({ id: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
-
-      // Send response with token and user data
-      res.json({ token, userData: { firstname: user.firstName, role: user.role } });
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error' });
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // GET endpoint to fetch all signups
 app.get('/api/signups', async (req, res) => {
   try {
@@ -724,6 +643,79 @@ app.delete('/api/signups/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete user.' });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Login endpoint
+app.post('/login', async (req, res) => {
+  const { firstname, password } = req.body;
+
+  try {
+      // Find user by firstname
+      const user = await Signup.findOne({ firstName: firstname });
+      if (!user) {
+          return res.status(400).json({ message: 'Invalid credentials' });
+      }
+
+      // Check if password matches
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+          return res.status(400).json({ message: 'Invalid credentials' });
+      }
+
+      // Generate JWT token
+      const token = jwt.sign({ id: user._id, firstname: user.firstName }, JWT_SECRET, {
+          expiresIn: '1h', // Token expiration time
+      });
+
+      // Return token and user data
+      res.json({
+          token,
+          userData: {
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
+          },
+      });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
