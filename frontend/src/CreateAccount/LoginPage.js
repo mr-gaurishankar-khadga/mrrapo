@@ -8,7 +8,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import ForgotPasswordModal from './ForgotPasswordModal';
 import Logo from './images/logo.png';
 
-const LoginPage = ({ setToken, setIsAdmin, setUserData }) => {
+
+const LoginPage = ({ setUserData }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [credentials, setCredentials] = useState({ firstname: '', password: '' });
@@ -23,30 +24,27 @@ const LoginPage = ({ setToken, setIsAdmin, setUserData }) => {
         setCredentials({ ...credentials, [name]: value });
     };
 
-
-
     const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      try {
-          const { firstname, password } = credentials;
-  
-          // Authenticate with backend
-          const response = await axios.post('https://rappo.onrender.com/login', { firstname, password });
-          const { token, userData } = response.data;
-  
-          // Store the token in localStorage or context
-          localStorage.setItem('token', token);
-          setUserData(userData);
-  
-          // Navigate to the user's profile
-          navigate('/Profile'); // Ensure to route to the profile page accordingly
-      } catch (err) {
-          console.error('Login failed:', err);
-          alert('Login failed. Please check your credentials.');
-      }
-  };
-  
+        e.preventDefault();
+
+        try {
+            const { firstname, password } = credentials;
+
+            // Authenticate with backend
+            const response = await axios.post('https://rappo.onrender.com/login', { firstname, password });
+            const { token, userData } = response.data;
+
+            // Store the token in localStorage or context
+            localStorage.setItem('token', token);
+            setUserData(userData);
+
+            // Navigate to the user's profile
+            navigate('/Profile'); // Ensure to route to the profile page accordingly
+        } catch (err) {
+            console.error('Login failed:', err);
+            alert('Login failed. Please check your credentials.');
+        }
+    };
 
     return (
         <div className="login-page">

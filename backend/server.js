@@ -668,41 +668,41 @@ app.delete('/api/signups/:id', async (req, res) => {
 
 
 
-// Login endpoint
+
 app.post('/login', async (req, res) => {
-  const { firstname, password } = req.body;
+    const { firstname, password } = req.body;
 
-  try {
-      // Find user by firstname
-      const user = await Signup.findOne({ firstName: firstname });
-      if (!user) {
-          return res.status(400).json({ message: 'Invalid credentials' });
-      }
+    try {
+        // Find user by firstname
+        const user = await Signup.findOne({ firstName: firstname });
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
 
-      // Check if password matches
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-          return res.status(400).json({ message: 'Invalid credentials' });
-      }
+        // Check if password matches
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
 
-      // Generate JWT token
-      const token = jwt.sign({ id: user._id, firstname: user.firstName }, JWT_SECRET, {
-          expiresIn: '1h', // Token expiration time
-      });
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id, firstname: user.firstName }, JWT_SECRET, {
+            expiresIn: '1h', // Token expiration time
+        });
 
-      // Return token and user data
-      res.json({
-          token,
-          userData: {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email,
-          },
-      });
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error' });
-  }
+        // Return token and user data
+        res.json({
+            token,
+            userData: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            },
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 
