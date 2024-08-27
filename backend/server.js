@@ -680,14 +680,14 @@ app.post('/login', async (req, res) => {
         }
 
         // Check if password matches
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         // Generate JWT token
         const token = jwt.sign({ id: user._id, firstname: user.firstName }, JWT_SECRET, {
-            expiresIn: '1h', // Token expiration time
+            expiresIn: '1h', 
         });
 
         // Return token and user data
