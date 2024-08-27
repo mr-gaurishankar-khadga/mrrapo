@@ -3,12 +3,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './ContactPage.css';
 
-import slider1 from './images/a1.webp';
-import slider2 from './images/aa1.webp';
-import slider3 from './images/aa2.webp';
-import slider4 from './images/aa3.webp';
-import slider5 from './images/aa4.webp';
-import slider6 from './images/aa5.webp';
 
 function ContactPage() {
   const [name, setName] = useState('');
@@ -86,21 +80,6 @@ function ContactPage() {
           </form>
         </div>
       </div>
-
-
-
-      {/* <div className="contact-right">
-        <div className="contact-3d">
-          <div className="cube">
-            <div className="face front" style={{ backgroundImage: `url(${slider1})` }}>Contact</div>
-            <div className="face back" style={{ backgroundImage: `url(${slider2})` }}>Get in Touch</div>
-            <div className="face right" style={{ backgroundImage: `url(${slider3})` }}>Info</div>
-            <div className="face left" style={{ backgroundImage: `url(${slider4})` }}>Details</div>
-            <div className="face top" style={{ backgroundImage: `url(${slider5})` }}>Support</div>
-            <div className="face bottom" style={{ backgroundImage: `url(${slider6})` }}>Help</div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }

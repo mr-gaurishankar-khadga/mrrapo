@@ -517,176 +517,253 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-// MongoDB schema
-const signupSchema = new mongoose.Schema({
+// // MongoDB schema
+// const signupSchema = new mongoose.Schema({
+//   email: String,
+//   password: String,
+//   firstName: String,
+//   lastName: String,
+//   phoneNumber: String,
+//   addressLine: String,
+//   city: String,
+//   state: String,
+//   otp: String,
+// });
+
+// const Signup = mongoose.model('Signup', signupSchema);
+
+// // Hardcoded JWT secret key
+// const JWT_SECRET = crypto.randomBytes(64).toString('hex');
+// console.log(`Generated JWT Secret Key: ${JWT_SECRET}`);
+
+// // Nodemailer setup
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//       user: 'ggs699000@gmail.com',
+//       pass: 'ggxe sjmy hqyn byjp', 
+//   },
+// });
+
+// // Signup Route
+// app.post('/api/signup', async (req, res) => {
+//   const { email, password, firstName, lastName, phoneNumber, addressLine, city, state } = req.body;
+
+//   try {
+//       const userExists = await Signup.findOne({ email });
+//       if (userExists) {
+//           return res.status(400).json({ message: 'User already exists' });
+//       }
+
+//       const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+//       const newUser = new Signup({ email, password, firstName, lastName, phoneNumber, addressLine, city, state, otp });
+//       await newUser.save();
+
+//       // Send OTP
+//       await transporter.sendMail({
+//           to: email,
+//           subject: 'OTP Verification',
+//           text: `Your OTP is ${otp}`,
+//       });
+
+//       res.status(200).json({ message: 'User created. Check your email for OTP.' });
+//   } catch (error) {
+//       console.error('Signup error:', error);
+//       res.status(500).json({ message: 'An error occurred during signup. Please try again.' });
+//   }
+// });
+
+
+// // Verify OTP Route
+// app.post('/api/verify-otp', async (req, res) => {
+//   const { email, otp } = req.body;
+
+//   try {
+//       const user = await Signup.findOne({ email });
+//       if (!user) {
+//           return res.status(400).json({ message: 'User not found' });
+//       }
+
+//       if (user.otp !== otp) {
+//           return res.status(400).json({ message: 'Invalid OTP' });
+//       }
+
+//       user.otp = null;
+//       await user.save();
+
+//       // Generate a JWT token
+//       const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+
+//       res.status(200).json({ message: 'OTP verified successfully', token });
+//   } catch (error) {
+//       console.error('Verify OTP error:', error);
+//       res.status(500).json({ message: 'An error occurred during OTP verification. Please try again.' });
+//   }
+// });
+
+// // Middleware to verify token
+// const authenticateToken = (req, res, next) => {
+//   const token = req.headers['authorization']?.split(' ')[1]; 
+//   if (!token) return res.sendStatus(401); 
+
+//   jwt.verify(token, JWT_SECRET, (err, user) => {
+//       if (err) {
+//           console.error('Token verification error:', err);
+//           return res.sendStatus(403); 
+//       }
+//       req.user = user; 
+//       next(); 
+//   });
+// };
+
+// // Profile Route
+// app.get('/api/profile', authenticateToken, async (req, res) => {
+//   try {
+//       const user = await Signup.findOne({ email: req.user.email });
+//       if (!user) return res.status(404).json({ message: 'User not found' });
+
+//       const { password, otp, ...userData } = user.toObject();
+//       res.status(200).json({ message: 'Welcome to your profile!', user: userData });
+//   } catch (error) {
+//       console.error('Profile fetch error:', error);
+//       res.status(500).json({ message: 'An error occurred while fetching profile data.' });
+//   }
+// });
+
+
+// // GET endpoint to fetch all signups
+// app.get('/api/signups', async (req, res) => {
+//   try {
+//     const signups = await Signup.find();
+//     res.status(200).json(signups);
+//   } catch (error) {
+//     console.error('Error fetching signups:', error);
+//     res.status(500).json({ message: 'Failed to fetch signups.' });
+//   }
+// });
+
+
+// // DELETE endpoint to delete a signup by ID
+// app.delete('/api/signups/:id', async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+
+//     // Check if the ID is valid
+//     if (!mongoose.Types.ObjectId.isValid(userId)) {
+//       return res.status(400).json({ message: 'Invalid user ID' });
+//     }
+
+//     // Delete the user
+//     const result = await Signup.deleteOne({ _id: userId });
+
+//     if (result.deletedCount === 1) {
+//       res.status(200).json({ message: 'User deleted successfully' });
+//     } else {
+//       res.status(404).json({ message: 'User not found' });
+//     }
+//   } catch (error) {
+//     console.error('Error deleting user:', error);
+//     res.status(500).json({ message: 'Failed to delete user.' });
+//   }
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const messageSchema = new mongoose.Schema({
+  name: String,
   email: String,
-  password: String,
-  firstName: String,
-  lastName: String,
-  phoneNumber: String,
-  addressLine: String,
-  city: String,
-  state: String,
-  otp: String,
+  message: String
 });
 
-const Signup = mongoose.model('Signup', signupSchema);
+const Message = mongoose.model('Message', messageSchema);
 
-// Hardcoded JWT secret key
-const JWT_SECRET = crypto.randomBytes(64).toString('hex');
-console.log(`Generated JWT Secret Key: ${JWT_SECRET}`);
+// API endpoint to handle form submission
+app.post('/api/messages', async (req, res) => {
+  const { name, email, message } = req.body;
 
-// Nodemailer setup
-const transporter = nodemailer.createTransport({
+  try {
+    const newMessage = new Message({ name, email, message });
+    await newMessage.save();
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error saving message:', error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Fetch all user messages from MongoDB
+app.get('/api/messages', async (req, res) => {
+  try {
+    const messages = await Message.find();
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error('Error fetching messages:', error.message);
+    res.status(500).json({ message: 'Failed to fetch messages.' });
+  }
+});
+
+
+
+
+const EMAIL_USER = 'ggs699000@gmail.com';
+const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
+
+// Create a transporter using SMTP
+const transport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: 'ggs699000@gmail.com', // Replace with your email
-      pass: 'ggxe sjmy hqyn byjp', // Replace with your email password
+    user: EMAIL_USER,
+    pass: EMAIL_PASS,
   },
 });
 
-// Signup Route
-app.post('/api/signup', async (req, res) => {
-  const { email, password, firstName, lastName, phoneNumber, addressLine, city, state } = req.body;
+// API endpoint to handle reply email
+app.post('/api/reply', async (req, res) => {
+  const { email, message: replyMessage } = req.body;
+
+  const mailOptions = {
+    from: EMAIL_USER,
+    to: email,
+    subject: 'Reply to Your Message',
+    text: replyMessage,
+  };
 
   try {
-      const userExists = await Signup.findOne({ email });
-      if (userExists) {
-          return res.status(400).json({ message: 'User already exists' });
-      }
-
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-      const newUser = new Signup({ email, password, firstName, lastName, phoneNumber, addressLine, city, state, otp });
-      await newUser.save();
-
-      // Send OTP
-      await transporter.sendMail({
-          to: email,
-          subject: 'OTP Verification',
-          text: `Your OTP is ${otp}`,
-      });
-
-      res.status(200).json({ message: 'User created. Check your email for OTP.' });
+    await transport.sendMail(mailOptions);
+    res.status(200).json({ message: 'Reply sent successfully!' });
   } catch (error) {
-      console.error('Signup error:', error);
-      res.status(500).json({ message: 'An error occurred during signup. Please try again.' });
+    console.error('Error sending email:', error.message);
+    res.status(500).json({ error: 'Failed to send reply.' });
   }
 });
-
-
-
-
-
-// Verify OTP Route
-app.post('/api/verify-otp', async (req, res) => {
-  const { email, otp } = req.body;
-
-  try {
-      const user = await Signup.findOne({ email });
-      if (!user) {
-          return res.status(400).json({ message: 'User not found' });
-      }
-
-      if (user.otp !== otp) {
-          return res.status(400).json({ message: 'Invalid OTP' });
-      }
-
-      user.otp = null; // Clear the OTP after verification
-      await user.save();
-
-      // Generate a JWT token
-      const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-
-      res.status(200).json({ message: 'OTP verified successfully', token });
-  } catch (error) {
-      console.error('Verify OTP error:', error);
-      res.status(500).json({ message: 'An error occurred during OTP verification. Please try again.' });
-  }
-});
-
-// Middleware to verify token
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
-  if (!token) return res.sendStatus(401); // Unauthorized
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-      if (err) {
-          console.error('Token verification error:', err);
-          return res.sendStatus(403); // Forbidden
-      }
-      req.user = user; // Attach user data to request
-      next(); // Proceed to the next middleware/route handler
-  });
-};
-
-// Profile Route
-app.get('/api/profile', authenticateToken, async (req, res) => {
-  try {
-      const user = await Signup.findOne({ email: req.user.email });
-      if (!user) return res.status(404).json({ message: 'User not found' });
-
-      const { password, otp, ...userData } = user.toObject(); // Exclude sensitive data
-      res.status(200).json({ message: 'Welcome to your profile!', user: userData });
-  } catch (error) {
-      console.error('Profile fetch error:', error);
-      res.status(500).json({ message: 'An error occurred while fetching profile data.' });
-  }
-});
-
-
-
-
-
-
-
-// GET endpoint to fetch all signups
-app.get('/api/signups', async (req, res) => {
-  try {
-    const signups = await Signup.find();
-    res.status(200).json(signups);
-  } catch (error) {
-    console.error('Error fetching signups:', error);
-    res.status(500).json({ message: 'Failed to fetch signups.' });
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-// DELETE endpoint to delete a signup by ID
-app.delete('/api/signups/:id', async (req, res) => {
-  try {
-    const userId = req.params.id;
-
-    // Check if the ID is valid
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: 'Invalid user ID' });
-    }
-
-    // Delete the user
-    const result = await Signup.deleteOne({ _id: userId });
-
-    if (result.deletedCount === 1) {
-      res.status(200).json({ message: 'User deleted successfully' });
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ message: 'Failed to delete user.' });
-  }
-});
-
-
 
 
 
