@@ -666,14 +666,14 @@ app.post('/api/send-otp', (req, res) => {
     users[email] = otp; // Store OTP with email
 
     // Send OTP email
-    const mailOptions = {
+    const mailOptionss = {
         from: 'ggs699000@gmail.com',
         to: email,
         subject: 'Your OTP Code',
         text: `Your OTP code is ${otp}`,
     };
 
-    transporterr.sendMail(mailOptions, (error, info) => {
+    transporterr.sendMail(mailOptionss, (error, info) => {
         if (error) {
             console.error('Error sending email:', error);
             return res.status(500).send('Error sending OTP. Please try again.');
