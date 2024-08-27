@@ -68,12 +68,12 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                         className="modal-input" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        required
                     />
                     <div className="modal-buttons">
                         <button className="modal-button close-button" onClick={onClose}>
                             Close
                         </button>
-                        
                         <button className="modal-button submit-button" onClick={handleSubmit}>
                             Submit
                         </button>
@@ -91,6 +91,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                             className="modal-input" 
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
+                            required
                         />
                         <div className="modal-buttons">
                             <button className="modal-button close-button" onClick={() => setShowOtpModal(false)}>

@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -17,6 +11,7 @@ const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const { Schema } = mongoose;
 const crypto = require('crypto');
+
 const Payment = require('./models/paymentModel');
 
 const app = express();
@@ -97,67 +92,6 @@ app.get('/api/payments', async (req, res) => {
 
 
 
-
-
-
-const userSchema = new mongoose.Schema({
-  firstname: { 
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  }
-});
-
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-const User = mongoose.model('User', userSchema);
-
-// JWT Token Generation for 30 days
-const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, 'your_jwt_secret', { expiresIn: '30d' });
-};
-
-// Login Route
-app.post('/login', async (req, res) => {
-  const { firstname, password } = req.body;
-
-  try {
-    const user = await User.findOne({ firstname });
-
-    if (user && await user.matchPassword(password)) {
-      const token = generateToken(user._id, user.role);
-      res.json({
-        token,
-        role: user.role
-      });
-    } else {
-      res.status(401).json({ message: 'Invalid credentials' });
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 
 
@@ -706,6 +640,55 @@ app.post('/api/verify-otp1', (req, res) => {
 
 
 
+
+
+
+
+// Login Route
+app.post('/login', async (req, res) => {
+  const { firstname, password } = req.body;
+
+  try {
+    // Find user by firstName in the 'signup' collection
+    const user = await Signup.findOne({ firstName: firstname });
+
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    // Check if the password matches
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role }, // Include the role in the token payload
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // Send token and user data back to the frontend
+    res.status(200).json({
+      token,
+      userData: {
+        firstname: user.firstName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        address: user.addressLine,
+        city: user.city,
+        state: user.state,
+        role: user.role || 'user', // Include role in the response
+      },
+    });
+
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 
 

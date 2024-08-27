@@ -68,7 +68,7 @@ const Signup = () => {
     <div className="checkout-container">
       <div className="form-section">
         <form className="checkout-form" onSubmit={handleSubmit}>
-          <h3 className="shippinginfo">Shipping Information</h3>
+          <h3 className="shippinginfo" style={{fontFamily:'Twentieth Century sans-serif'}}>Shipping Info</h3>
           <input
             type="email"
             placeholder="Email address"
@@ -139,7 +139,7 @@ const Signup = () => {
               className="form-input half-width"
             />
           </div>
-          <button type="submit" className="confirm-payment-btn" disabled={loading}>
+          <button type="submit" className="confirm-payment-btn" disabled={loading} style={{fontFamily:'Twentieth Century sans-serif'}}>
             {loading ? 'Signing Up...' : 'Signup'}
           </button>
         </form>

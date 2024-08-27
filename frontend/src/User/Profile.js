@@ -92,11 +92,9 @@ const Profile = () => {
             <Typography variant="body2" sx={{ color: 'white' }}>
               {userData.firstName}
             </Typography>
-            {/* <Typography variant="body2" sx={{ color: 'white' }}>
-              {userData.email}
-            </Typography> */}
 
-            <Typography variant="body2" sx={{ color: 'white' }}>
+
+            <Typography variant="body2" sx={{ color: 'black' }}>
               {userData.addressLine}, {userData.city}, {userData.state}
             </Typography>
           </Box>
