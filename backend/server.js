@@ -522,12 +522,6 @@ const transport = nodemailer.createTransport({
 
 
 
-
-
-
-
-
-
 // MongoDB schema
 const signupSchema = new mongoose.Schema({
   email: String,
@@ -641,6 +635,96 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
       res.status(500).json({ message: 'An error occurred while fetching profile data.' });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+const users = {};
+
+// Setup transporter for Nodemailer
+const transporterr = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'ggs699000@gmail.com',
+        pass: 'ggxe sjmy hqyn byjp', // Consider using environment variables for sensitive data
+    },
+});
+
+// Send OTP to the user's email
+app.post('/api/send-otp', (req, res) => {
+    const { email } = req.body;
+
+    // Generate a random OTP
+    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+    users[email] = otp; // Store OTP with email
+
+    // Send OTP email
+    const mailOptions = {
+        from: 'ggs699000@gmail.com',
+        to: email,
+        subject: 'Your OTP Code',
+        text: `Your OTP code is ${otp}`,
+    };
+
+    transporterr.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error sending email:', error);
+            return res.status(500).send('Error sending OTP. Please try again.');
+        }
+        console.log('OTP sent to:', email);
+        res.status(200).send('OTP sent successfully!');
+    });
+});
+
+// Verify the OTP
+app.post('/api/verify-otp1', (req, res) => {
+    const { email, otp } = req.body;
+
+    // Check if the OTP is valid
+    if (users[email] && users[email] == otp) {
+        delete users[email]; // Remove OTP after verification
+        return res.status(200).send('OTP verified successfully!');
+    } else {
+        return res.status(400).send('Invalid OTP. Please try again.');
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // GET endpoint to fetch all signups
