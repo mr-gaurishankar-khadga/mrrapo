@@ -100,6 +100,95 @@ app.get('/api/payments', async (req, res) => {
 
 
 
+const userSchema = new mongoose.Schema({
+  firstname: { 
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  }
+});
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+const User = mongoose.model('User', userSchema);
+
+// JWT Token Generation for 30 days
+const generateToken = (id, role) => {
+  return jwt.sign({ id, role }, 'your_jwt_secret', { expiresIn: '30d' });
+};
+
+// Login Route
+app.post('/login', async (req, res) => {
+  const { firstname, password } = req.body;
+
+  try {
+    const user = await User.findOne({ firstname });
+
+    if (user && await user.matchPassword(password)) {
+      const token = generateToken(user._id, user.role);
+      res.json({
+        token,
+        role: user.role
+      });
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -554,6 +643,9 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 
 
 
+
+
+
 const users = {};
 
 // Setup transporter for Nodemailer
@@ -608,6 +700,33 @@ app.post('/api/verify-otp1', (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // GET endpoint to fetch all signups
 app.get('/api/signups', async (req, res) => {
   try {
@@ -643,79 +762,6 @@ app.delete('/api/signups/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete user.' });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.post('/login', async (req, res) => {
-    const { firstname, password } = req.body;
-
-    try {
-        // Find user by firstname
-        const user = await Signup.findOne({ firstName: firstname });
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Check if password matches
-        const isMatch = await compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, firstname: user.firstName }, JWT_SECRET, {
-            expiresIn: '1h', 
-        });
-
-        // Return token and user data
-        res.json({
-            token,
-            userData: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-            },
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
