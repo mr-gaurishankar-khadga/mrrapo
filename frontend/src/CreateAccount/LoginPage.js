@@ -110,7 +110,6 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                         <span className="visibility-icon" onClick={togglePasswordVisibility}>
                             {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                         </span>
-
                     </div>
 
                     <button className="login-button animated-button">LOGIN</button>
@@ -123,8 +122,6 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                 </div>
             </div>
             </form>
-
-            {/* Render the modal */}
             <ForgotPasswordModal isOpen={isModalOpen} onClose={closeModal} /> 
         </div>
     );
