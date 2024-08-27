@@ -506,6 +506,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
+const EMAIL_USER = 'ggs699000@gmail.com';
+const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
+
+// Create a transporter using SMTP
+const transport = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: EMAIL_USER,
+    pass: EMAIL_PASS,
+  },
+});
 
 
 
@@ -732,18 +743,6 @@ app.get('/api/messages', async (req, res) => {
 
 
 
-
-const EMAIL_USER = 'ggs699000@gmail.com';
-const EMAIL_PASS = 'ggxe sjmy hqyn byjp'; 
-
-// Create a transporter using SMTP
-const transport = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-});
 
 // API endpoint to handle reply email
 app.post('/api/reply', async (req, res) => {
