@@ -548,13 +548,13 @@ const JWT_SECRET = crypto.randomBytes(64).toString('hex');
 console.log(`Generated JWT Secret Key: ${JWT_SECRET}`);
 
 // Nodemailer setup
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//       user: 'ggs699000@gmail.com',
-//       pass: 'ggxe sjmy hqyn byjp', 
-//   },
-// });
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: 'ggs699000@gmail.com',
+      pass: 'ggxe sjmy hqyn byjp', 
+  },
+});
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
