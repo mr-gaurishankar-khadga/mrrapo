@@ -643,53 +643,32 @@ app.post('/api/verify-otp1', (req, res) => {
 
 
 
-
-// Login Route
 app.post('/login', async (req, res) => {
   const { firstname, password } = req.body;
 
   try {
-    // Find user by firstName in the 'signup' collection
-    const user = await Signup.findOne({ firstName: firstname });
+      // Find the user by firstname
+      const user = await Signup.findOne({ firstname });
+      if (!user) {
+          return res.status(400).json({ message: 'Invalid credentials' });
+      }
 
-    if (!user) {
-      return res.status(400).json({ message: 'User not found' });
-    }
+      // Compare passwords
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+          return res.status(400).json({ message: 'Invalid credentials' });
+      }
 
-    // Check if the password matches
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+      // Create JWT token
+      const token = jwt.sign({ id: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
 
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    // Create JWT token
-    const token = jwt.sign(
-      { id: user._id, role: user.role }, // Include the role in the token payload
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    // Send token and user data back to the frontend
-    res.status(200).json({
-      token,
-      userData: {
-        firstname: user.firstName,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        address: user.addressLine,
-        city: user.city,
-        state: user.state,
-        role: user.role || 'user', // Include role in the response
-      },
-    });
-
+      // Send response with token and user data
+      res.json({ token, userData: { firstname: user.firstName, role: user.role } });
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ message: 'Server error' });
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 
 

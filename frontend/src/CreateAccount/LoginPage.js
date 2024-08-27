@@ -23,43 +23,47 @@ const LoginPage = ({ setToken, setIsAdmin, setUserData }) => {
         setCredentials({ ...credentials, [name]: value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
 
-        try {
-            const { firstname, password } = credentials;
 
-            // Admin access check for hardcoded admin credentials
-            if (firstname === 'admin' && password === '1234') {
-                setIsAdmin(true);
-                navigate('/Setup');
-                return;
-            }
+   const handleSubmit = async (e) => {
+    e.preventDefault();
 
-            // Authenticate with backend
-            const response = await axios.post('https://rappo.onrender.com/login', { firstname, password });
-            const { token, userData } = response.data;
+    try {
+        const { firstname, password } = credentials;
 
-            // Decode the token to get user role
-            const decodedToken = jwtDecode(token);
-
-            setToken(token);
-            setIsAdmin(decodedToken.role === 'admin');
-
-            // Store user data in state
-            setUserData(userData);
-
-            // Navigate based on user role
-            if (decodedToken.role === 'admin') {
-                navigate('/Setup'); // Redirect to admin setup page
-            } else {
-                navigate('/Profile'); // Redirect to user profile page
-            }
-        } catch (err) {
-            console.error('Login failed:', err);
-            alert('Login failed. Please check your credentials.');
+        // Admin access check
+        if (firstname === 'admin' && password === '1234') {
+            setIsAdmin(true);
+            navigate('/Setup');
+            return;
         }
-    };
+
+        // Authenticate with backend
+        const response = await axios.post('https://rappo.onrender.com/login', { firstname, password });
+        const { token, userData } = response.data;
+
+        // Decode the token
+        const decodedToken = jwtDecode(token);
+
+        setToken(token);
+        setIsAdmin(decodedToken.role === 'admin');
+
+        // Store user data
+        setUserData(userData);
+
+        // Navigate based on role
+        if (decodedToken.role === 'admin') {
+            navigate('/Setup');
+        } else {
+            navigate('/Profile'); // Navigate to profile page
+        }
+    } catch (err) {
+        console.error('Login failed:', err);
+        console.error('Backend response:', err.response?.data); // Log detailed error
+        alert('Login failed. Please check your credentials and try again.');
+    }
+};
+
 
     return (
         <div className="login-page">
