@@ -6,10 +6,10 @@ import './Slider.css';
 import LazyLoad from 'react-lazyload';
 
 // Import images
-import slider2 from './images/r1.webp';
-import slider1 from './images/r2.webp';
-import slider3 from './images/aa3.webp';
-import slider4 from './images/r4.webp';
+import slider1 from './images/m1.webp';
+import slider2 from './images/m2.jpg';
+import slider3 from './images/m3.jpg';
+import slider4 from './images/m4.webp';
 // import slider1 from './images/b1.webp';
 
 
@@ -58,7 +58,7 @@ const ZoomImageSlider = () => {
           {images.map((image, index) => (
             <div key={index} className={`zoom-effect ${index === zoomedIndex ? 'zoomed' : ''}`}>
               <LazyLoad height={250} offset={100}>
-                <img src={image} alt={`slide-${index}`} className="slider-image"/>
+                <img src={image} alt={`slide-${index}`} className="slider-image" style={{height:'800px'}}/>
               </LazyLoad>
             </div>
           ))}

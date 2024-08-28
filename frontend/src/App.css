@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 75px;
+  height: 100px;
   max-width: 100%;
   position: sticky;
   top: 0;
@@ -17,6 +17,7 @@
   z-index: 1000; 
   font-family: "Twentieth Century" sans-serif;
   width: 100%;
+  /* background: fil; */
 }
 
 
@@ -229,13 +230,38 @@
 
 
 
+.nav-links a {
+  font-family: 'Twentieth Century sans-serif';
+  font-size: 20px;
+  color: rgba(40, 40, 40, 0.7);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 5px; /* Adds space for the border */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
 
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 3px; /* Border thickness */
+  background: linear-gradient(to right, #ff6b6b, #f2a365); /* Gradient border */
+  transition: width 0.4s ease, left 0.4s ease, box-shadow 0.4s ease; /* Animation */
+  border-radius: 125px;
+}
 
+.nav-links a:hover {
+  color: rgba(0, 0, 0, 0.9); /* Change text color on hover */
+}
 
-
-
-
-
+.nav-links a:hover::after {
+  width: 100%; /* Expands the border */
+  left: 0; /* Starts from the left */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Adds a shadow effect */
+}
 
 
 

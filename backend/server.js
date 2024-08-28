@@ -515,6 +515,9 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
+
+
 // Signup Route
 app.post('/api/signup', async (req, res) => {
   const { email, password, firstName, lastName, phoneNumber, addressLine, city, state } = req.body;
@@ -545,6 +548,10 @@ app.post('/api/signup', async (req, res) => {
 });
 
 
+
+
+
+
 // Verify OTP Route
 app.post('/api/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
@@ -571,6 +578,10 @@ app.post('/api/verify-otp', async (req, res) => {
       res.status(500).json({ message: 'An error occurred during OTP verification. Please try again.' });
   }
 });
+
+
+
+
 
 // Middleware to verify token
 const authenticateToken = (req, res, next) => {
@@ -654,7 +665,7 @@ app.post('/api/verify-otp1', (req, res) => {
 
     // Check if the OTP is valid
     if (users[email] && users[email] == otp) {
-        delete users[email]; // Remove OTP after verification
+        delete users[email]; 
         return res.status(200).send('OTP verified successfully!');
     } else {
         return res.status(400).send('Invalid OTP. Please try again.');

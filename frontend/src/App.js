@@ -46,6 +46,8 @@ import ShoppingCartView from './maincomponent/ShoppingCartView';
 import LoginPage from './CreateAccount/LoginPage';
 
 import Profile from './User/Profile';
+import Logo from './images/logo.png';
+import TextSlider from './maincomponent/TextSlider';
 
 
 
@@ -82,35 +84,35 @@ const handleShopClose = () => {
 
   return (
     <Router>
-      {/* <div className="logo" style={{ marginTop: '-5px',fontFamily:'Twentieth Century sans-serif',fontSize:' ',color:'',fontWeight:'',justifyContent:'center',display:'flex' }}> WENLI </div> */}
-      <nav className="navbar">
-        {/* Desktop View */}
-        <div className="nav-desktop" style={{backgroundColor:''}}>
-          <ul className="nav-links">
-            <li><Link to="/ContactPage" style={{fontFamily:'Twentieth Century sans-serif',fontSize:'20px',color:'RGBA(40, 40, 40, 0.7)'}}> Contact </Link></li>
-            <li><Link to="/" style={{fontFamily:'Twentieth Century sans-serif',fontSize:'20px',color:'RGBA(40, 40, 40, 0.7)'}}>Home</Link></li>
-            <li><Link to="/MensWearPage" style={{fontFamily:'Twentieth Century sans-serif',fontSize:'20px',color:'RGBA(40, 40, 40, 0.7)'}}>MensWear</Link></li>
-            <li><Link to="/WomensWearPage" style={{fontFamily:'Twentieth Century sans-serif',fontSize:'20px',color:'RGBA(40, 40, 40, 0.7)'}}>WomensWear</Link></li>
-            <li><Link to="/SalesPage" style={{fontFamily:'Twentieth Century sans-serif',fontSize:'20px',color:'RGBA(40, 40, 40, 0.7)'}}>Sales</Link></li>
-          </ul>
-
-          <ul className="nav-icons">
-            <li> 
-              <input type="text" className="s" placeholder="Search Product" style={{ marginBottom: '10px', padding: '15px', height: '10px', width: '400px', marginTop: '-10px', borderRadius: '120px', backgroundColor: 'rgb(212,214,218)', outline: 'none', border: 'none' }} />
-            </li>
-
-              
-            <li>
-              <PersonIcon style={{ color: 'black',cursor:'pointer' }} onClick={handleAccountClick}/>
-            </li>
-
-
-            <li color="inherit" onClick={handleShopClick}>
-              <AddShoppingCartIcon titleAccess='ShoppingCart' style={{cursor:'pointer'}}/>
-            </li>
-          </ul>
+        <div className="logocontainer" style={{width:'',display:'flex',justifyContent:'center',backgroundColor:'black',color:'white',letterSpacing:'2px'}}>
+          <TextSlider/>
         </div>
 
+      <nav className="navbar">
+        {/* Desktop View */}
+        <div className="nav-desktop">
+        <img src={Logo} alt="" className="" style={{ height: '150px', width: '300px', marginTop: '5px', marginLeft: '-20px' }} />
+        <ul className="nav-links">
+          <li><Link to="/ContactPage">Contact</Link></li>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/MensWearPage">MensWear</Link></li>
+          <li><Link to="/WomensWearPage">WomensWear</Link></li>
+          <li><Link to="/SalesPage">Sales</Link></li>
+        </ul>
+        
+
+        <ul className="nav-icons">
+          <li>
+            <input type="text" className="s" placeholder="Search Product" style={{ marginBottom: '10px', padding: '15px', height: '10px', width: '400px', marginTop: '-10px', borderRadius: '120px', backgroundColor: 'rgb(212,214,218)', outline: 'none', border: 'none' }} />
+          </li>
+          <li>
+            <PersonIcon style={{ color: 'black', cursor: 'pointer' }} onClick={handleAccountClick} />
+          </li>
+          <li onClick={handleShopClick}>
+            <AddShoppingCartIcon titleAccess='ShoppingCart' style={{ cursor: 'pointer' }} />
+          </li>
+        </ul>
+      </div>
 
 
 
@@ -297,6 +299,7 @@ const handleShopClose = () => {
           <Route path="/ShoppingCartView" element={<ShoppingCartView />} />
           <Route path="/ImageZoom" element={<ImageZoom />} />
           <Route path="/Profile" element={<Profile />} />
+          <Route path="/TextSlider" element={<TextSlider />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
         
