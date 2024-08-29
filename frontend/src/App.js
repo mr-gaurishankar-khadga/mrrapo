@@ -35,8 +35,6 @@ import ProfileMenu from './maincomponent/ProfileMenu';
 import slider1 from './maincomponent/images/sl2.webp';
 import ZoomImageSlider from '../src/maincomponent/Slider';
 import Payment from './maincomponent/Payment';
-import PaymentPublish from './PaymentPublish';
-import MobilePayment from './MobilePayment';
 import Logout from './CreateAccount/Logout';
 
 import Slider1 from './maincomponent/images/aa1.webp'
@@ -48,6 +46,7 @@ import LoginPage from './CreateAccount/LoginPage';
 import Profile from './User/Profile';
 import Logo from './images/logo.png';
 import TextSlider from './maincomponent/TextSlider';
+import Loginwithgoogle from './CreateAccount/Loginwithgoogle';
 
 
 
@@ -293,13 +292,12 @@ const handleShopClose = () => {
           <Route path="/ProfileMenu" element={<ProfileMenu />} />
           <Route path="/ShoppingCart" element={<ShoppingCart />} />
           <Route path="/Payment" element={<Payment />} />
-          <Route path="/PaymentPublish" element={<PaymentPublish />} />
-          <Route path="/MobilePayment" element={<MobilePayment />} />
           <Route path="/Logout" element={<Logout />} />
           <Route path="/ShoppingCartView" element={<ShoppingCartView />} />
           <Route path="/ImageZoom" element={<ImageZoom />} />
           <Route path="/Profile" element={<Profile />} />
           <Route path="/TextSlider" element={<TextSlider />} />
+          <Route path="/Loginwithgoogle" element={<Loginwithgoogle />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
         

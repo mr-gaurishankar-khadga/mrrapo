@@ -15,6 +15,9 @@ const path = require('path');
 const cors = require('cors'); 
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { Schema } = mongoose;
 const crypto = require('crypto');
 const Payment = require('./models/paymentModel');
@@ -33,6 +36,149 @@ mongoose.connect(mongoDbUrl)
 .catch((err) => {
   console.error('Failed to connect to MongoDB', err);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// MongoDB User Schema
+const UserSchema = new mongoose.Schema({
+  googleId: String,
+  displayName: String,
+  email: String,
+});
+
+const User = mongoose.model('User', UserSchema);
+
+// Express session setup
+app.use(
+  session({
+    secret: 'your_secret_key', // Replace with your session secret
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Configure Google Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: '624362700598-70dsdv044hl08vmomm79858vutml0dmo.apps.googleusercontent.com', // Replace with your Google Client ID
+      clientSecret: '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', // Replace with your Google Client Secret
+      callbackURL: process.env.NODE_ENV === 'production' 
+        ? 'https://rappo.onrender.com/auth/google/callback' 
+        : 'http://localhost:8000/auth/google/callback', // Dynamic callback URL
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const existingUser = await User.findOne({ googleId: profile.id });
+        if (existingUser) {
+          return done(null, existingUser);
+        }
+        const newUser = await User.create({
+          googleId: profile.id,
+          displayName: profile.displayName,
+          email: profile.emails[0].value,
+        });
+        done(null, newUser);
+      } catch (error) {
+        done(error, null); // Handle error
+      }
+    }
+  )
+);
+
+// Serialize and deserialize user
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  done(null, user);
+});
+
+// Routes
+app.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  })
+);
+
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/profile');
+  }
+);
+
+app.get('/profile', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  res.send(`Hello, ${req.user.displayName}`);
+});
+
+app.get('/logout', (req, res) => {
+  req.logout(() => {
+    res.redirect('/');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -790,7 +936,9 @@ app.post('/api/messages', async (req, res) => {
   }
 });
 
-// Fetch all user messages from MongoDB
+
+
+
 app.get('/api/messages', async (req, res) => {
   try {
     const messages = await Message.find();

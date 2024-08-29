@@ -3,6 +3,8 @@ import './LoginPage.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
+import { Box, IconButton, Avatar, Typography, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Dashboard, VideoLibrary, Analytics, Comment, Subtitles, Copyright, Settings, Feedback, People,ThumbDown,ThumbUp} from '@mui/icons-material';
 
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode'; 
@@ -87,6 +89,14 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                         <h2 className="animated" style={{fontFamily:'Twentieth Century sans-serif'}}>Welcome to WENLI</h2>
                         <p className="subheading animated-subheading" style={{textAlignLast:'center', marginTop:'-10px', fontFamily:'Twentieth Century sans-serif'}}>Keep your data safe</p>
                     </div>
+
+
+
+                    
+
+
+
+
 
                     <div className="input-field animated-input">
                       <input type="text"

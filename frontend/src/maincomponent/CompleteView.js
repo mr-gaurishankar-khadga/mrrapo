@@ -12,11 +12,9 @@ const CompleteView = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const [quantity, setQuantity] = useState(1);
-  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
-    // Load cart items from localStorage
     const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     setCartItems(savedCartItems);
 
@@ -49,6 +47,12 @@ const CompleteView = () => {
         quantity: quantity,
       },
     ]);
+    
+    // Show notification
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000); // Hide notification after 3 seconds
   };
 
   const handleBuyNow = () => {
@@ -61,8 +65,6 @@ const CompleteView = () => {
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-
-
   return (
     <>
       <div className="complete-view">
@@ -73,7 +75,6 @@ const CompleteView = () => {
               key={index} 
               style={{ overflow: 'hidden', position: 'relative' }}
             >
-
               <img
                 src={`https://rappo.onrender.com/${src}`}
                 alt={product.title}
@@ -83,7 +84,7 @@ const CompleteView = () => {
           ))}
         </div>
 
-        <div className="product-info" style={{marginTop:'20px',backgroundColor:''}}>  
+        <div className="product-info" style={{ marginTop: '20px', backgroundColor: '' }}>
           <h1 style={{ fontFamily: 'Twentieth Century sans-serif' }}>{product.title}</h1>
           <div className="price">
             <span className="current-price">Rs.{product.price}</span>
@@ -124,33 +125,36 @@ const CompleteView = () => {
 
           <div className="action-buttons">
             <button className="add-to-cart" onClick={handleAddToCart}>Add to Cart</button>
+
+            {showNotification && (
+              <div className="notification">
+                 successfully added!
+                <button className="close-btn" onClick={() => setShowNotification(false)}>
+                  &times; 
+                </button>
+              </div>
+            )}
+
             <button className="add-to-cart" onClick={handleBuyNow}>Buy Now</button>
             <button className="wishlist">
               <span style={{ fontSize: '20px', paddingLeft: '20px', paddingRight: '20px' }}> ♡ </span>
             </button>
           </div>
 
-
-
           <div className="featuresection" style={{ backgroundColor: '', overflowX: 'auto', maxWidth: '770px', marginLeft: '-25px', marginTop: '20px' }}>
-  <FeatureSection />
-</div>
-
-
-
-
-
-
-
+            <FeatureSection />
+          </div>
 
           <div className="features" style={{ marginTop: '10px' }}>
             <h4 style={{ fontFamily: 'Twentieth Century sans-serif' }}>Features</h4>
             <ul>
-              <li style={{paddingRight:'20px',letterSpacing:'2px'}}>{product.description}</li>
+              <li style={{ paddingRight: '20px', letterSpacing: '2px' }}>{product.description}</li>
             </ul>
           </div>
         </div>
       </div>
+
+
     </>
   );
 };
