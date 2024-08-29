@@ -84,7 +84,7 @@ passport.use(
 
       callbackURL: process.env.NODE_ENV === 'production' 
         ? 'https://rappo.onrender.com/auth/google/callback' 
-        : 'http://localhost:3000/auth/google/callback',
+        : 'http://localhost:8000/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -127,11 +127,11 @@ app.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('/UserProfile');
+    res.redirect('/profile');
   }
 );
 
-app.get('/UserProfile', (req, res) => {
+app.get('/profile', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect('/');
   }

@@ -10,7 +10,7 @@ function Loginwithgoogle() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/UserProfile')
+    fetch('/profile')
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error('Not authenticated');
@@ -18,7 +18,7 @@ function Loginwithgoogle() {
       .then((profile) => {
         setUser(profile);
         if (profile) {
-          navigate('/UserProfile');
+          navigate('/Profile');
         }
       })
       .catch(() => setUser(null));
@@ -27,13 +27,13 @@ function Loginwithgoogle() {
   const login = () => {
     window.location.href = process.env.NODE_ENV === 'production' 
       ? 'https://mrrapo.onrender.com/auth/google' 
-      : 'http://localhost:3000';
+      : 'http://localhost:8000/auth/google';
   };
 
   const logout = () => {
     window.location.href = process.env.NODE_ENV === 'production' 
       ? 'https://mrrapo.onrender.com/logout' 
-      : 'http://localhost:3000';
+      : 'http://localhost:8000/logout'; 
   };
 
   return (
@@ -44,7 +44,7 @@ function Loginwithgoogle() {
             <Typography variant="h5" gutterBottom className="greetext">
               Hello, {user.displayName}
               <Profile/>
-              gshankar
+              
             </Typography>
 
             <Button variant="contained" className="ltn" onClick={logout} style={{ color: 'black' }}>
