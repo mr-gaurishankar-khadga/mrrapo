@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Paper } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-import './Loginwithgoogle.css'; // Import the CSS file
+import './Loginwithgoogle.css'; 
 
 function Loginwithgoogle() {
   const [user, setUser] = useState(null);
