@@ -131,7 +131,7 @@ app.get(
   }
 );
 
-app.get('/profile', (req, res) => {
+app.get('/UserProfile', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect('/');
   }

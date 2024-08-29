@@ -10,7 +10,7 @@ function Loginwithgoogle() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/profile')
+    fetch('/UserProfile')
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error('Not authenticated');
@@ -18,7 +18,7 @@ function Loginwithgoogle() {
       .then((profile) => {
         setUser(profile);
         if (profile) {
-          navigate('/Profile');
+          navigate('/UserProfile');
         }
       })
       .catch(() => setUser(null));
