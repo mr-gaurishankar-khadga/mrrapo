@@ -3,6 +3,7 @@ import { Button, Typography, ListItem, ListItemIcon,ListItemText } from '@mui/ma
 import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
 import './Loginwithgoogle.css';
+import Profile from '../User/Profile';
 
 function Loginwithgoogle() {
   const [user, setUser] = useState(null);
@@ -17,7 +18,7 @@ function Loginwithgoogle() {
       .then((profile) => {
         setUser(profile);
         if (profile) {
-          navigate('/User/Profile');
+          navigate('/Profile');
         }
       })
       .catch(() => setUser(null));
@@ -42,11 +43,16 @@ function Loginwithgoogle() {
           <div className="user-details">
             <Typography variant="h5" gutterBottom className="greetext">
               Hello, {user.displayName}
+              <Profile/>
+              gshankar
             </Typography>
+
             <Button variant="contained" className="ltn" onClick={logout} style={{ color: 'black' }}>
               Logout
             </Button>
+          
           </div>
+
 
         ) : (
           <>

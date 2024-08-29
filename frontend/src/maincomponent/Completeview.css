@@ -175,89 +175,85 @@
 
   
   
-  .selectitem {
-    margin-top: 20px;
-    position: relative;
-    display: inline-block;
-    width: 200px;
-    padding: 10px;
-    border-radius: 25px;
-    overflow: hidden;
-    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    .selectitem {
+      margin-top: 20px;
+      position: relative;
+      display: inline-block;
+      width: 200px;
+      padding: 10px;
+      border-radius: 25px;
+      overflow: hidden;
+      background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .selectitem select {
+    
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 10px 20px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    font-weight: bold;
   }
   
-  .selectitem select {
-
-  appearance: none;
-  background: transparent;
-  border: none;
-  padding: 10px 20px;
-  width: 100%;
-  cursor: pointer;
-  font-size: 16px;
-  color: #333;
-  outline: none;
-  font-weight: bold;
-}
-
-.selectitem select option {
-  background: #f0f0f0;
-  color: #333;
-  font-size: 20px;
-
-}
-
-.selectitem::before {
-  content: '▼';
-  position: absolute;
-  top: 50%;
-  right: 15px;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #999;
-  pointer-events: none;
-  transition: color 0.3s ease;
-}
-
-.selectitem:hover {
-  background: linear-gradient(145deg, #e0e0e0, #f0f0f0);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-}
-
-.selectitem:hover::before {
-  color: #333;
-}
-
-.selectitem select:focus {
-  border: none;
-  outline: none;
-}
-
-
-
-
-.color {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
-  border: none;
-  cursor: pointer;
-}
-}
+  .selectitem select option {
+    background: #f0f0f0;
+    color: #333;
+    font-size: 20px;
+  
+  }
+  
+  .selectitem::before {
+    content: '▼';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #999;
+    pointer-events: none;
+    transition: color 0.3s ease;
+  }
+  
+  .selectitem:hover {
+    background: linear-gradient(145deg, #e0e0e0, #f0f0f0);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .selectitem:hover::before {
+    color: #333;
+  }
+  
+  .selectitem select:focus {
+    border: none;
+    outline: none;
+  }
   
 
 
 
+  .color {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+  }
 
-
-
-
-
-
-
+  .mypover {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+  }
+}
+  
 
 
 

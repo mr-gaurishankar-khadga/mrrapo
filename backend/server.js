@@ -127,7 +127,7 @@ app.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('/profile');
+    res.redirect('/UserProfile');
   }
 );
 

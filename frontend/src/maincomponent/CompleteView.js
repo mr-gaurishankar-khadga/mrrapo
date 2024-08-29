@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './Completeview.css';
 import './ProductDetail.css';
 import FeatureSection from './FeatureSection';
-import ProductGrid from './ProductGrid';
+import ShoppingCart from './ShoppingCart';
+import { IconButton, Popover, Paper, Button } from '@mui/material';
 
 const CompleteView = () => {
   const location = useLocation();
@@ -13,6 +14,7 @@ const CompleteView = () => {
   const [cartItems, setCartItems] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [showNotification, setShowNotification] = useState(false);
+  const [shopAnchor, setShopAnchor] = useState(null);
 
   useEffect(() => {
     const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -34,7 +36,7 @@ const CompleteView = () => {
     setQuantity(parseInt(event.target.value, 10));
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (event) => {
     setCartItems((prevItems) => [
       ...prevItems,
       {
@@ -47,12 +49,14 @@ const CompleteView = () => {
         quantity: quantity,
       },
     ]);
-    
+
     // Show notification
     setShowNotification(true);
+    setShopAnchor(event.currentTarget);
     setTimeout(() => {
       setShowNotification(false);
-    }, 3000); // Hide notification after 3 seconds
+      setShopAnchor(null);
+    }, 2000); // Hide notification after 3 seconds
   };
 
   const handleBuyNow = () => {
@@ -68,6 +72,7 @@ const CompleteView = () => {
   return (
     <>
       <div className="complete-view">
+        {/* Product Images */}
         <div className="frames">
           {[product.frontImage, product.backImage, product.extraImage1, product.extraImage2].map((src, index) => (
             <div 
@@ -84,13 +89,15 @@ const CompleteView = () => {
           ))}
         </div>
 
-        <div className="product-info" style={{ marginTop: '20px', backgroundColor: '' }}>
+        {/* Product Information */}
+        <div className="product-info" style={{ marginTop: '20px' }}>
           <h1 style={{ fontFamily: 'Twentieth Century sans-serif' }}>{product.title}</h1>
           <div className="price">
             <span className="current-price">Rs.{product.price}</span>
             <span className="discount" style={{ fontFamily: 'Twentieth Century sans-serif' }}>Save {product.discount}% right now</span>
           </div>
 
+          {/* Color Options */}
           <div className="colors">
             <h4>Colors</h4>
             <div className="color-options">
@@ -104,6 +111,7 @@ const CompleteView = () => {
             </div>
           </div>
 
+          {/* Size Options */}
           <div className="Size-option">
             <h4>Size</h4>
             <div className="Size-options">
@@ -112,39 +120,86 @@ const CompleteView = () => {
               ))}
             </div>
 
+            {/* Quantity Selector */}
             <div className="selectitem">
               <select name="quantity" id="quantity" onChange={handleQuantityChange} value={quantity}>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                {[1, 2, 3, 4, 5].map((q) => (
+                  <option key={q} value={q}>{q}</option>
+                ))}
               </select>
             </div>
           </div>
 
+          {/* Action Buttons */}
           <div className="action-buttons">
-            <button className="add-to-cart" onClick={handleAddToCart}>Add to Cart</button>
+            <Button 
+              onClick={handleAddToCart} 
+              style={{
+                backgroundColor: 'rgb(251, 100, 27)',
+                color: 'white',
+                padding: '10px 20px',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                textTransform: 'none',
+                borderRadius: '5px',
+                transition: 'transform 0.3s ease-in-out',
+                marginRight: '10px',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              Add to Cart
+            </Button>
 
-            {showNotification && (
-              <div className="notification">
-                 successfully added!
-                <button className="close-btn" onClick={() => setShowNotification(false)}>
-                  &times; 
-                </button>
-              </div>
-            )}
+            <Popover
+              className='mypover'
+              open={Boolean(shopAnchor)}
+              onClose={() => setShopAnchor(null)}
+              anchorEl={shopAnchor}
+              anchorOrigin={{ vertical: '', horizontal: 'right' }}
+              transformOrigin={{ vertical: '', horizontal: 'right' }}
+              PaperProps={{
+                style: {
+                  color: 'white',
+                  backgroundColor: '',
+                  overflowY: 'scroll',
+                  scrollbarWidth: 'none',
+                  transition: 'transform 1m ease-in-out',
+                  marginLeft:'640px',
+                  marginTop:'200px',
+                },
+              }}
+            >
+              <Paper>
+                <ShoppingCart />
+              </Paper>
+            </Popover>
 
-            <button className="add-to-cart" onClick={handleBuyNow}>Buy Now</button>
-            <button className="wishlist">
-              <span style={{ fontSize: '20px', paddingLeft: '20px', paddingRight: '20px' }}> ♡ </span>
-            </button>
+            <Button 
+              onClick={handleBuyNow} 
+              style={{
+                backgroundColor: 'rgb(76, 175, 80)',
+                color: 'white',
+                padding: '10px 20px',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                textTransform: 'none',
+                borderRadius: '5px',
+                transition: 'transform 0.3s ease-in-out',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              Buy Now
+            </Button>
           </div>
 
+          {/* Feature Section */}
           <div className="featuresection" style={{ backgroundColor: '', overflowX: 'auto', maxWidth: '770px', marginLeft: '-25px', marginTop: '20px' }}>
             <FeatureSection />
           </div>
 
+          {/* Product Features */}
           <div className="features" style={{ marginTop: '10px' }}>
             <h4 style={{ fontFamily: 'Twentieth Century sans-serif' }}>Features</h4>
             <ul>
@@ -153,8 +208,6 @@ const CompleteView = () => {
           </div>
         </div>
       </div>
-
-
     </>
   );
 };
