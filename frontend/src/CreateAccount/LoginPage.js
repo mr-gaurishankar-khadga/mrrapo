@@ -14,6 +14,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import ForgotPasswordModal from './ForgotPasswordModal';
 import Logo from './images/logo.png';
+import Loginwithgoogle from './Loginwithgoogle';
 
 const LoginPage = ({ setToken, setIsAdmin }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +51,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
       }
 
       // Authenticate with backend
-      const response = await axios.post('https://mrrapo.onrender.com/login', { firstname, password });
+      const response = await axios.post('https://rappo.onrender.com/login', { firstname, password });
       const { token } = response.data;
 
       // Decode the token
@@ -83,12 +84,15 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
         <div className="login-page">
             <form onSubmit={handleSubmit}>
             <div className="phone-frame">
-                <div className="login-container">
-                    <img src={Logo} alt="" className="animated-logo" />
-                    <div className="information">
+                <div className="login-container" >
+                    <img src={Logo} alt="" className="animated-logo" style={{marginTop:'-20px'}}/>
+                    <div className="information" >
                         <h2 className="animated" style={{fontFamily:'Twentieth Century sans-serif'}}>Welcome to WENLI</h2>
-                        <p className="subheading animated-subheading" style={{textAlignLast:'center', marginTop:'-10px', fontFamily:'Twentieth Century sans-serif'}}>Keep your data safe</p>
+                        <p className="subheading animated-subheading" style={{textAlignLast:'center', marginTop:'', fontFamily:'Twentieth Century sans-serif'}}>Keep your data safe</p>
                     </div>
+
+
+                    
 
 
 
@@ -123,12 +127,18 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                     </div>
 
                     <button className="login-button animated-button">LOGIN</button>
+                    <div className="login-button animated-button" style={{padding:'0',backgroundColor:'green',boxShadow:'none',height:'',display:'flex',justifyContent:'center'}}>
+                      <Loginwithgoogle/>
+                    </div>
+
                     <p className="forgot-password animated-text" onClick={openModal}>Forgot password?</p> {/* Open modal on click */}
                     <p className="register animated-text">
                         Don't have an account? <Link to="/Signup">
                         Create New Account
+
                     </Link>
                     </p>
+                        
                 </div>
             </div>
             </form>

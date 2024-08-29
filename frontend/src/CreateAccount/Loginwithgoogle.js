@@ -1,66 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Typography, Paper } from '@mui/material';
+import { Button, Typography, ListItem, ListItemIcon,ListItemText } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-import './Loginwithgoogle.css'; 
+import { useNavigate } from 'react-router-dom';
+import './Loginwithgoogle.css';
 
 function Loginwithgoogle() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-
     fetch('/profile')
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error('Not authenticated');
       })
-      .then((profile) => setUser(profile))
+      .then((profile) => {
+        setUser(profile);
+        if (profile) {
+          navigate('/User/Profile');
+        }
+      })
       .catch(() => setUser(null));
-  }, []);
+  }, [navigate]);
 
   const login = () => {
-    // Update the URL for Google login based on the environment
     window.location.href = process.env.NODE_ENV === 'production' 
       ? 'https://mrrapo.onrender.com/auth/google' 
       : 'http://localhost:8000/auth/google';
   };
 
   const logout = () => {
-    // Update the URL for logout based on the environment
     window.location.href = process.env.NODE_ENV === 'production' 
       ? 'https://mrrapo.onrender.com/logout' 
       : 'http://localhost:8000/logout'; 
   };
 
   return (
-    <div className="login-container">
-      <Paper elevation={3} className="login-paper">
-        {user ? (
-          <div className="user-info">
-            <Typography variant="h5" gutterBottom>
+    <>
+    <div className="l">
+        {user && user.displayName ? (
+          <div className="user-details">
+            <Typography variant="h5" gutterBottom className="greetext">
               Hello, {user.displayName}
             </Typography>
-            <Button variant="contained" className="logout-button" onClick={logout}>
+            <Button variant="contained" className="ltn" onClick={logout} style={{ color: 'black' }}>
               Logout
             </Button>
           </div>
+
         ) : (
-          <div className="login-button-container">
-            <Typography variant="h5" gutterBottom>
-              Welcome! Please log in
-            </Typography>
-            <Button 
-              variant="contained" 
-              className="google-login-button" 
-              startIcon={<GoogleIcon />} 
-              onClick={login}
-            >
-              Login with Google
-            </Button>
-          </div>
+          <>
+
+          {/* <button  variant="contained"  className="google-login-btn"  startIcon={<GoogleIcon />}  onClick={login} style={{ paddingLeft: '100px', paddingRight: '100px', paddingTop: '15px', paddingBlock: '15px', borderRadius: '100px' }} >   Login with Google </button> */}
+
+            <ListItem button onClick={login} className=''style={{height:'100%',width:'100%'}}>
+              <ListItemIcon>
+                <GoogleIcon style={{color:'white'}}/>
+              </ListItemIcon>
+              <ListItemText primary=" Login with Google"/>
+            </ListItem>
+            </>
         )}
-      </Paper>
     </div>
+    </>
   );
+
 }
 
 export default Loginwithgoogle;
