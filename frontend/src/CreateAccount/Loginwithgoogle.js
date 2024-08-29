@@ -20,14 +20,14 @@ function Loginwithgoogle() {
   const login = () => {
     // Update the URL for Google login based on the environment
     window.location.href = process.env.NODE_ENV === 'production' 
-      ? 'https://rappo.onrender.com/auth/google' 
+      ? 'https://mrrapo.onrender.com/auth/google' 
       : 'http://localhost:8000/auth/google';
   };
 
   const logout = () => {
     // Update the URL for logout based on the environment
     window.location.href = process.env.NODE_ENV === 'production' 
-      ? 'https://rappo.onrender.com/logout' 
+      ? 'https://mrrapo.onrender.com/logout' 
       : 'http://localhost:8000/logout'; 
   };
 

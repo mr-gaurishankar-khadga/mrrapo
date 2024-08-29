@@ -29,7 +29,7 @@ const Profile = () => {
             }
 
             try {
-                const response = await axios.get('https://rappo.onrender.com/api/profile', {
+                const response = await axios.get('https://mrrapo.onrender.com/api/profile', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

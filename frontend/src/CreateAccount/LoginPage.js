@@ -50,7 +50,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
       }
 
       // Authenticate with backend
-      const response = await axios.post('https://rappo.onrender.com/login', { firstname, password });
+      const response = await axios.post('https://mrrapo.onrender.com/login', { firstname, password });
       const { token } = response.data;
 
       // Decode the token
