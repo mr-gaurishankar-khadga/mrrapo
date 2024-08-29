@@ -84,7 +84,7 @@ passport.use(
 
       callbackURL: process.env.NODE_ENV === 'production' 
         ? 'https://rappo.onrender.com/auth/google/callback' 
-        : 'http://localhost:8000/auth/google/callback',
+        : 'http://localhost:3000/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
