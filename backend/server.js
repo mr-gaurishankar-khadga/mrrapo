@@ -117,7 +117,7 @@ passport.deserializeUser(async (id, done) => {
 
 // Routes
 app.get(
-  '/',
+  '/auth/google',
   passport.authenticate('google', {
     scope: ['profile', 'email'],
   })
