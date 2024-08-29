@@ -7,7 +7,7 @@ function Loginwithgoogle() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Fetch the profile of the logged-in user
+
     fetch('/profile')
       .then((response) => {
         if (response.ok) return response.json();
