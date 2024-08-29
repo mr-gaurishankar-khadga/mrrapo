@@ -79,11 +79,12 @@ app.use(passport.session());
 passport.use(
   new GoogleStrategy(
     {
-      clientID: '624362700598-70dsdv044hl08vmomm79858vutml0dmo.apps.googleusercontent.com', // Replace with your Google Client ID
-      clientSecret: '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', // Replace with your Google Client Secret
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
+
       callbackURL: process.env.NODE_ENV === 'production' 
         ? 'https://rappo.onrender.com/auth/google/callback' 
-        : 'http://localhost:8000/auth/google/callback', // Dynamic callback URL
+        : 'http://localhost:8000/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
