@@ -25,7 +25,7 @@ const Payment = require('./models/paymentModel');
 const app = express();
 
 app.use(cors({
-  origin: 'https://shrijanav10.netlify.app',
+  origin: ['https://shrijanav10.netlify.app' || 'http://localhost:3000'],
   credentials: true,
 }));
 app.use(express.json());
@@ -93,10 +93,12 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser:
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+
   callbackURL: process.env.NODE_ENV === 'production'
     ? 'https://mrrapo.onrender.com/auth/google/callback'
     : 'http://localhost:8000/auth/google/callback',
 },
+
 async (accessToken, refreshToken, profile, done) => {
   try {
     const existingUser = await User.findOne({ googleId: profile.id });
@@ -136,12 +138,14 @@ app.get('/auth/google',
   })
 );
 
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => {
-    res.redirect('https://shrijanav10.netlify.app/profile');
-  }
-);
+const baseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://shrijanav10.netlify.app' 
+    : 'http://localhost:3000';
+
+// Example route that redirects to the appropriate profile URL
+app.get('/redirect-to-profile', (req, res) => {
+    res.redirect(`${baseUrl}/profile`);
+});
 
 app.get('/profile', async (req, res) => {
   console.log('Profile route accessed');
