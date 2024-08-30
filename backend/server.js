@@ -24,7 +24,10 @@ const Payment = require('./models/paymentModel');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 
 const mongoDbUrl = process.env.MONGO_DB_CONNECTION_MY_DATABASE;
@@ -46,7 +49,7 @@ mongoose.connect(mongoDbUrl)
 
 
 
- 
+
 // MongoDB User Schema
 const UserSchema = new mongoose.Schema({
   googleId: {
@@ -70,6 +73,7 @@ const generateRandomSecretKey = () => {
   return crypto.randomBytes(32).toString('hex'); // Generate a random 32-byte hex string
 };
 
+// Express application se
 // Session middleware
 app.use(session({
   secret: process.env.SESSION_SECRET || generateRandomSecretKey(), // Use random secret key if not defined
@@ -81,37 +85,38 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
 // Configure Google Strategy
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.NODE_ENV === 'production'
-        ? 'https://mrrapo.onrender.com/auth/google/callback'
-        : 'http://localhost:8000/auth/google/callback',
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        // Check if the user already exists
-        const existingUser = await User.findOne({ googleId: profile.id });
-        if (existingUser) {
-          return done(null, existingUser);
-        }
-        // If not, create a new user
-        const newUser = await User.create({
-          googleId: profile.id,
-          displayName: profile.displayName,
-          email: profile.emails[0].value,
-        });
-        done(null, newUser);
-      } catch (error) {
-        console.error('Error in Google Strategy:', error);
-        done(error, null);
-      }
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.NODE_ENV === 'production'
+    ? 'https://mrrapo.onrender.com/auth/google/callback'
+    : 'http://localhost:8000/auth/google/callback',
+},
+async (accessToken, refreshToken, profile, done) => {
+  try {
+    // Check if the user already exists
+    const existingUser = await User.findOne({ googleId: profile.id });
+    if (existingUser) {
+      return done(null, existingUser);
     }
-  )
-);
+    // If not, create a new user
+    const newUser = await User.create({
+      googleId: profile.id,
+      displayName: profile.displayName,
+      email: profile.emails[0].value,
+    });
+    done(null, newUser);
+  } catch (error) {
+    console.error('Error in Google Strategy:', error);
+    done(error, null);
+  }
+}));
 
 // Serialize and deserialize user
 passport.serializeUser((user, done) => {
@@ -129,15 +134,13 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Routes
-app.get(
-  '/auth/google',
+app.get('/auth/google',
   passport.authenticate('google', {
     scope: ['profile', 'email'],
   })
 );
 
-app.get(
-  '/auth/google/callback',
+app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
     // After successful authentication, redirect to the frontend profile page
@@ -147,28 +150,25 @@ app.get(
 
 app.get('/profile', async (req, res) => {
   console.log('Profile route accessed');
-  
+
   if (!req.isAuthenticated()) {
     console.log('User not authenticated');
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
-  try {
-    const user = await User.findOne({ googleId: req.user.googleId });
-    if (!user) {
-      console.log('User not found in database');
-      return res.status(404).json({ message: 'User not found' });
-    }
+  // Use req.user directly to get the authenticated user
+  const user = req.user; // req.user contains the user data from the session
 
-    res.json({
-      displayName: user.displayName,
-      email: user.email,
-      googleId: user.googleId,
-    });
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Server error' });
+  if (!user) {
+    console.log('User not found in session');
+    return res.status(404).json({ message: 'User not found' });
   }
+
+  res.json({
+    displayName: user.displayName,
+    email: user.email,
+    googleId: user.googleId,
+  });
 });
 
 // Logout route
@@ -181,8 +181,6 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
   });
 });
-
-
 
 
 
