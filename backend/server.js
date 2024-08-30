@@ -46,136 +46,136 @@ mongoose.connect(mongoDbUrl)
 
 
 
-// MongoDB User Schema
-const UserSchema = new mongoose.Schema({
-  googleId: {
-    type: String,
-    required: true,
-  },
-  displayName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-});
-
-const User = mongoose.model('User', UserSchema);
-
-// Session middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'yourSecretKey', // Replace with a strong secret key
-  resave: false,
-  saveUninitialized: false,
-}));
-
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Configure Google Strategy
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.NODE_ENV === 'production'
-        ? 'https://your-production-url/auth/google/callback'
-        : 'http://localhost:8000/auth/google/callback',
+  // MongoDB User Schema
+  const UserSchema = new mongoose.Schema({
+    googleId: {
+      type: String,
+      required: true,
     },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        // Check if the user already exists
-        const existingUser = await User.findOne({ googleId: profile.id });
-        if (existingUser) {
-          return done(null, existingUser);
-        }
-        // If not, create a new user
-        const newUser = await User.create({
-          googleId: profile.id,
-          displayName: profile.displayName,
-          email: profile.emails[0].value,
-        });
-        done(null, newUser);
-      } catch (error) {
-        console.error('Error in Google Strategy:', error);
-        done(error, null);
-      }
-    }
-  )
-);
-
-// Serialize and deserialize user
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    console.error('Error during deserialization:', error);
-    done(error, null);
-  }
-});
-
-// Routes
-app.get(
-  '/auth/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-  })
-);
-
-app.get(
-  '/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => {
-    // After successful authentication, redirect to the frontend profile page
-    res.redirect('http://localhost:3000/userprofile');
-  }
-);
-
-app.get('/profile', async (req, res) => {
-  console.log('Profile route accessed');
-  
-  if (!req.isAuthenticated()) {
-    console.log('User not authenticated');
-    return res.status(401).json({ message: 'Not authenticated' });
-  }
-
-  try {
-    const user = await User.findOne({ googleId: req.user.googleId });
-    if (!user) {
-      console.log('User not found in database');
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json({
-      displayName: user.displayName,
-      email: user.email,
-      googleId: user.googleId,
-    });
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-
-// Logout route
-app.get('/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      console.error('Logout error:', err);
-      return res.redirect('/');
-    }
-    res.redirect('/');
+    displayName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
   });
-});
+
+  const User = mongoose.model('User', UserSchema);
+
+  // Session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'yourSecretKey', // Replace with a strong secret key
+    resave: false,
+    saveUninitialized: false,
+  }));
+
+  // Passport middleware
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Configure Google Strategy
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.NODE_ENV === 'production'
+          ? 'https://mrrapo.onrender.com/auth/google/callback'
+          : 'http://localhost:8000/auth/google/callback',
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          // Check if the user already exists
+          const existingUser = await User.findOne({ googleId: profile.id });
+          if (existingUser) {
+            return done(null, existingUser);
+          }
+          // If not, create a new user
+          const newUser = await User.create({
+            googleId: profile.id,
+            displayName: profile.displayName,
+            email: profile.emails[0].value,
+          });
+          done(null, newUser);
+        } catch (error) {
+          console.error('Error in Google Strategy:', error);
+          done(error, null);
+        }
+      }
+    )
+  );
+
+  // Serialize and deserialize user
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await User.findById(id);
+      done(null, user);
+    } catch (error) {
+      console.error('Error during deserialization:', error);
+      done(error, null);
+    }
+  });
+
+  // Routes
+  app.get(
+    '/auth/google',
+    passport.authenticate('google', {
+      scope: ['profile', 'email'],
+    })
+  );
+
+  app.get(
+    '/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/' }),
+    (req, res) => {
+      // After successful authentication, redirect to the frontend profile page
+      res.redirect('http://localhost:3000/userprofile');
+    }
+  );
+
+  app.get('/profile', async (req, res) => {
+    console.log('Profile route accessed');
+    
+    if (!req.isAuthenticated()) {
+      console.log('User not authenticated');
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    try {
+      const user = await User.findOne({ googleId: req.user.googleId });
+      if (!user) {
+        console.log('User not found in database');
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({
+        displayName: user.displayName,
+        email: user.email,
+        googleId: user.googleId,
+      });
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+
+  // Logout route
+  app.get('/logout', (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        console.error('Logout error:', err);
+        return res.redirect('/');
+      }
+      res.redirect('/');
+    });
+  });
 
 
 
