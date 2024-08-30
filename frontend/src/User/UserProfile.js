@@ -1,44 +1,52 @@
+// UserProfile.js
 import React, { useEffect, useState } from 'react';
+import { Typography, Container, List, ListItem, ListItemText } from '@mui/material';
 
 const UserProfile = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch('/users'); // Fetch from the new endpoint
+    fetch('/profile', {
+      credentials: 'include', // Important for session handling
+    })
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch users');
+          throw new Error('Not authenticated');
         }
-        const data = await response.json();
-        setUsers(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
+        return response.json();
+      })
+      .then((data) => {
+        setUserData(data);
+      })
+      .catch((err) => {
+        setError(err.message);
+        console.error('Fetch error:', err);
+      });
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   return (
-    <div>
-      <h2>User List</h2>
-      <ul>
-        {users.map(user => (
-          <li key={user.googleId}>
-            <strong>Name:</strong> {user.displayName} <br />
-            <strong>Email:</strong> {user.email}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        User Profile
+      </Typography>
+      {error && <Typography color="error">{error}</Typography>}
+      {userData ? (
+        <List>
+          <ListItem>
+            <ListItemText primary="Display Name" secondary={userData.displayName} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary="Email" secondary={userData.email} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary="Google ID" secondary={userData.googleId} />
+          </ListItem>
+        </List>
+      ) : (
+        <Typography>Loading user data...</Typography>
+      )}
+    </Container>
   );
 };
 

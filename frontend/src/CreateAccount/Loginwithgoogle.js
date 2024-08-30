@@ -1,56 +1,55 @@
+// LoginWithGoogle.js
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
-import './Loginwithgoogle.css';
+// import './LoginWithGoogle.css';
 
-function Loginwithgoogle() {
+const Loginwithgoogle = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch('/profile');
+        const response = await fetch('/profile', {
+          credentials: 'include', // Important for session handling
+        });
         if (!response.ok) throw new Error('Not authenticated');
         const profile = await response.json();
         setUser(profile);
-        if (profile) {
-          navigate('/userprofile'); // Ensure lowercase for the route
-        }
       } catch (error) {
-        console.error(error); // Log error for debugging
+        console.error(error);
         setUser(null);
       }
     };
 
     fetchProfile();
-  }, [navigate]);
+  }, []);
 
   const login = () => {
     const redirectUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://mrrapo.onrender.com/auth/google' 
-      : 'http://localhost:8000/auth/google'; // Updated to match backend port
+      ? 'https://your-production-url/auth/google' 
+      : 'http://localhost:8000/auth/google';
     window.location.href = redirectUrl;
   };
 
   const logout = () => {
     const redirectUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://mrrapo.onrender.com/logout' 
-      : 'http://localhost:8000/logout'; // Updated to match backend port
+      ? 'https://your-production-url/logout' 
+      : 'http://localhost:8000/logout';
     window.location.href = redirectUrl;
   };
 
   return (
     <div className="login-container">
-      {user && user.displayName ? (
+      {user ? (
         <div className="user-details">
-          <Typography variant="h5" gutterBottom className="greetext">
+          <Typography variant="h5" gutterBottom>
             Hello, {user.displayName}
           </Typography>
           <Button 
             variant="contained" 
-            className="logout-btn" 
             onClick={logout} 
             style={{ color: 'black' }}
           >
@@ -58,12 +57,7 @@ function Loginwithgoogle() {
           </Button>
         </div>
       ) : (
-        <ListItem 
-          button 
-          onClick={login} 
-          className="google-login-btn" 
-          style={{ height: '100%', width: '100%' }}
-        >
+        <ListItem button onClick={login} className="google-login-btn">
           <ListItemIcon>
             <GoogleIcon style={{ color: 'white' }} />
           </ListItemIcon>
@@ -72,6 +66,6 @@ function Loginwithgoogle() {
       )}
     </div>
   );
-}
+};
 
 export default Loginwithgoogle;
