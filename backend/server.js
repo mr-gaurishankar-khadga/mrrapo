@@ -138,14 +138,12 @@ app.get('/auth/google',
   })
 );
 
-const baseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://shrijanav10.netlify.app' 
-    : 'http://localhost:3000';
-
-// Example route that redirects to the appropriate profile URL
-app.get('/redirect-to-profile', (req, res) => {
-    res.redirect(`${baseUrl}/profile`);
-});
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('http://localhost:3000/profile');
+  }
+);
 
 app.get('/profile', async (req, res) => {
   console.log('Profile route accessed');
