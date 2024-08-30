@@ -193,13 +193,10 @@ const CompleteView = () => {
               Buy Now
             </Button>
           </div>
-
-          {/* Feature Section */}
           <div className="featuresection" style={{ backgroundColor: '', overflowX: 'auto', maxWidth: '770px', marginLeft: '-25px', marginTop: '20px' }}>
             <FeatureSection />
           </div>
 
-          {/* Product Features */}
           <div className="features" style={{ marginTop: '10px' }}>
             <h4 style={{ fontFamily: 'Twentieth Century sans-serif' }}>Features</h4>
             <ul>

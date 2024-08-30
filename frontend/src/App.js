@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { IconButton, InputBase, AppBar, Toolbar, Typography, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Popover, Paper, Divider, Avatar } from '@mui/material';
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -83,6 +83,7 @@ const handleShopClose = () => {
 
 
   return (
+    <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID}> 
     <Router>
         <div className="logocontainer" style={{width:'',display:'flex',justifyContent:'center',backgroundColor:'black',color:'white',letterSpacing:'2px'}}>
           <TextSlider/>
@@ -306,6 +307,7 @@ const handleShopClose = () => {
         
       </div>
     </Router>
+    </GoogleOAuthProvider>
   );
 };
 
