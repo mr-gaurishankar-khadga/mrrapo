@@ -27,6 +27,15 @@ const Profile = () => {
 
 
 
+
+
+
+
+
+
+
+
+
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
 
@@ -39,6 +48,8 @@ const Profile = () => {
                 navigate('/LoginPage'); 
                 return;
             }
+
+
 
       try {
         const response = await fetch('http://localhost:8000/profile', {
@@ -57,6 +68,7 @@ const Profile = () => {
         setLoading(false);
       }
     };
+
     fetchUserData();
   }, []);
 
