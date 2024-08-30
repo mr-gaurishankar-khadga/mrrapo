@@ -17,7 +17,7 @@ function Loginwithgoogle() {
       .then((profile) => {
         setUser(profile);
         if (profile) {
-          navigate('/profile');
+          navigate('/userprofile');
         }
       })
       .catch(() => setUser(null));

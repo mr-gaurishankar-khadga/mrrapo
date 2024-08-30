@@ -51,7 +51,6 @@ mongoose.connect(mongoDbUrl)
 
 
 
-
 // MongoDB User Schema
 const UserSchema = new mongoose.Schema({
   googleId: {
@@ -70,6 +69,13 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema);
 
+// Session middleware
+app.use(session({
+  secret: 'yourSecretKey', // Replace with a strong secret key
+  resave: false,
+  saveUninitialized: false,
+}));
+
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
@@ -81,15 +87,17 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.NODE_ENV === 'production'
-        ? 'https://your-production-url.com/auth/google/callback'
-        : 'http://localhost:3000/auth/google/callback',
+        ? 'https://mrrapo.onrender.com/auth/google/callback'
+        : 'http://localhost:8000/auth/google/callback',  // Updated to port 8000
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        // Check if the user already exists
         const existingUser = await User.findOne({ googleId: profile.id });
         if (existingUser) {
           return done(null, existingUser);
         }
+        // If not, create a new user
         const newUser = await User.create({
           googleId: profile.id,
           displayName: profile.displayName,
@@ -129,7 +137,8 @@ app.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('/profile');
+    // After successful authentication, redirect to the frontend profile page
+    res.redirect('http://localhost:3000/profile');
   }
 );
 
@@ -137,15 +146,19 @@ app.get('/profile', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect('/');
   }
+  // Render or send the user's profile data to the frontend
   res.send(`Hello, ${req.user.displayName}`);
 });
 
 app.get('/logout', (req, res) => {
-  req.logout(() => {
+  req.logout((err) => {
+    if (err) {
+      console.error(err);
+      return res.redirect('/');
+    }
     res.redirect('/');
   });
 });
-
 
 
 
