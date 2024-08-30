@@ -1,52 +1,52 @@
-// UserProfile.js
 import React, { useEffect, useState } from 'react';
-import { Typography, Container, List, ListItem, ListItemText } from '@mui/material';
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState(null);
-  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('/profile', {
-      credentials: 'include', // Important for session handling
-    })
-      .then((response) => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/profile', {
+          credentials: 'include', // Include credentials to send session cookies
+        });
+        
         if (!response.ok) {
-          throw new Error('Not authenticated');
+          throw new Error('Failed to fetch user data');
         }
-        return response.json();
-      })
-      .then((data) => {
-        setUserData(data);
-      })
-      .catch((err) => {
+
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
         setError(err.message);
-        console.error('Fetch error:', err);
-      });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!user) {
+    return <div>No user data available</div>;
+  }
+
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        User Profile
-      </Typography>
-      {error && <Typography color="error">{error}</Typography>}
-      {userData ? (
-        <List>
-          <ListItem>
-            <ListItemText primary="Display Name" secondary={userData.displayName} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Email" secondary={userData.email} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Google ID" secondary={userData.googleId} />
-          </ListItem>
-        </List>
-      ) : (
-        <Typography>Loading user data...</Typography>
-      )}
-    </Container>
+    <div>
+      <h1>User Profile</h1>
+      <p>Name: {user.displayName}</p>
+      <p>Email: {user.email}</p>
+      <p>Google ID: {user.googleId}</p>
+    </div>
   );
 };
 
