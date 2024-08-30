@@ -42,12 +42,10 @@ import Slider1 from './maincomponent/images/aa1.webp'
 import ImageZoom from './ImageZoom';
 import ShoppingCartView from './maincomponent/ShoppingCartView';
 import LoginPage from './CreateAccount/LoginPage';
-
 import Profile from './User/Profile';
 import Logo from './images/logo.png';
 import TextSlider from './maincomponent/TextSlider';
 import Loginwithgoogle from './CreateAccount/Loginwithgoogle';
-import UserProfile from './User/UserProfile';
 
 
 
@@ -298,7 +296,6 @@ const handleShopClose = () => {
           <Route path="/ShoppingCartView" element={<ShoppingCartView />} />
           <Route path="/ImageZoom" element={<ImageZoom />} />
           <Route path="/Profile" element={<Profile />} />
-          <Route path="/UserProfile" element={<UserProfile />} />
           <Route path="/TextSlider" element={<TextSlider />} />
           <Route path="/Loginwithgoogle" element={<Loginwithgoogle />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />

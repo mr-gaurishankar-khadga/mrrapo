@@ -126,18 +126,21 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                         </span>
                     </div>
 
-                    <button className="login-button animated-button">LOGIN</button>
-                    <div className="login-button animated-button" style={{padding:'0',backgroundColor:'green',boxShadow:'none',height:'',display:'flex',justifyContent:'center'}}>
+                    <button className="login-button animated-button" >LOGIN</button>
                       <Loginwithgoogle/>
+
+
+                    <div className="bothsignand" style={{display:'flex'}}>
+
+                    <p className="forgot-password animated-text" onClick={openModal}>Forgot password?</p> 
+                    
+                    <p className="register animated-text" style={{marginLeft:'15px'}}> <Link to="/Signup"> Create New Account </Link> </p> 
                     </div>
 
-                    <p className="forgot-password animated-text" onClick={openModal}>Forgot password?</p> {/* Open modal on click */}
-                    <p className="register animated-text">
-                        Don't have an account? <Link to="/Signup">
-                        Create New Account
 
-                    </Link>
-                    </p>
+                    {/* <p className="register animated-text">
+                        Don't have an account? 
+                    </p> */}
                         
                 </div>
             </div>

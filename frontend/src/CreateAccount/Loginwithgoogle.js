@@ -1,9 +1,8 @@
-// LoginWithGoogle.js
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
-// import './LoginWithGoogle.css';
+import './Loginwithgoogle.css'; // Import the CSS file for additional styles
 
 const Loginwithgoogle = () => {
   const [user, setUser] = useState(null);
@@ -13,7 +12,7 @@ const Loginwithgoogle = () => {
     const fetchProfile = async () => {
       try {
         const response = await fetch('/profile', {
-          credentials: 'include', // Important for session handling
+          credentials: 'include',
         });
         if (!response.ok) throw new Error('Not authenticated');
         const profile = await response.json();
@@ -45,7 +44,7 @@ const Loginwithgoogle = () => {
     <div className="login-container">
       {user ? (
         <div className="user-details">
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h2" gutterBottom>
             Hello, {user.displayName}
           </Typography>
           <Button 
@@ -57,12 +56,15 @@ const Loginwithgoogle = () => {
           </Button>
         </div>
       ) : (
-        <ListItem button onClick={login} className="google-login-btn">
-          <ListItemIcon>
-            <GoogleIcon style={{ color: 'white' }} />
-          </ListItemIcon>
-          <ListItemText primary="Login with Google" />
-        </ListItem>
+        <div className="google-login-btn" onClick={login} style={{marginTop:'-10px'}}>
+          <Button
+            variant="outlined"
+            startIcon={<GoogleIcon style={{ color: 'rgb(112,112,112)' }} />}
+            className="google-button"
+          >
+            Login with Google
+          </Button>
+        </div>
       )}
     </div>
   );
