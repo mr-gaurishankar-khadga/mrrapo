@@ -68,15 +68,14 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema);
 
-// Generate a random secret key for the session
+
 const generateRandomSecretKey = () => {
-  return crypto.randomBytes(32).toString('hex'); // Generate a random 32-byte hex string
+  return crypto.randomBytes(32).toString('hex'); 
 };
 
-// Express application se
 // Session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || generateRandomSecretKey(), // Use random secret key if not defined
+  secret: process.env.SESSION_SECRET || generateRandomSecretKey(), 
   resave: false,
   saveUninitialized: false,
 }));
@@ -100,12 +99,10 @@ passport.use(new GoogleStrategy({
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
-    // Check if the user already exists
     const existingUser = await User.findOne({ googleId: profile.id });
     if (existingUser) {
       return done(null, existingUser);
     }
-    // If not, create a new user
     const newUser = await User.create({
       googleId: profile.id,
       displayName: profile.displayName,
@@ -118,7 +115,6 @@ async (accessToken, refreshToken, profile, done) => {
   }
 }));
 
-// Serialize and deserialize user
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -143,7 +139,6 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    // After successful authentication, redirect to the frontend profile page
     res.redirect('http://localhost:3000/userprofile');
   }
 );
@@ -156,8 +151,7 @@ app.get('/profile', async (req, res) => {
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
-  // Use req.user directly to get the authenticated user
-  const user = req.user; // req.user contains the user data from the session
+  const user = req.user; 
 
   if (!user) {
     console.log('User not found in session');
