@@ -1,37 +1,59 @@
-import React from 'react';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { Button, Typography, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
+import { useNavigate } from 'react-router-dom';
+import './Loginwithgoogle.css';
 
-const Loginwithgoogle = () => {
-  const handleLoginSuccess = async (credentialResponse) => {
-    const { credential } = credentialResponse;
+function Loginwithgoogle() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-    try {
-      // Send the credential (tokenId) to your backend
-      const res = await axios.post('https://rappo.onrender.com/api/google-login', { tokenId: credential });
-      localStorage.setItem('user', JSON.stringify(res.data.user)); // Store user data in local storage
-      window.location.href = '/profile'; // Redirect to profile
-    } catch (error) {
-      console.error('Google login error:', error);
-    }
+  useEffect(() => {
+    fetch('/profile')
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error('Not authenticated');
+      })
+      .then((profile) => {
+        setUser(profile);
+        if (profile) {
+          navigate('/profile');
+        }
+      })
+      .catch(() => setUser(null));
+  }, [navigate]);
+
+  const login = () => {
+    const baseUrl = window.location.origin;
+    window.location.href = `${baseUrl}/auth/google`;
   };
 
-  const handleLoginFailure = (response) => {
-    console.error('Google login failed:', response);
+  const logout = () => {
+    const baseUrl = window.location.origin;
+    window.location.href = `${baseUrl}/logout`;
   };
 
   return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <div>
-        <GoogleLogin
-          onSuccess={handleLoginSuccess}
-          onFailure={handleLoginFailure}
-          cookiePolicy={'single_host_origin'}
-          style={{ margin: '20px' }}
-        />
-      </div>
-    </GoogleOAuthProvider>
+    <div className="l">
+      {user && user.displayName ? (
+        <div className="user-details">
+          <Typography variant="h5" gutterBottom className="greetext">
+            Hello, {user.displayName}
+          </Typography>
+          <Button variant="contained" className="ltn" onClick={logout} style={{ color: 'black' }}>
+            Logout
+          </Button>
+        </div>
+      ) : (
+        <ListItem button onClick={login} style={{ height: '100%', width: '100%' }}>
+          <ListItemIcon>
+            <GoogleIcon style={{ color: 'white' }} />
+          </ListItemIcon>
+          <ListItemText primary="Login with Google" />
+        </ListItem>
+      )}
+    </div>
   );
-};
+}
 
 export default Loginwithgoogle;

@@ -17,7 +17,6 @@ const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
-const { OAuth2Client } = require('google-auth-library');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { Schema } = mongoose;
 const crypto = require('crypto');
@@ -42,66 +41,112 @@ mongoose.connect(mongoDbUrl)
 
 
 
-// Define a User schema and model
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  avatar: String,
-  googleId: String,
+
+
+
+
+
+
+
+
+
+
+
+// MongoDB User Schema
+const UserSchema = new mongoose.Schema({
+  googleId: {
+    type: String,
+    required: true,
+  },
+  displayName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', UserSchema);
 
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
-// Google login route
-app.post('/api/google-login', async (req, res) => {
-  const { tokenId } = req.body;
-
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: tokenId,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-
-    const { name, email, picture, sub } = ticket.getPayload();
-
-    let user = await User.findOne({ googleId: sub });
-
-    if (!user) {
-      user = new User({ name, email, avatar: picture, googleId: sub });
-      await user.save();
-      return res.status(201).json({ user }); // Return status 201 for created
+// Configure Google Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.NODE_ENV === 'production'
+        ? 'https://your-production-url.com/auth/google/callback'
+        : 'http://localhost:3000/auth/google/callback',
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const existingUser = await User.findOne({ googleId: profile.id });
+        if (existingUser) {
+          return done(null, existingUser);
+        }
+        const newUser = await User.create({
+          googleId: profile.id,
+          displayName: profile.displayName,
+          email: profile.emails[0].value,
+        });
+        done(null, newUser);
+      } catch (error) {
+        done(error, null);
+      }
     }
+  )
+);
 
-    // Return the user data to the frontend
-    res.status(200).json({ user });
-  } catch (error) {
-    console.error('Google login error:', error);
-    res.status(400).json({ error: 'Invalid Google token' });
-  }
+// Serialize and deserialize user
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
-// Route to get the user profile
-app.get('/api/profile', async (req, res) => {
-  const { googleId } = req.query;
-
-  if (!googleId) {
-    return res.status(400).json({ error: 'Google ID is required' });
-  }
-
+passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.findOne({ googleId });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.status(200).json({ user });
+    const user = await User.findById(id);
+    done(null, user);
   } catch (error) {
-    console.error('Failed to fetch user profile:', error);
-    res.status(500).json({ error: 'Server error' });
+    done(error, null);
   }
 });
+
+// Routes
+app.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  })
+);
+
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/profile');
+  }
+);
+
+app.get('/profile', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  res.send(`Hello, ${req.user.displayName}`);
+});
+
+app.get('/logout', (req, res) => {
+  req.logout(() => {
+    res.redirect('/');
+  });
+});
+
+
 
 
 
