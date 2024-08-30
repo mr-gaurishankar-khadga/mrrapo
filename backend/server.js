@@ -50,7 +50,6 @@ mongoose.connect(mongoDbUrl)
 
 
 
-
 // MongoDB User Schema
 const UserSchema = new mongoose.Schema({
   googleId: {
@@ -68,6 +67,9 @@ const UserSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', UserSchema);
+
+// Middleware to parse JSON requests
+app.use(express.json());
 
 // Session middleware
 app.use(session({
@@ -88,7 +90,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.NODE_ENV === 'production'
         ? 'https://mrrapo.onrender.com/auth/google/callback'
-        : 'http://localhost:8000/auth/google/callback',  // Updated to port 8000
+        : 'http://localhost:8000/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -138,18 +140,19 @@ app.get(
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
     // After successful authentication, redirect to the frontend profile page
-    res.redirect('http://localhost:3000/profile');
+    res.redirect('http://localhost:3000/userprofile');
   }
 );
 
 app.get('/profile', (req, res) => {
   if (!req.isAuthenticated()) {
-    return res.redirect('/');
+    return res.status(401).json({ error: 'Not authenticated' });
   }
-  // Render or send the user's profile data to the frontend
-  res.send(`Hello, ${req.user.displayName}`);
+  // Send the authenticated user's data as JSON
+  res.json(req.user);
 });
 
+// Logout route
 app.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -160,8 +163,15 @@ app.get('/logout', (req, res) => {
   });
 });
 
-
-
+// Route to fetch all users
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find(); // Fetch all users
+    res.json(users); // Send the users as JSON
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error' }); // Handle errors
+  }
+});
 
 
 

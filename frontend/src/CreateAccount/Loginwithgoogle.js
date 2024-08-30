@@ -9,43 +9,61 @@ function Loginwithgoogle() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/profile')
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error('Not authenticated');
-      })
-      .then((profile) => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch('/profile');
+        if (!response.ok) throw new Error('Not authenticated');
+        const profile = await response.json();
         setUser(profile);
         if (profile) {
-          navigate('/userprofile');
+          navigate('/userprofile'); // Ensure lowercase for the route
         }
-      })
-      .catch(() => setUser(null));
+      } catch (error) {
+        console.error(error); // Log error for debugging
+        setUser(null);
+      }
+    };
+
+    fetchProfile();
   }, [navigate]);
 
   const login = () => {
-    const baseUrl = window.location.origin;
-    window.location.href = `${baseUrl}/auth/google`;
+    const redirectUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://mrrapo.onrender.com/auth/google' 
+      : 'http://localhost:8000/auth/google'; // Updated to match backend port
+    window.location.href = redirectUrl;
   };
 
   const logout = () => {
-    const baseUrl = window.location.origin;
-    window.location.href = `${baseUrl}/logout`;
+    const redirectUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://mrrapo.onrender.com/logout' 
+      : 'http://localhost:8000/logout'; // Updated to match backend port
+    window.location.href = redirectUrl;
   };
 
   return (
-    <div className="l">
+    <div className="login-container">
       {user && user.displayName ? (
         <div className="user-details">
           <Typography variant="h5" gutterBottom className="greetext">
             Hello, {user.displayName}
           </Typography>
-          <Button variant="contained" className="ltn" onClick={logout} style={{ color: 'black' }}>
+          <Button 
+            variant="contained" 
+            className="logout-btn" 
+            onClick={logout} 
+            style={{ color: 'black' }}
+          >
             Logout
           </Button>
         </div>
       ) : (
-        <ListItem button onClick={login} style={{ height: '100%', width: '100%' }}>
+        <ListItem 
+          button 
+          onClick={login} 
+          className="google-login-btn" 
+          style={{ height: '100%', width: '100%' }}
+        >
           <ListItemIcon>
             <GoogleIcon style={{ color: 'white' }} />
           </ListItemIcon>
