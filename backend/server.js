@@ -141,10 +141,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect(process.env.NODE_ENV === 'production' 
-      ? 'https://shrijanav10.netlify.app/profile' 
-      : 'http://localhost:3000/profile'
-  );
+    res.redirect('http://localhost:3000/profile');
   }
 );
 
