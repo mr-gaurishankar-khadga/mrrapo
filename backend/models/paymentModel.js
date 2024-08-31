@@ -30,6 +30,14 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     required: function () { return this.paymentMethod === 'Card Payment'; },
   },
+  phoneNumber: { 
+    type: String, // Changed to String
+    required: true 
+  },
+  address: { 
+    type: String, 
+    required: true 
+  },
 }, { timestamps: true }); 
 
 const Payment = mongoose.model('Payment', paymentSchema);

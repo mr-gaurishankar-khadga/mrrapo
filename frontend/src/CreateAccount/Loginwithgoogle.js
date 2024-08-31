@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Typography, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
-import './Loginwithgoogle.css'; // Import the CSS file for additional styles
+import './Loginwithgoogle.css'; 
 
 const Loginwithgoogle = () => {
   const [user, setUser] = useState(null);

@@ -242,6 +242,30 @@
   transform: translateY(-3px);
 }
 
+.contact-details-title {
+  margin-top: 20px;
+}
+
+.contact-details-form {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 
 
 

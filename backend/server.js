@@ -203,7 +203,7 @@ app.get('/logout', (req, res) => {
 
 // API end * this is end point of payment getway
 app.post('/api/payments', async (req, res) => {
-  const { product, quantity, paymentMethod, price, cardNumber, expiryDate, cvv } = req.body;
+  const { product, quantity, paymentMethod, price, cardNumber, expiryDate, cvv, phoneNumber, address } = req.body;
 
   try {
     const newPayment = new Payment({
@@ -211,10 +211,13 @@ app.post('/api/payments', async (req, res) => {
       quantity,
       paymentMethod,
       price,
-      cardNumber,
-      expiryDate,
-      cvv,
-    });    
+      cardNumber: paymentMethod === 'Card Payment' ? cardNumber : undefined,
+      expiryDate: paymentMethod === 'Card Payment' ? expiryDate : undefined,
+      cvv: paymentMethod === 'Card Payment' ? cvv : undefined,
+      phoneNumber,
+      address,
+    }); 
+
     await newPayment.save();
     res.status(201).json({ message: 'Payment data stored successfully', payment: newPayment });
   } catch (error) {

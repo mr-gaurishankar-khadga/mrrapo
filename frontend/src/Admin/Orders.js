@@ -1,6 +1,5 @@
-// Orders.js
 import React, { useEffect, useState } from 'react';
-import './Orders.css'; // Optional: Create a CSS file for styles
+import './Orders.css';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -15,7 +14,7 @@ const Orders = () => {
           throw new Error('Failed to fetch orders');
         }
         const data = await response.json();
-        console.log(data); // Log the response to see the structure
+        console.log(data);
         setOrders(data);
       } catch (err) {
         setError(err.message);
@@ -28,9 +27,9 @@ const Orders = () => {
   }, []);
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'No Date'; // Handle empty or undefined dateString
+    if (!dateString) return 'No Date';
     const date = new Date(dateString);
-    return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString(); // Use getTime() for date validation
+    return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString();
   };
 
   if (loading) return <p>Loading...</p>;
@@ -46,9 +45,12 @@ const Orders = () => {
             <th>Quantity</th>
             <th>Payment Method</th>
             <th>Price</th>
+            <th>Phone Number</th> 
+            <th>Address</th>
             <th>Date</th>
           </tr>
         </thead>
+        
         <tbody>
           {orders.map((order, index) => (
             <tr key={index}>
@@ -56,7 +58,9 @@ const Orders = () => {
               <td>{order.quantity}</td>
               <td>{order.paymentMethod}</td>
               <td>Rs. {order.price}</td>
-              <td>{formatDate(order.createdAt)}</td> {/* Ensure you're accessing the correct date field */}
+              <td>{order.phoneNumber}</td> 
+              <td>{order.address}</td> 
+              <td>{formatDate(order.createdAt)}</td> 
             </tr>
           ))}
         </tbody>
