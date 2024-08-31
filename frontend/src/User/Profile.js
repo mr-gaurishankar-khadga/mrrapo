@@ -53,7 +53,7 @@ const Profile = () => {
 
 
       try {
-        const response = await fetch('https://mrrapo.onrender.com/profile', {
+        const response = await fetch('http://localhost:8000/profile', {
           credentials: 'include', 
         });
         
