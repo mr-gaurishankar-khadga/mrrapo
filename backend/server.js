@@ -93,7 +93,8 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser:
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL:'https://mrrapo.onrender.com/auth/google/callback'
+
+  // callbackURL:'https://mrrapo.onrender.com/auth/google/callback'
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
