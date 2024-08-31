@@ -27,7 +27,7 @@ const Loginwithgoogle = () => {
   }, []);
 
   const login = () => {
-    const redirectUrl = 'https://mrrapo.onrender.com/auth/google' 
+    const redirectUrl = 'https://mrrapo.onrender.com/auth/google/profile' 
     window.location.href = redirectUrl;
   };
 
