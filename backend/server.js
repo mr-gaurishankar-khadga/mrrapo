@@ -141,17 +141,13 @@ app.get('/auth/google/callback',
 );
 
 app.get('/profile', async (req, res) => {
-  console.log('Profile route accessed');
-
   if (!req.isAuthenticated()) {
-    console.log('User not authenticated');
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
   const user = req.user; 
 
   if (!user) {
-    console.log('User not found in session');
     return res.status(404).json({ message: 'User not found' });
   }
 
@@ -161,6 +157,7 @@ app.get('/profile', async (req, res) => {
     googleId: user.googleId,
   });
 });
+
 
 // Logout route
 app.get('/logout', (req, res) => {
