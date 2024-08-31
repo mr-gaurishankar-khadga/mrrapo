@@ -139,7 +139,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('/profile');
+    res.redirect('/https://shrijanav101.netlify.app/profile');
   }
 );
 
