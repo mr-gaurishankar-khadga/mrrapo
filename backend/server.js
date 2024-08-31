@@ -20,7 +20,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { Schema } = mongoose;
 const crypto = require('crypto');
-const Payment = require('./models/paymentModel');
+// const Payment = require('./models/paymentModel');
 
 const app = express();
 
