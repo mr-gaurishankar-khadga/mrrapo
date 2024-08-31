@@ -186,19 +186,47 @@ app.get('/logout', (req, res) => {
 
 
 
+const paymentSchema = new mongoose.Schema({
+  product: {
+    type: Object,
+    required: true,
+  },
+  
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  paymentMethod: {
+    type: String,
+    required: true,
+  },
+  price: { 
+    type: Number, 
+    required: true 
+  },
+  cardNumber: {
+    type: String, 
+    required: function () { return this.paymentMethod === 'Card Payment'; },
+  },
+  expiryDate: {
+    type: String,
+    required: function () { return this.paymentMethod === 'Card Payment'; },
+  },
+  cvv: {
+    type: String,
+    required: function () { return this.paymentMethod === 'Card Payment'; },
+  },
+  phoneNumber: { 
+    type: String, 
+    required: true 
+  },
+  address: { 
+    type: String, 
+    required: true 
+  },
+}, { timestamps: true }); 
 
-
-
-
-
-
-
-
-
-
-
-
-
+const Payment = mongoose.model('Payment', paymentSchema);
 
 
 // API end * this is end point of payment getway
