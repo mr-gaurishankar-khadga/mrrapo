@@ -68,8 +68,6 @@ const Payment = () => {
       address,
     };
   
-    console.log('Payment data to be sent:', paymentData); // Log the payment data
-  
     try {
       const response = await fetch('https://mrrapo.onrender.com/api/payments', {
         method: 'POST',
@@ -85,12 +83,13 @@ const Payment = () => {
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 4000);
       } else {
-        throw new Error('Failed to store payment data');
+        console.error('Failed to store payment data');
       }
     } catch (error) {
       console.error('Error submitting payment:', error);
     }
   };
+  
   
 
   const isFormValid = () => {
@@ -127,7 +126,7 @@ const Payment = () => {
           </thead>
           <tbody>
             <tr>
-              
+
               <td className="product-image-cell">
                 <img
                   src={`https://mrrapo.onrender.com/${product.frontImage}`}
@@ -254,7 +253,7 @@ const Payment = () => {
           <button
             className="proceed-to-payment"
             onClick={handlePaymentSubmission}
-            disabled={!isFormValid()} // Disable button if form is not valid
+            disabled={!isFormValid()}
           >
             Proceed to Payment
           </button>

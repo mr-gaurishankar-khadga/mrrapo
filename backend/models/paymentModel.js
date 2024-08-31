@@ -1,4 +1,3 @@
-// models/paymentModel.js
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
@@ -6,10 +5,11 @@ const paymentSchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
-  quantity: {
-    type: Number,
-    required: true,
-  },
+
+  // quantity: {
+  //   type: Number,
+  //   required: true,
+  // },
   paymentMethod: {
     type: String,
     required: true,
@@ -19,7 +19,7 @@ const paymentSchema = new mongoose.Schema({
     required: true 
   },
   cardNumber: {
-    type: String, // Store in encrypted format if needed
+    type: String, 
     required: function () { return this.paymentMethod === 'Card Payment'; },
   },
   expiryDate: {
@@ -31,7 +31,7 @@ const paymentSchema = new mongoose.Schema({
     required: function () { return this.paymentMethod === 'Card Payment'; },
   },
   phoneNumber: { 
-    type: String, // Changed to String
+    type: String, 
     required: true 
   },
   address: { 
