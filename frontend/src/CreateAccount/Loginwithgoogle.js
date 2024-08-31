@@ -27,16 +27,12 @@ const Loginwithgoogle = () => {
   }, []);
 
   const login = () => {
-    const redirectUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://mrrapo.onrender.com/auth/google' 
-      : 'http://localhost:8000/auth/google';
+    const redirectUrl = 'https://mrrapo.onrender.com/auth/google' 
     window.location.href = redirectUrl;
   };
 
   const logout = () => {
-    const redirectUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://mrrapo.onrender.com/logout' 
-      : 'http://localhost:8000/logout';
+    const redirectUrl = 'https://mrrapo.onrender.com/logout' 
     window.location.href = redirectUrl;
   };
 
