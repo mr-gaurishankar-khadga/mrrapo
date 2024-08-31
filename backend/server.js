@@ -80,7 +80,7 @@ app.use(session({
   saveUninitialized: false,
 }));
 
-// Passport middleware
+
 app.use(passport.initialize());
 app.use(passport.session());
 
