@@ -80,7 +80,7 @@ app.use(session({
   saveUninitialized: false,
 }));
 
-
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -93,6 +93,9 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser:
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.NODE_ENV === 'production'
+    ? 'https://mrrapo.onrender.com/auth/google/callback'
+    : 'http://localhost:8000/auth/google/callback',
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
@@ -141,13 +144,17 @@ app.get('/auth/google/callback',
 );
 
 app.get('/profile', async (req, res) => {
+  console.log('Profile route accessed');
+
   if (!req.isAuthenticated()) {
+    console.log('User not authenticated');
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
   const user = req.user; 
 
   if (!user) {
+    console.log('User not found in session');
     return res.status(404).json({ message: 'User not found' });
   }
 
@@ -157,7 +164,6 @@ app.get('/profile', async (req, res) => {
     googleId: user.googleId,
   });
 });
-
 
 // Logout route
 app.get('/logout', (req, res) => {
