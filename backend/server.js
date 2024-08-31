@@ -93,7 +93,7 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser:
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  
+
   callbackURL: process.env.NODE_ENV === 'production'
     ? 'https://mrrapo.onrender.com/auth/google/callback'
     : 'http://localhost:8000/auth/google/callback',
@@ -142,7 +142,7 @@ app.get('/auth/google/callback',
   (req, res) => {
     const redirectUrl = process.env.NODE_ENV === 'production' 
     ? 'https://shrijanav10.netlify.app/profile' 
-    : 'http://localhost:3000/profile';
+    : 'http://localhost:8000/profile';
     res.redirect(redirectUrl);
   }
 );
