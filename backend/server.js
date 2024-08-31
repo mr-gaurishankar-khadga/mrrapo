@@ -25,7 +25,7 @@ const Payment = require('./models/paymentModel');
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000','https://shrijanav10.netlify.app'],
   credentials: true,
 }));
 app.use(express.json());
@@ -139,7 +139,10 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('http://localhost:3000/profile');
+    const redirectUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://shrijanav10.netlify.app/' 
+    : 'http://localhost:3000/profile';
+    res.redirect(redirectUrl);
   }
 );
 
