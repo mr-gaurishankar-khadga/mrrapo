@@ -25,7 +25,7 @@ const Payment = require('./models/paymentModel');
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://shrijanav101.netlify.app',
   credentials: true,
 }));
 app.use(express.json());
