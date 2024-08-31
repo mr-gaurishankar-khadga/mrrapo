@@ -10,8 +10,6 @@ const Payment = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
   const handlePaymentMethodChange = (event) => {
@@ -64,10 +62,8 @@ const Payment = () => {
       cardNumber: paymentMethod === 'Card Payment' ? cardNumber : undefined,
       expiryDate: paymentMethod === 'Card Payment' ? expiryDate : undefined,
       cvv: paymentMethod === 'Card Payment' ? cvv : undefined,
-      phoneNumber,
-      address,
     };
-  
+
     try {
       const response = await fetch('https://mrrapo.onrender.com/api/payments', {
         method: 'POST',
@@ -76,33 +72,19 @@ const Payment = () => {
         },
         body: JSON.stringify(paymentData),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('Payment stored:', data);
+
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 4000);
       } else {
-        console.error('Failed to store payment data');
+        throw new Error('Failed to store payment data');
       }
     } catch (error) {
       console.error('Error submitting payment:', error);
     }
-  };
-  
-  
-
-  const isFormValid = () => {
-    if (paymentMethod === 'Card Payment') {
-      return (
-        validateCardNumber(cardNumber) &&
-        expiryDate.length === 5 &&
-        cvv.length === 3 &&
-        phoneNumber.length > 0 &&
-        address.length > 0
-      );
-    }
-    return paymentMethod === 'COD' && phoneNumber.length > 0 && address.length > 0;
   };
 
   if (!product) {
@@ -126,14 +108,12 @@ const Payment = () => {
           </thead>
           <tbody>
             <tr>
-
               <td className="product-image-cell">
                 <img
                   src={`https://mrrapo.onrender.com/${product.frontImage}`}
                   alt={product.title}
                   className="product-image"
                 />
-
               </td>
               <td>{product.title}</td>
               <td>Rs.{product.price}</td>
@@ -157,6 +137,7 @@ const Payment = () => {
             />
             <label htmlFor="cod">Cash on Delivery (COD)</label>
           </div>
+
 
           <div className={`payment-option ${paymentMethod === 'Card Payment' ? 'selected' : ''}`}>
             <input
@@ -215,32 +196,6 @@ const Payment = () => {
           </div>
         )}
 
-        <h3 className="contact-details-title">Contact Details</h3>
-        <form className="contact-details-form">
-          <div className="form-group">
-            <label htmlFor="phoneNumber">Phone Number</label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              placeholder="Enter your phone number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="address">Address</label>
-            <input
-              type="text"
-              id="address"
-              placeholder="Enter your address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
-          </div>
-        </form>
-
         {paymentMethod === 'QR Code' && (
           <div className="qr-code-section animate-in">
             <h3>Your QR Code</h3>
@@ -250,23 +205,18 @@ const Payment = () => {
 
         <div className="twobtn">
           <button className="proceed-to-cancel" onClick={() => {/* Handle cancel */}}>Cancel</button>
-          <button
-            className="proceed-to-payment"
-            onClick={handlePaymentSubmission}
-            disabled={!isFormValid()}
-          >
-            Proceed to Payment
-          </button>
+          <button className="proceed-to-payment" onClick={handlePaymentSubmission}>Proceed to Payment</button>
         </div>
 
         {showNotification && (
           <div className="notification">
             Order confirmed successfully!
-            <button className="close-notification" onClick={() => setShowNotification(false)}>
-              ×
+            <button className="close-btn" onClick={() => setShowNotification(false)}>
+              &times; 
             </button>
           </div>
         )}
+
       </div>
     </div>
   );
