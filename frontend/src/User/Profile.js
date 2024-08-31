@@ -56,7 +56,7 @@ const Profile = () => {
         const profileUrl = 
       process.env.NODE_ENV === 'production' 
         ? 'https://shrijanav10.netlify.app/profile' 
-        : 'http://localhost:8000/profile';
+        : 'http://localhost:3000/profile';
         const response = await fetch(profileUrl,{
           credentials: 'include', 
         });
