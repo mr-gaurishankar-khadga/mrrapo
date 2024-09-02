@@ -152,7 +152,7 @@ const ProductUpload = () => {
     });
 
     try {
-      const response = await axios.post('https://mrrapo.onrender.com/api/products', data);
+      const response = await axios.post('http://localhost:8000/api/products', data);
       alert('Product uploaded successfully:', response.data);
       setFormData({
         front: null,

@@ -51,7 +51,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
       }
 
       // Authenticate with backend
-      const response = await axios.post('https://rappo.onrender.com/login', { firstname, password });
+      const response = await axios.post('http://localhost:8000/login', { firstname, password });
       const { token } = response.data;
 
       // Decode the token
@@ -92,15 +92,6 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                     </div>
 
 
-                    
-
-
-
-                    
-
-
-
-
 
                     <div className="input-field animated-input">
                       <input type="text"
@@ -128,7 +119,6 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
 
                     <button className="login-button animated-button" >LOGIN</button>
                       <Loginwithgoogle/>
-
 
                     <div className="bothsignand" style={{display:'flex'}}>
 

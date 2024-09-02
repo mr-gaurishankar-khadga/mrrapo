@@ -64,6 +64,7 @@ const ZoomImageSlider = () => {
           ))}
         </Slider>
       </div>
+      
 
 
       <div className="main-bottom-container">

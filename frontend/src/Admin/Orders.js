@@ -1,4 +1,4 @@
-// Orders.js
+
 import React, { useEffect, useState } from 'react';
 import './Orders.css'; 
 
@@ -10,7 +10,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('https://mrrapo.onrender.com/api/payments');
+        const response = await fetch('http://localhost:8000/api/payments');
         if (!response.ok) {
           throw new Error('Failed to fetch orders');
         }
@@ -46,6 +46,8 @@ const Orders = () => {
             <th>Quantity</th>
             <th>Payment Method</th>
             <th>Price</th>
+            <th>Number</th>
+            <th>address</th>
             <th>Date</th>
           </tr>
         </thead>
@@ -56,7 +58,9 @@ const Orders = () => {
               <td>{order.quantity}</td>
               <td>{order.paymentMethod}</td>
               <td>Rs. {order.price}</td>
-              <td>{formatDate(order.createdAt)}</td> {/* Ensure you're accessing the correct date field */}
+              <td> {order.mobileNumber}</td>
+              <td> {order.address}</td>
+              <td>{formatDate(order.createdAt)}</td> 
             </tr>
           ))}
         </tbody>

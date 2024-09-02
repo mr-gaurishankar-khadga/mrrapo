@@ -46,6 +46,8 @@ import Profile from './User/Profile';
 import Logo from './images/logo.png';
 import TextSlider from './maincomponent/TextSlider';
 import Loginwithgoogle from './CreateAccount/Loginwithgoogle';
+import ProductGrid from './maincomponent/ProductGrid';
+import Search from './maincomponent/Search';
 
 
 
@@ -54,6 +56,13 @@ const App = () => {
   const [isActive, setIsActive] = useState(false);
   const [accountAnchor, setAccountAnchor] = useState(null);
   const [ shopAnchor, setShopAnchor ] = useState(null);
+
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const handleSearch = () => setIsActive(!isActive);
@@ -101,7 +110,10 @@ const handleShopClose = () => {
 
         <ul className="nav-icons">
           <li>
-            <input type="text" className="s" placeholder="Search Product" style={{ marginBottom: '10px', padding: '15px', height: '10px', width: '400px', marginTop: '-10px', borderRadius: '120px', backgroundColor: 'rgb(212,214,218)', outline: 'none', border: 'none' }} />
+            <input type="text" className="s" placeholder="Search Product" style={{ marginBottom: '10px', padding: '15px', height: '10px', width: '400px', marginTop: '-10px', borderRadius: '120px', backgroundColor: 'rgb(212,214,218)', outline: 'none', border: 'none' }} 
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
           </li>
           <li>
             <PersonIcon style={{ color: 'black', cursor: 'pointer' }} onClick={handleAccountClick} />
@@ -182,24 +194,6 @@ const handleShopClose = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {/* Mobile View */}
         <div className="nav-mobile" style={{width:'100%'}}>
           {!isActive && (
@@ -267,17 +261,19 @@ const handleShopClose = () => {
                   <ListItemIcon><PersonIcon style={{color:'black'}}/></ListItemIcon>
                   <ListItemText primary="Profile" style={{color:'black'}}/>
                 </ListItem>
-
               </List>
             </div>
           </Drawer>
         </div>
       </nav>
+      {/* <ZoomImageSlider/> */}
+
+      
 
       <div className="maincontent" style={{height:'',backgroundColor:''}}>
 
         <Routes>
-          <Route path="/" element={<ZoomImageSlider />} />
+          <Route path="/" element={<ZoomImageSlider/>} />
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route path="/CompleteView" element={<CompleteView />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
@@ -297,10 +293,11 @@ const handleShopClose = () => {
           <Route path="/ImageZoom" element={<ImageZoom />} />
           <Route path="/Profile" element={<Profile />} />
           <Route path="/TextSlider" element={<TextSlider />} />
+          {/* <Route path="/Search" element={<Search />} /> */}
           <Route path="/Loginwithgoogle" element={<Loginwithgoogle />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
-        
+        {/* <ProductGrid searchQuery={searchQuery} /> */}
       </div>
     </Router>
   );

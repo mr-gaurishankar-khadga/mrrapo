@@ -1,4 +1,4 @@
-// models/paymentModel.js
+
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
@@ -18,8 +18,16 @@ const paymentSchema = new mongoose.Schema({
     type: Number, 
     required: true 
   },
+  mobileNumber:{
+    type:String,
+    required:true
+  },
+  address:{
+    type:String,
+    required:true
+  },
   cardNumber: {
-    type: String, // Store in encrypted format if needed
+    type: String, 
     required: function () { return this.paymentMethod === 'Card Payment'; },
   },
   expiryDate: {

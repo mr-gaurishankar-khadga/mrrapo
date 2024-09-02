@@ -7,7 +7,7 @@ import GradeIcon from '@mui/icons-material/Grade';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import './ProductGrid.css';
 
-const ProductGrid = () => {
+const ProductGrid = ({ searchQuery = '' }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +18,7 @@ const ProductGrid = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://mrrapo.onrender.com/api/products');
+        const response = await axios.get('http://localhost:8000/api/products');
         setProducts(response.data.products);
       } catch (err) {
         setError(err);
@@ -42,7 +42,6 @@ const ProductGrid = () => {
     navigate('/CompleteView', { state: { product } });
   };
 
-  // Function to handle image load
   const handleImageLoad = (index) => {
     setLoadedImages((prev) => new Set(prev).add(index));
   };
@@ -67,70 +66,87 @@ const ProductGrid = () => {
 
   if (error) return <p>Error loading products: {error.message}</p>;
 
+
+  const normalizedSearchQuery = searchQuery ? searchQuery.toLowerCase() : '';
+
+
+  const filteredProducts = products.filter(
+    (product) =>
+      product.title && 
+      product.title.toLowerCase().includes(normalizedSearchQuery)
+  );
+
   return (
+     <>
+     {/* <ProductGrid searchQuery={searchQuery} /> */}
     <div className="product-grid">
       <h2>New Arrivals</h2>
       <div className="products">
-        {products.map((product, index) => (
-          <div
-            key={product._id}
-            className="product-card"
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => handleClick(product)}
-          >
-            <div className="image-container">
-              <LazyLoad height={250} offset={100}>
-                <img
-                  src={
-                    hoveredIndex === index && product.backImage
-                      ? `https://mrrapo.onrender.com/${product.backImage}`
-                      : `https://mrrapo.onrender.com/${product.frontImage}`
-                  }
-                  alt={product.title}
-                  className={`product-image ${loadedImages.has(index) ? 'fade-in' : 'hidden'}`} 
-                  onLoad={() => handleImageLoad(index)}
-                />
-              </LazyLoad>
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product, index) => (
+            <div
+              key={product._id}
+              className="product-card"
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => handleClick(product)}
+            >
+              <div className="image-container">
+                <LazyLoad height={250} offset={100}>
+                  <img
+                    src={
+                      hoveredIndex === index && product.backImage
+                        ? `http://localhost:8000/${product.backImage}`
+                        : `http://localhost:8000/${product.frontImage}`
+                    }
+                    alt={product.title}
+                    className={`product-image ${loadedImages.has(index) ? 'fade-in' : 'hidden'}`}
+                    onLoad={() => handleImageLoad(index)}
+                  />
+                </LazyLoad>
 
-              <div className="likeiconbtn">
-                <FavoriteIcon className="like-icon" />
+                <div className="likeiconbtn">
+                  <FavoriteIcon className="like-icon" />
+                </div>
+
+                <div className="categories">
+                  <span className="category">{product.categories}</span>
+                </div>
               </div>
 
-              <div className="categories">
-                <span className="category">{product.categories}</span>
+              <div className="product-details">
+                <h3 style={{ fontFamily: 'Twentieth Century' }}>{product.title}</h3>
+
+                <div className="price">
+                  <span className="current-price" style={{ fontFamily: 'Twentieth Century sans-serif' }}>
+                    Rs. {product.price}
+                  </span>
+                </div>
+
+                <div className="rating" style={{ width: '50%', textAlign: 'center', marginLeft: '-15px', justifyContent: 'flex-start' }}>
+                  <span><GradeIcon className="ratingicon" /></span>
+                  <span><GradeIcon className="ratingicon" /></span>
+                  <span><GradeIcon className="ratingicon" /></span>
+                  <span><GradeIcon className="ratingicon" /></span>
+                  <span><GradeIcon className="ratingicon" /></span>
+                </div>
+
+                <div className="Size-options">
+                  <button className="size">S</button>
+                  <button className="size">M</button>
+                  <button className="size">L</button>
+                  <button className="size">XL</button>
+                  <ShoppingCartIcon className="cart-icon" />
+                </div>
               </div>
             </div>
-
-            <div className="product-details">
-              <h3 style={{ fontFamily: 'Twentieth Century' }}>{product.title}</h3>
-
-              <div className="price">
-                <span className="current-price" style={{ fontFamily: 'Twentieth Century sans-serif' }}>
-                  Rs. {product.price}
-                </span>
-              </div>
-
-              <div className="rating" style={{ width: '50%', textAlign: 'center', marginLeft: '-15px',justifyContent:'flex-start' }}>
-                <span><GradeIcon className="ratingicon" /></span>
-                <span><GradeIcon className="ratingicon" /></span>
-                <span><GradeIcon className="ratingicon" /></span>
-                <span><GradeIcon className="ratingicon" /></span>
-                <span><GradeIcon className="ratingicon" /></span>
-              </div>
-
-              <div className="Size-options">
-                <button className="size">S</button>
-                <button className="size">M</button>
-                <button className="size">L</button>
-                <button className="size">XL</button>
-                <ShoppingCartIcon className="cart-icon" />
-              </div>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No products found matching "{searchQuery}"</p>
+        )}
       </div>
     </div>
+    </>
   );
 };
 
