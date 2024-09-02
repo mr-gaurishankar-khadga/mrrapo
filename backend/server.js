@@ -24,19 +24,6 @@ const randomize = require('randomatic');
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 const app = express();
 
 app.use(cors({
@@ -91,13 +78,6 @@ app.post('/verify-otp-to-user', (req, res) => {
 
 
 
-
-
-
-
-
-
-
 // MongoDB User Schema
 const UserSchema = new mongoose.Schema({
   googleId: {
@@ -112,6 +92,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  likedProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 });
 
 const User = mongoose.model('User', UserSchema);
@@ -137,7 +118,7 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser:
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Configure Google Strategy
+// Configure Google Strategy **this is the method for localhost and production based product development**
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -225,10 +206,35 @@ app.get('/logout', (req, res) => {
 });
 
 
+// app.post('/api/likes', async (req, res) => {
+//   if (!req.isAuthenticated()) {
+//     return res.status(401).json({ message: 'User not authenticated' });
+//   }
 
+//   const { productId } = req.body;
 
+//   try {
+//     const user = await User.findById(req.user.id); 
 
+//     // Check if the product is already liked
+//     const isLiked = user.likedProducts.includes(productId);
 
+//     if (isLiked) {
+//       // If already liked, remove the product from likedProducts
+//       user.likedProducts.pull(productId);
+//       await user.save();
+//       return res.status(200).json({ message: 'Product unliked successfully' });
+//     } else {
+//       // If not liked, add the product to likedProducts
+//       user.likedProducts.push(productId);
+//       await user.save();
+//       return res.status(200).json({ message: 'Product liked successfully' });
+//     }
+//   } catch (error) {
+//     console.error('Error handling likes:', error);
+//     return res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
 
 
 
@@ -294,23 +300,6 @@ app.get('/api/payments', async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Login Route
 app.post('/login', async (req, res) => {
   const { firstname, password } = req.body;
@@ -332,23 +321,6 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -487,7 +459,6 @@ app.put('/api/products/:id', upload.fields([
     );
 
 
-
     if (!updatedProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -516,83 +487,21 @@ app.delete('/api/products/:id', async (req, res) => {
 
 
 
-// Search endpoint
+// ***Search api ****
 app.get('/api/products/search', async (req, res) => {
-  const { query } = req.query; // Get the search query from query parameters
-
+  const query = req.query.query;
   try {
-    // Search for products that match the query in title or categories
     const products = await Product.find({
       $or: [
-        { title: { $regex: query, $options: 'i' } }, // Case-insensitive search in title
-        { categories: { $regex: query, $options: 'i' } } // Case-insensitive search in categories
+        { title: { $regex: query, $options: 'i' } }, 
+        { description: { $regex: query, $options: 'i' } } 
       ]
     });
-    
-    res.json(products); // Return matching products
+    res.json(products);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).send('Server Error');
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -647,47 +556,8 @@ app.post('/upload', upload1.array('images', 5), async (req, res) => {
   }
 });
 
-// you images all data 
+// images all data store in this **upload file**
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -729,7 +599,7 @@ const signupSchema = new mongoose.Schema({
 
 const Signup = mongoose.model('Signup', signupSchema);
 
-// Hardcoded JWT secret key
+// Hardcoded JWT secret key for the user *
 const JWT_SECRET = crypto.randomBytes(64).toString('hex');
 console.log(`Generated JWT Secret Key: ${JWT_SECRET}`);
 
@@ -796,7 +666,7 @@ app.post('/api/verify-otp', async (req, res) => {
       user.otp = null;
       await user.save();
 
-      // Generate a JWT token
+      // Generate a JWT token to provide for varify
       const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '30d' });
 
       res.status(200).json({ message: 'OTP verified successfully', token });
@@ -856,7 +726,7 @@ const transporterr = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'ggs699000@gmail.com',
-        pass: 'ggxe sjmy hqyn byjp', // Consider using environment variables for sensitive data
+        pass: 'ggxe sjmy hqyn byjp', 
     },
 });
 
@@ -864,11 +734,9 @@ const transporterr = nodemailer.createTransport({
 app.post('/api/send-otp', (req, res) => {
     const { email } = req.body;
 
-    // Generate a random OTP
-    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-    users[email] = otp; // Store OTP with email
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    users[email] = otp; 
 
-    // Send OTP email
     const mailOptionss = {
         from: 'ggs699000@gmail.com',
         to: email,
@@ -910,26 +778,6 @@ app.post('/api/verify-otp1', (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // GET endpoint to fetch all signups
 app.get('/api/signups', async (req, res) => {
   try {
@@ -947,7 +795,7 @@ app.delete('/api/signups/:id', async (req, res) => {
   try {
     const userId = req.params.id;
 
-    // Check if the ID is valid
+    // Check if the ID is valid ** in this api check the user is valid user **
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: 'Invalid user ID' });
     }
@@ -965,23 +813,6 @@ app.delete('/api/signups/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete user.' });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

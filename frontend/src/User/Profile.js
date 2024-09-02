@@ -11,7 +11,7 @@ import UserOrders from './UserOrders';
 import UserReturns from './UserReturns';
 import Likes from './Likes';
 import ShoppingCartView from '../maincomponent/ShoppingCartView'
-
+import FavoriteIcon from '@mui/icons-material/Favorite';
 const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState('Dashboard');
@@ -21,20 +21,6 @@ const Profile = () => {
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   const [user, setUser] = useState(null);
@@ -160,7 +146,7 @@ const Profile = () => {
 
             <ListItem button onClick={() => handleItemClick('Likes')}>
               <ListItemIcon>
-                <FavoriteBorderIcon sx={{ color: 'black' }} />
+                <FavoriteIcon sx={{ color: 'black' }} />
               </ListItemIcon>
               <ListItemText primary="Likes" />
             </ListItem>

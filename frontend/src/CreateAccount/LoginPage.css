@@ -140,7 +140,7 @@
     outline: none;
 }
 
-input:focus {
+.login-container input:focus {
     border-color: #fdd835;
     box-shadow: 0 4px 15px rgba(253, 216, 53, 0.3);
 }

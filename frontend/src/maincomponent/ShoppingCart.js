@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import './ShoppingCart.css'; // Ensure this path is correct
-
+import './ShoppingCart.css';
+import { Link } from 'react-router-dom';
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
@@ -48,8 +48,8 @@ const ShoppingCart = () => {
       </div>
 
       <div className="cart-buttons">
-        <button className="view-cart"> View cart </button>
-        <button className="checkout"> Check out </button>
+        <button className="view-cart"><Link to='/ShoppingCartView'> View cart </Link>  </button>
+        {/* <button className="checkout"> Check out </button> */}
       </div>
 
     </div>

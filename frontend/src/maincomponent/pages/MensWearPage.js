@@ -1,4 +1,4 @@
-// Boys.js
+// Boys.js in this page we have only created fro all MensRelated dress
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
@@ -20,7 +20,6 @@ const MensWearPage = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/products');
-        // Filter products based on category "Boys"
         const boysProducts = response.data.products.filter(
           (product) => product.categories.toLowerCase() === 'boys'
         );
@@ -54,7 +53,6 @@ const MensWearPage = () => {
   if (loading) {
     return (
       <div className="product-grid">
-        <h2>New Arrivals for Boys</h2>
         <div className="products">
           {Array.from({ length: 8 }).map((_, index) => (
             <div className="product-card" key={index}>
@@ -73,7 +71,7 @@ const MensWearPage = () => {
 
   return (
     <div className="product-grid">
-      <h2>New Arrivals for Boys</h2>
+      {/* <h2>New Arrivals for Boys</h2> */}
       <div className="products">
         {products.map((product, index) => (
           <div

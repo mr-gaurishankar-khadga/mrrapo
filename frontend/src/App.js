@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { IconButton, InputBase, AppBar, Toolbar, Typography, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Popover, Paper, Divider, Avatar } from '@mui/material';
 
 
-
+// import ShoppingCartIcon from './maincomponent/ShoppingCartIcon';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
@@ -39,7 +39,6 @@ import Logout from './CreateAccount/Logout';
 
 import Slider1 from './maincomponent/images/aa1.webp'
 
-import ImageZoom from './ImageZoom';
 import ShoppingCartView from './maincomponent/ShoppingCartView';
 import LoginPage from './CreateAccount/LoginPage';
 import Profile from './User/Profile';
@@ -48,6 +47,10 @@ import TextSlider from './maincomponent/TextSlider';
 import Loginwithgoogle from './CreateAccount/Loginwithgoogle';
 import ProductGrid from './maincomponent/ProductGrid';
 import Search from './maincomponent/Search';
+import MainHome from './maincomponent/MainHome';
+import HomePage from './maincomponent/pages/HomePage';
+import SearchIngine from './maincomponent/SearchIngine';
+import ShoppingCartIcon from './maincomponent/ShoppingCartIcon';
 
 
 
@@ -57,12 +60,6 @@ const App = () => {
   const [accountAnchor, setAccountAnchor] = useState(null);
   const [ shopAnchor, setShopAnchor ] = useState(null);
 
-
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const handleSearch = () => setIsActive(!isActive);
@@ -88,6 +85,13 @@ const handleShopClose = () => {
     setShopAnchor(null);
 };
 
+const [totalProducts, setTotalProducts] = useState(0);
+
+useEffect(() => {
+  const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  const total = savedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+  setTotalProducts(total);
+}, []);
 
   return (
     <Router>
@@ -100,27 +104,25 @@ const handleShopClose = () => {
         <div className="nav-desktop">
         <img src={Logo} alt="" className="" style={{ height: '150px', width: '300px', marginTop: '5px', marginLeft: '-20px' }} />
         <ul className="nav-links">
-          <li><Link to="/ContactPage">Contact</Link></li>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/MensWearPage">MensWear</Link></li>
-          <li><Link to="/WomensWearPage">WomensWear</Link></li>
-          <li><Link to="/SalesPage">Sales</Link></li>
+          <li><Link to="/ContactPage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>Contact</Link></li>
+          <li><Link to="/HomePage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>Home</Link></li>
+          <li><Link to="/MensWearPage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>MensWear</Link></li>
+          <li><Link to="/WomensWearPage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>WomensWear</Link></li>
+          <li><Link to="/SalesPage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>Sales</Link></li>
         </ul>
         
 
         <ul className="nav-icons">
           <li>
-            <input type="text" className="s" placeholder="Search Product" style={{ marginBottom: '10px', padding: '15px', height: '10px', width: '400px', marginTop: '-10px', borderRadius: '120px', backgroundColor: 'rgb(212,214,218)', outline: 'none', border: 'none' }} 
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
+            <SearchIngine/>
           </li>
-          <li>
+
+          <li style={{marginTop:'-3px'}}>
             <PersonIcon style={{ color: 'black', cursor: 'pointer' }} onClick={handleAccountClick} />
           </li>
 
-          <li onClick={handleShopClick}>
-            <AddShoppingCartIcon titleAccess='ShoppingCart' style={{ cursor: 'pointer' }} />
+          <li onClick={handleShopClick} style={{marginTop:'-3px',marginRight:'50px'}}>
+            <ShoppingCartIcon itemCount={totalProducts} titleAccess='ShoppingCart' style={{ cursor: 'pointer' }}/>
           </li>
         </ul>
       </div>
@@ -128,68 +130,57 @@ const handleShopClose = () => {
 
 
 
-                    <Popover open={Boolean(accountAnchor)} anchorEl={accountAnchor} onClose={handleAccountClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }} transformOrigin={{     vertical: 'top',     horizontal: 'right', }} >
-
-                      <Paper style={{ maxWidth: 300, padding: 10, color:'white',backgroundColor:'rgb(15,15,15)' }}>
-                          <Box display="flex" alignItems="center" mb={2}>
-                              <Avatar alt="User Avatar" src={slider1} style={{border:'2px solid white'}}/> 
-                              
-                              <Box ml={2}>
-                                  <Typography variant="h6">
-                                      gshankar
-                                  </Typography>
-                                  <Typography variant="subtitle1">
-                                      @MRGAURISHANKAR413
-                                  </Typography>
-                              </Box>
-                          </Box>
-
-                          <div className="divider"></div>
-
-                          <List>
-                            <ListItem button component={Link} to="/LoginPage">
-                                <ListItemIcon style={{color:'white'}}>
-                                    <LoginIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Login" />
-                            </ListItem>
-
-                            <ListItem button component={Link} to="/Logout">
-                                <ListItemIcon style={{color:'white'}}>
-                                    <ArrowCircleLeftIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Logout" />
-                            </ListItem>
-
-                            <ListItem button component={Link} to="/Profile">
-                                <ListItemIcon style={{color:'white'}}>
-                                    <PersonIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Profile" />
-                            </ListItem>
-                          </List>
-                        </Paper>
-                      </Popover>
-
-
-
-
-                      <Popover open={Boolean(shopAnchor)} onClose={handleShopClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} PaperProps={{ style: {color: 'white',maxHeight:'' } }} > 
-                        <Paper style={{color: 'white',backgroundColor: '',overflowY: 'scroll',scrollbarWidth: 'none', }} >
-                        <style>
-                          {`
-                            /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
-                            ::-webkit-scrollbar {
-                              width: 0px;
-                              background: transparent; /* Optional: just in case it's visible */
-                              }
-                              `}
-                        </style>
-                        
-                      </Paper>
-                        <ShoppingCart />
-                    </Popover>
-
+      <Popover open={Boolean(accountAnchor)} anchorEl={accountAnchor} onClose={handleAccountClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }} transformOrigin={{     vertical: 'top',     horizontal: 'right', }} >
+        <Paper style={{ maxWidth: 300, padding: 10, color:'white',backgroundColor:'rgb(15,15,15)' }}>
+            <Box display="flex" alignItems="center" mb={2}>
+                <Avatar alt="User Avatar" src={slider1} style={{border:'2px solid white'}}/> 
+                
+                <Box ml={2}>
+                    <Typography variant="h6">
+                        gshankar
+                    </Typography>
+                    <Typography variant="subtitle1">
+                        @MRGAURISHANKAR413
+                    </Typography>
+                </Box>
+            </Box>
+            <div className="divider"></div>
+            <List>
+              <ListItem button component={Link} to="/LoginPage">
+                  <ListItemIcon style={{color:'white'}}>
+                      <LoginIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Login" />
+              </ListItem>
+              <ListItem button component={Link} to="/Logout">
+                  <ListItemIcon style={{color:'white'}}>
+                      <ArrowCircleLeftIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" />
+              </ListItem>
+              <ListItem button component={Link} to="/Profile">
+                  <ListItemIcon style={{color:'white'}}>
+                      <PersonIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
+              </ListItem>
+            </List>
+          </Paper>
+        </Popover>
+        <Popover open={Boolean(shopAnchor)} onClose={handleShopClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} PaperProps={{ style: {color: 'white',maxHeight:'' } }} > 
+          <Paper style={{color: 'white',backgroundColor: '',overflowY: 'scroll',scrollbarWidth: 'none', }} >
+            <style>
+              {`
+                /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+                ::-webkit-scrollbar {
+                  width: 0px;
+                  background: transparent; /* Optional: just in case it's visible */
+                  }
+                  `}
+            </style>
+          </Paper>
+            <ShoppingCart />
+        </Popover>
 
 
 
@@ -266,18 +257,17 @@ const handleShopClose = () => {
           </Drawer>
         </div>
       </nav>
-      {/* <ZoomImageSlider/> */}
 
       
 
       <div className="maincontent" style={{height:'',backgroundColor:''}}>
-
         <Routes>
-          <Route path="/" element={<ZoomImageSlider/>} />
+          <Route path="/" element={<MainHome/>} />
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route path="/CompleteView" element={<CompleteView />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
           <Route path="/CartItem" element={<CartItem />} />
+          <Route path="/SearchIngine" element={<SearchIngine />} />
           <Route path="/Setup" element={<Setup />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/SalesPage" element={<SalesPage />} />
@@ -290,14 +280,13 @@ const handleShopClose = () => {
           <Route path="/Payment" element={<Payment />} />
           <Route path="/Logout" element={<Logout />} />
           <Route path="/ShoppingCartView" element={<ShoppingCartView />} />
-          <Route path="/ImageZoom" element={<ImageZoom />} />
           <Route path="/Profile" element={<Profile />} />
           <Route path="/TextSlider" element={<TextSlider />} />
-          {/* <Route path="/Search" element={<Search />} /> */}
+          <Route path="/HomePage" element={<HomePage />} />
+          <Route path="/Search" element={<Search />} />
           <Route path="/Loginwithgoogle" element={<Loginwithgoogle />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
-        {/* <ProductGrid searchQuery={searchQuery} /> */}
       </div>
     </Router>
   );

@@ -330,12 +330,12 @@ const Payment = () => {
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Enter your address"
             className="address-of-user"
-            style={{padding:'10px',margin:'10px',borderRadius:''}}
+            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
             required
           />
 
           <button type="button" className="location-btn" onClick={fetchCurrentLocation}
-          style={{padding:'10px',margin:'10px'}}
+            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
           >
             Current Location
           </button>
@@ -350,13 +350,13 @@ const Payment = () => {
             value={mobileNumber}
             onChange={(e) => setMobileNumber(e.target.value)}
             onBlur={() => validateMobileNumber(mobileNumber)}
-            placeholder="Enter your mobile number"
+            placeholder="+91"
             className="address-of-user"
-            style={{padding:'10px',margin:'10px'}}
+            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
             required
           />
           <button type="button" onClick={handleSendOtp}
-           style={{padding:'10px 30px 10px 25px',margin:'10px'}}
+           style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'40%'}}
           >
             Send OTP
           </button>
@@ -373,7 +373,7 @@ const Payment = () => {
                   style={{padding:'10px',margin:'10px'}}
                 />
               <button type="button" onClick={handleVerifyOtp}
-               style={{padding:'10px',margin:'10px'}}
+               style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
               >
                 Verify OTP
               </button>
@@ -383,7 +383,7 @@ const Payment = () => {
           
 
         <button className="submit-payment-btn" onClick={handlePaymentSubmission}
-        style={{padding:'15px 50px 10px 50px',margin:'10px',borderRadius:'10px',width:'94%'}}
+        style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'90%',marginTop:'20px'}}
         >
           Submit Payment
         </button>

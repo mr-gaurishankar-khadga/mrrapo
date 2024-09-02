@@ -7,12 +7,13 @@ import GradeIcon from '@mui/icons-material/Grade';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import './ProductGrid.css';
 
-const ProductGrid = ({ searchQuery = '' }) => {
+const ProductGrid = ({ searchQuery = '', user }) => {  // Added user prop
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [loadedImages, setLoadedImages] = useState(new Set());
+  const [likedProducts, setLikedProducts] = useState(new Set()); // State for liked products
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,12 +40,38 @@ const ProductGrid = ({ searchQuery = '' }) => {
   };
 
   const handleClick = (product) => {
+    window.scrollTo(0, 0);
     navigate('/CompleteView', { state: { product } });
   };
 
   const handleImageLoad = (index) => {
     setLoadedImages((prev) => new Set(prev).add(index));
   };
+
+  const handleLikeClick = async (productId) => {
+    if (!user) { // If user is not logged in, redirect
+      navigate('/LoginPage');
+      return;
+    }
+  
+    try {
+      const response = await axios.post('http://localhost:8000/api/likes', { productId });
+      
+      // Update local liked products state based on the response
+      if (response.data.message.includes('liked')) {
+        setLikedProducts((prev) => new Set(prev).add(productId)); // Add product ID to liked state
+      } else {
+        setLikedProducts((prev) => {
+          const newLiked = new Set(prev);
+          newLiked.delete(productId); // Remove product ID from liked state
+          return newLiked;
+        });
+      }
+    } catch (error) {
+      console.error('Error liking product:', error);
+    }
+  };
+  
 
   if (loading) {
     return (
@@ -66,9 +93,7 @@ const ProductGrid = ({ searchQuery = '' }) => {
 
   if (error) return <p>Error loading products: {error.message}</p>;
 
-
   const normalizedSearchQuery = searchQuery ? searchQuery.toLowerCase() : '';
-
 
   const filteredProducts = products.filter(
     (product) =>
@@ -77,8 +102,6 @@ const ProductGrid = ({ searchQuery = '' }) => {
   );
 
   return (
-     <>
-     {/* <ProductGrid searchQuery={searchQuery} /> */}
     <div className="product-grid">
       <h2>New Arrivals</h2>
       <div className="products">
@@ -105,8 +128,8 @@ const ProductGrid = ({ searchQuery = '' }) => {
                   />
                 </LazyLoad>
 
-                <div className="likeiconbtn">
-                  <FavoriteIcon className="like-icon" />
+                <div className="likeiconbtn" onClick={(e) => { e.stopPropagation(); handleLikeClick(product._id); }}>
+                  <FavoriteIcon className={`like-icon ${likedProducts.has(product._id) ? 'liked' : ''}`} />
                 </div>
 
                 <div className="categories">
@@ -124,11 +147,9 @@ const ProductGrid = ({ searchQuery = '' }) => {
                 </div>
 
                 <div className="rating" style={{ width: '50%', textAlign: 'center', marginLeft: '-15px', justifyContent: 'flex-start' }}>
-                  <span><GradeIcon className="ratingicon" /></span>
-                  <span><GradeIcon className="ratingicon" /></span>
-                  <span><GradeIcon className="ratingicon" /></span>
-                  <span><GradeIcon className="ratingicon" /></span>
-                  <span><GradeIcon className="ratingicon" /></span>
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}><GradeIcon className="ratingicon" /></span>
+                  ))}
                 </div>
 
                 <div className="Size-options">
@@ -146,7 +167,6 @@ const ProductGrid = ({ searchQuery = '' }) => {
         )}
       </div>
     </div>
-    </>
   );
 };
 

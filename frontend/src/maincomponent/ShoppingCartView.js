@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './ShoppingCartView.css';
 
-
-
 const ShoppingCartView = () => {
   const [cartItems, setCartItems] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
@@ -27,6 +25,7 @@ const ShoppingCartView = () => {
   const handleBuyNow = (item) => {
     navigate('/Payment', { state: { product: item, quantity: item.quantity } });
   };
+
 
   return (
     <div className="cart-container">
@@ -58,9 +57,6 @@ const ShoppingCartView = () => {
           <p>Shipping and taxes calculated at checkout.</p>
         </div>
         <h2 className="subtotal-amount">${cartTotal.toFixed(2)}</h2>
-      </div>
-      <div className="cart-buttons">
-        <button className="checkout"> Check out </button>
       </div>
     </div>
   );

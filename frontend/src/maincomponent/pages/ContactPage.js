@@ -40,7 +40,7 @@ function ContactPage() {
 
           <div className="contact-info">
             <h1 style={{fontFamily:'Twentieth Century sans-serif'}}> Help Desk</h1>
-            <p>Email: admin@gmail.com</p>
+            <p style={{marginTop:'-25px',letterSpacing:'2px'}}>Email: admin@gmail.com</p>
           </div>
 
           <form onSubmit={handleSubmit}>

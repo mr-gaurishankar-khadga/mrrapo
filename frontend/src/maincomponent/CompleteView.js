@@ -5,6 +5,7 @@ import './ProductDetail.css';
 import FeatureSection from './FeatureSection';
 import ShoppingCart from './ShoppingCart';
 import { IconButton, Popover, Paper, Button } from '@mui/material';
+import ProductGrid from './ProductGrid';
 
 const CompleteView = () => {
   const location = useLocation();
@@ -75,11 +76,6 @@ const CompleteView = () => {
     }
   };
 
-  const removeFromCart = (id) => {
-    setCartItems((prevItems) => prevItems.filter(item => item.id !== id));
-  };
-
-  const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <>
@@ -223,6 +219,13 @@ const CompleteView = () => {
           <p>No product data available.</p> 
         )}
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <ProductGrid/>
     </>
   );
 };
