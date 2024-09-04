@@ -7,6 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import GradeIcon from '@mui/icons-material/Grade';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import '../ProductGrid.css';
+import MensSlider from './MensSlider';
 
 const MensWearPage = () => {
   const [products, setProducts] = useState([]);
@@ -71,8 +72,8 @@ const MensWearPage = () => {
 
   return (
     <div className="product-grid">
-      {/* <h2>New Arrivals for Boys</h2> */}
-      <div className="products">
+      <MensSlider/>
+      <div className="products" style={{marginTop:'-100px'}}>
         {products.map((product, index) => (
           <div
             key={product._id}

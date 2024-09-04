@@ -7,6 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import GradeIcon from '@mui/icons-material/Grade';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import '../ProductGrid.css';
+import MensSlider from './MensSlider';
 
 const WomensWearPage = () => {
   const [products, setProducts] = useState([]);
@@ -54,6 +55,7 @@ const WomensWearPage = () => {
   if (loading) {
     return (
       <div className="product-grid">
+
         <div className="products">
           {Array.from({ length: 8 }).map((_, index) => (
             <div className="product-card" key={index}>
@@ -75,8 +77,8 @@ const WomensWearPage = () => {
 
   return (
     <div className="product-grid">
-
-      <div className="products">
+              <MensSlider/>
+      <div className="products" style={{marginTop:'-100px'}}>
         {products.map((product, index) => (
           <div
             key={product._id}

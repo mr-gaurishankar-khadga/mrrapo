@@ -29,7 +29,7 @@ const ShoppingCartView = () => {
 
   return (
     <div className="cart-container">
-      <h2 className="cart-title">Shopping Cart</h2>
+      {/* <h2 className="cart-title">Shopping Cart</h2> */}
       {cartItems.length > 0 ? (
         <div className="cart-grid">
           {cartItems.map((item) => (

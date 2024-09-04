@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './LoginPage.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
+import img from './images/loginback.webp'
 import { Box, IconButton, Avatar, Typography, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Dashboard, VideoLibrary, Analytics, Comment, Subtitles, Copyright, Settings, Feedback, People,ThumbDown,ThumbUp} from '@mui/icons-material';
 
@@ -82,6 +82,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
 
     return (
         <div className="login-page">
+          {/* <img src={img} alt="" /> */}
             <form onSubmit={handleSubmit}>
             <div className="phone-frame">
                 <div className="login-container" >

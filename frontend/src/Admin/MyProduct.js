@@ -133,7 +133,6 @@ const MyProduct = () => {
                   }
                   alt={product.title}
                   className="product-showcase-image"
-                  style={{ height: ''}}
                 />
               </LazyLoad>
               <div className="product-showcase-categories">
@@ -144,7 +143,7 @@ const MyProduct = () => {
             </div>
 
             <div className="product-showcase-details">
-              <h3>{product.title}</h3>
+              <h3 style={{fontSize:'18px'}}>{product.title}</h3>
               <div className="product-showcase-price">
                 <span className="current-price">Rs. {product.price}</span>
               </div>
@@ -153,8 +152,12 @@ const MyProduct = () => {
                   <span key={size} className="product-showcase-size">{size}</span>
                 )) : product.sizes}
               </div>
-              <button className="product-showcase-edit-button" onClick={() => handleEditClick(product)}>Edit</button>
-              <button className="product-showcase-delete-button" onClick={() => handleDeleteClick(product._id)}>Delete</button>
+              <div className="deleteandupdate" style={{display:'flex',justifyContent:'center'}}>
+                <button className="product-showcase-delete-button" onClick={() => handleDeleteClick(product._id)} style={{marginRight:'4px',width:'40%'}}>Delete</button>
+                <button className="product-showcase-edit-button" onClick={() => handleEditClick(product)} >Edit</button>
+              </div>
+
+
             </div>
           </div>
         ))}

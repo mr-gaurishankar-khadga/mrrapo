@@ -3,10 +3,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: gradientBackground 10s ease infinite;
-  padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  height: auto;
+  width: 100vw; /* Ensure the width covers the full viewport */
+  background-repeat: no-repeat;
+  background-size: cover; /* Scale the image to cover the entire background */
+  background-position: center; /* Center the image */
+  /* background-image: url('./images/loginback.webp'); */
 }
 
 /* Form Section */

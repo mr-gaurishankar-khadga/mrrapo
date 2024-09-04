@@ -236,11 +236,13 @@ const Payment = () => {
                   className="product-image-all"
                 />
               </td>
+
               <td>{product.title}</td>
               <td>Rs.{product.price}</td>
               <td>{quantity}</td>
               <td>Rs.{product.price * quantity}</td>
             </tr>
+            
           </tbody>
         </table>
 

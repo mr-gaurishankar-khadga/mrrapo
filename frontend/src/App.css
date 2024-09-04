@@ -4,7 +4,7 @@
 
 
 
-/* Common styles  for all the mobile and desltop view as per the user interface*/
+/** Common styles  for all the mobile and desltop view as per the user interface **/
 .navbar {
   display: flex;
   align-items: center;
@@ -96,9 +96,7 @@
   top: 0;
   left: 0;
   right: 0;
-  /* background-color: #fff; */
   padding: 10px;
-  /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
   display: flex;
   align-items: center;
 }

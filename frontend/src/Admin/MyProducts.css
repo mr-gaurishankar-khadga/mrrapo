@@ -5,18 +5,10 @@
     background-color: #f9f9f9;
   }
   
-  h2 {
-    text-align: center;
-    font-size: 2.5em;
-    color: #333;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
   
   .product-showcase-products {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     height: 100%;
     width: 100%;
   }
@@ -26,14 +18,13 @@
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.1s, box-shadow 0.3s;
     height: 100%;
     width: 300px;
-
   }
   
   .product-showcase-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
   
@@ -43,7 +34,7 @@
   }
   
   .product-showcase-image {
-    height: 350px;
+    height: 320px;
     width: 100%;
     object-fit: cover;
     border-bottom: 2px solid #e0e0e0;
@@ -94,17 +85,17 @@
   
   .product-showcase-edit-button {
     padding: 10px;
-    background-color: rgb(37, 33, 33);
+    background-color: rgb(4,170,109);
     border-radius: 10px;
     width: 100%;
     margin-top: 10px;
    outline: none;
    color: white;
+   outline: none;
+   border: none;
+   cursor: pointer;
   }
   
-  .product-showcase-edit-button:hover {
-    background-color: #7fbdfc;
-  }
   
   .product-showcase-edit-form {
     padding: 10px;
@@ -114,16 +105,19 @@
     max-width: 500px;
     margin-top: 10px;
     outline: none;
+    border: none;
   }
   
   .product-showcase-delete-button {
     margin-top: 10px;
     padding: 10px;
-    background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    background-color: red;
+    background-color: rgb(244,67,54);
+    outline: none;
+    border: none;
+    cursor: pointer;
   }
   
   
@@ -208,7 +202,7 @@
   }
   
   .product-showcase-update-button {
-    background-color: #4CAF50;
+    background-color: rgb(4,170,109);
     color: #fff;
   }
   

@@ -21,9 +21,6 @@ const randomize = require('randomatic');
 
 
 
-
-
-
 const app = express();
 
 app.use(cors({
@@ -35,54 +32,18 @@ app.use(express.json());
 const mongoDbUrl = process.env.MONGO_DB_CONNECTION_MY_DATABASE;
 
 mongoose.connect(mongoDbUrl)
-.then(() => {
-  console.log('MongoDB connected');
-})
-.catch((err) => {
-  console.error('Failed to connect to MongoDB', err);
-});
+  .then(() => {
+    console.log('MongoDB connected');
+  })
+  .catch((err) => {
+    console.error('Failed to connect to MongoDB', err);
+  });
 
-
-
-
-
-
-
-let otpStore = {}; 
-
-// Endpoint to send OTP
-app.post('/send-otp-to-user', (req, res) => {
-    const { mobileNumber } = req.body;
-    const otp = randomize('0', 6); 
-
-    otpStore[mobileNumber] = otp; 
-    res.json({ message: 'OTP sent successfully' });
-});
-
-// Endpoint to verify OTP
-app.post('/verify-otp-to-user', (req, res) => {
-    const { mobileNumber, otp } = req.body;
-    if (otpStore[mobileNumber] && otpStore[mobileNumber] === otp) {
-        delete otpStore[mobileNumber];
-        return res.json({ message: 'OTP verified successfully' });
-    }
-    return res.status(400).json({ message: 'Invalid OTP' });
-});
-
-
-
-
-
-
-
-
-
-
-// MongoDB User Schema
 const UserSchema = new mongoose.Schema({
   googleId: {
     type: String,
     required: true,
+    unique: true, 
   },
   displayName: {
     type: String,
@@ -91,34 +52,25 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true, 
   },
-  likedProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 });
 
 const User = mongoose.model('User', UserSchema);
 
-
 const generateRandomSecretKey = () => {
-  return crypto.randomBytes(32).toString('hex'); 
+  return crypto.randomBytes(32).toString('hex');
 };
 
-// Session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || generateRandomSecretKey(), 
+  secret: process.env.SESSION_SECRET || generateRandomSecretKey(),
   resave: false,
   saveUninitialized: false,
 }));
 
-// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
-
-// Configure Google Strategy **this is the method for localhost and production based product development**
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -168,22 +120,20 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('http://localhost:3000/profile');
+    // Set isLoggedIn in local storage
+    res.redirect('http://localhost:3000/profile?isLoggedIn=true');
   }
 );
 
-app.get('/profile', async (req, res) => {
-  console.log('Profile route accessed');
 
+app.get('/profile', async (req, res) => {
   if (!req.isAuthenticated()) {
-    console.log('User not authenticated');
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
-  const user = req.user; 
+  const user = req.user;
 
   if (!user) {
-    console.log('User not found in session');
     return res.status(404).json({ message: 'User not found' });
   }
 
@@ -194,16 +144,74 @@ app.get('/profile', async (req, res) => {
   });
 });
 
-// Logout route
 app.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) {
-      console.error('Logout error:', err);
       return res.redirect('/');
     }
-    res.redirect('/');
+    // Clear isLoggedIn flag from local storage on the frontend
+    res.redirect('http://localhost:3000/?isLoggedIn=false');
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // app.post('/api/likes', async (req, res) => {
@@ -236,6 +244,27 @@ app.get('/logout', (req, res) => {
 //   }
 // });
 
+
+let otpStore = {}; 
+
+// Endpoint to send OTP
+app.post('/send-otp-to-user', (req, res) => {
+    const { mobileNumber } = req.body;
+    const otp = randomize('0', 6); 
+
+    otpStore[mobileNumber] = otp; 
+    res.json({ message: 'OTP sent successfully' });
+});
+
+// Endpoint to verify OTP
+app.post('/verify-otp-to-user', (req, res) => {
+    const { mobileNumber, otp } = req.body;
+    if (otpStore[mobileNumber] && otpStore[mobileNumber] === otp) {
+        delete otpStore[mobileNumber];
+        return res.json({ message: 'OTP verified successfully' });
+    }
+    return res.status(400).json({ message: 'Invalid OTP' });
+});
 
 
 

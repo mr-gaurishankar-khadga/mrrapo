@@ -2,8 +2,6 @@ import React, { useState,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { IconButton, InputBase, AppBar, Toolbar, Typography, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Popover, Paper, Divider, Avatar } from '@mui/material';
 
-
-// import ShoppingCartIcon from './maincomponent/ShoppingCartIcon';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
@@ -21,7 +19,6 @@ import WomensWearPage from './maincomponent/pages/WomensWearPage';
 import ContactPage from './maincomponent/pages/ContactPage';
 import CompleteView from '../src/maincomponent/CompleteView';
 import ShoppingCart from '../src/maincomponent/ShoppingCart';
-import DisplayPage from './DisplayPage';
 
 
 import ProductDetail from '../src/maincomponent/ProductDetail';
@@ -33,11 +30,8 @@ import ProfileMenu from './maincomponent/ProfileMenu';
 
 
 import slider1 from './maincomponent/images/sl2.webp';
-import ZoomImageSlider from '../src/maincomponent/Slider';
 import Payment from './maincomponent/Payment';
 import Logout from './CreateAccount/Logout';
-
-import Slider1 from './maincomponent/images/aa1.webp'
 
 import ShoppingCartView from './maincomponent/ShoppingCartView';
 import LoginPage from './CreateAccount/LoginPage';
@@ -45,12 +39,12 @@ import Profile from './User/Profile';
 import Logo from './images/logo.png';
 import TextSlider from './maincomponent/TextSlider';
 import Loginwithgoogle from './CreateAccount/Loginwithgoogle';
-import ProductGrid from './maincomponent/ProductGrid';
 import Search from './maincomponent/Search';
 import MainHome from './maincomponent/MainHome';
 import HomePage from './maincomponent/pages/HomePage';
 import SearchIngine from './maincomponent/SearchIngine';
 import ShoppingCartIcon from './maincomponent/ShoppingCartIcon';
+import MensSlider from './maincomponent/pages/MensSlider';
 
 
 
@@ -95,11 +89,12 @@ useEffect(() => {
 
   return (
     <Router>
+
         <div className="logocontainer" style={{width:'',display:'flex',justifyContent:'center',backgroundColor:'black',color:'white',letterSpacing:'2px'}}>
           <TextSlider/>
         </div>
-
       <nav className="navbar">
+
         {/* Desktop View */}
         <div className="nav-desktop">
         <img src={Logo} alt="" className="" style={{ height: '150px', width: '300px', marginTop: '5px', marginLeft: '-20px' }} />
@@ -273,7 +268,6 @@ useEffect(() => {
           <Route path="/SalesPage" element={<SalesPage />} />
           <Route path="/MensWearPage" element={<MensWearPage />} />
           <Route path="/WomensWearPage" element={<WomensWearPage />} />
-          <Route path="/DisplayPage" element={<DisplayPage />} />
           <Route path="/ShoppingCart" element={<ShoppingCart />} />
           <Route path="/ProfileMenu" element={<ProfileMenu />} />
           <Route path="/ShoppingCart" element={<ShoppingCart />} />
@@ -284,6 +278,7 @@ useEffect(() => {
           <Route path="/TextSlider" element={<TextSlider />} />
           <Route path="/HomePage" element={<HomePage />} />
           <Route path="/Search" element={<Search />} />
+          <Route path="/MensSlider" element={<MensSlider />} />
           <Route path="/Loginwithgoogle" element={<Loginwithgoogle />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
