@@ -112,7 +112,7 @@ const Payment = () => {
 
   const sendSMS = async (mobileNumber, message) => {
     try {
-      const response = await fetch('http://localhost:8000/api/send-otp-to-user', { 
+      const response = await fetch('https://mrrapo.onrender.com/api/send-otp-to-user', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ const Payment = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:8000/api/payments', {
+      const response = await fetch('https://mrrapo.onrender.com/api/payments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -231,7 +231,7 @@ const Payment = () => {
             <tr>
               <td className="product-image-cell">
                 <img
-                  src={`http://localhost:8000/${product.frontImage}`}
+                  src={`https://mrrapo.onrender.com/${product.frontImage}`}
                   alt={product.title}
                   className="product-image-all"
                 />

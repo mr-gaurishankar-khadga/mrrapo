@@ -51,7 +51,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
       }
 
       // Authenticate with backend
-      const response = await axios.post('http://localhost:8000/login', { firstname, password });
+      const response = await axios.post('https://mrrapo.onrender.com/login', { firstname, password });
       const { token } = response.data;
 
       // Decode the token
@@ -88,7 +88,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
                 <div className="login-container" >
                     <img src={Logo} alt="" className="animated-logo" style={{marginTop:'-20px'}}/>
                     <div className="information" >
-                        <h2 className="animated" style={{fontFamily:'Twentieth Century sans-serif'}}>Welcome to WENLI</h2>
+                        <h2 className="animated" style={{fontFamily:'Twentieth Century sans-serif'}}>Welcome To WENLI</h2>
                         <p className="subheading animated-subheading" style={{textAlignLast:'center', marginTop:'', fontFamily:'Twentieth Century sans-serif'}}>Keep your data safe</p>
                     </div>
 

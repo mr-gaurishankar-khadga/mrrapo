@@ -31,7 +31,7 @@ const ProductGrid = ({ searchQuery = '', user }) => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`http://localhost:8000/api/products?page=${page}&search=${searchQuery}`);
+      const response = await axios.get(`https://mrrapo.onrender.com/api/products?page=${page}&search=${searchQuery}`);
       const shuffledProducts = shuffleArray(response.data.products);
       setProducts((prev) => [...prev, ...shuffledProducts]);
       setHasMore(response.data.products.length > 0);
@@ -110,8 +110,8 @@ const ProductCard = React.memo(({
         <img
           src={
             hoveredIndex === index && product.backImage
-              ? `http://localhost:8000/${product.backImage}`
-              : `http://localhost:8000/${product.frontImage}`
+              ? `https://mrrapo.onrender.com/${product.backImage}`
+              : `https://mrrapo.onrender.com/${product.frontImage}`
           }
           alt={product.title}
           className={`product-image ${loadedImages.has(index) ? 'fade-in' : 'hidden'}`}

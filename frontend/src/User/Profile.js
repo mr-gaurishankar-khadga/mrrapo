@@ -1,12 +1,9 @@
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import './Profile.css';
 import { Box, Avatar, Typography, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import UserOrders from './UserOrders';
 import UserReturns from './UserReturns';
 import Likes from './Likes';
@@ -39,7 +36,7 @@ const Profile = () => {
 
 
       try {
-        const response = await fetch('http://localhost:8000/profile', {
+        const response = await fetch('https://mrrapo.onrender.com/profile', {
           credentials: 'include', 
         });
         

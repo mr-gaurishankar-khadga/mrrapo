@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './Completeview.css'; 
-import './ProductDetail.css'; 
-import FeatureSection from './FeatureSection'; 
+import './Completeview.css';
+import './ProductDetail.css';
+import FeatureSection from './FeatureSection';
 import ShoppingCart from './ShoppingCart';
 import { IconButton, Popover, Paper, Button } from '@mui/material';
-import ProductGrid from './ProductGrid'; 
+import ProductGrid from './ProductGrid';
 
 const CompleteView = () => {
   const location = useLocation();
@@ -46,14 +46,6 @@ const CompleteView = () => {
   };
 
   const handleAddToCart = (event) => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'; 
-
-    if (!isLoggedIn) {
-      console.log('User is not logged in, redirecting to login page...');
-      navigate('/LoginPage'); 
-      return;
-    }
-
     if (product) { 
       setCartItems((prevItems) => [
         ...prevItems,
@@ -84,11 +76,13 @@ const CompleteView = () => {
     }
   };
 
+
   return (
     <>
       <div className="complete-view">
         {product ? (
           <>
+
             <div className="frames">
               {[product.frontImage, product.backImage, product.extraImage1, product.extraImage2].map((src, index) => (
                 <div 
@@ -97,7 +91,7 @@ const CompleteView = () => {
                   style={{ overflow: 'hidden', position: 'relative' }}
                 >
                   <img
-                    src={`http://localhost:8000/${src}`}
+                    src={`https://mrrapo.onrender.com/${src}`}
                     alt={product.title}
                     className={initialLoad ? 'initial-zoom' : ''}
                   />
@@ -105,12 +99,14 @@ const CompleteView = () => {
               ))}
             </div>
 
+
             <div className="product-info" style={{ marginTop: '20px' }}>
               <h1 style={{ fontFamily: 'Twentieth Century sans-serif' }}>{product.title}</h1>
               <div className="price">
                 <span className="current-price">Rs.{product.price}</span>
                 <span className="discount" style={{ fontFamily: 'Twentieth Century sans-serif' }}>Save {product.discount}% right now</span>
               </div>
+
 
               <div className="colors">
                 <h4>Colors</h4>
@@ -125,6 +121,7 @@ const CompleteView = () => {
                 </div>
               </div>
 
+
               <div className="Size-option">
                 <h4>Size</h4>
                 <div className="Size-options">
@@ -132,6 +129,7 @@ const CompleteView = () => {
                     <button key={index} className={`size ${size}`}>{size}</button>
                   ))}
                 </div>
+
 
                 <div className="selectitem">
                   <select name="quantity" id="quantity" onChange={handleQuantityChange} value={quantity}>
@@ -167,8 +165,8 @@ const CompleteView = () => {
                   open={Boolean(shopAnchor)}
                   onClose={() => setShopAnchor(null)}
                   anchorEl={shopAnchor}
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                  transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                  anchorOrigin={{ vertical: '', horizontal: 'right' }}
+                  transformOrigin={{ vertical: '', horizontal: 'right' }}
                   PaperProps={{
                     style: {
                       color: 'white',
@@ -176,8 +174,8 @@ const CompleteView = () => {
                       overflowY: 'scroll',
                       scrollbarWidth: 'none',
                       transition: 'transform 1m ease-in-out',
-                      marginLeft: '640px',
-                      marginTop: '20px',
+                      marginLeft:'640px',
+                      marginTop:'200px',
                     },
                   }}
                 >
@@ -205,7 +203,7 @@ const CompleteView = () => {
                 </Button>
               </div>
 
-              <div className="featuresection" style={{ backgroundColor: '', overflowX: 'auto', maxWidth: '770px', marginLeft: '-25px', marginTop: '20px', padding: '10px'}}>
+              <div className="featuresection" style={{ backgroundColor: '', overflowX: 'auto', maxWidth: '770px', marginLeft: '-25px', marginTop: '20px',padding:'10px'}}>
                 <FeatureSection />
               </div>
 
@@ -227,7 +225,7 @@ const CompleteView = () => {
       <br />
       <br />
 
-      <ProductGrid />
+      <ProductGrid/>
     </>
   );
 };
