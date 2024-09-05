@@ -8,48 +8,40 @@ import UserReturns from './UserReturns';
 import Likes from './Likes';
 import ShoppingCartView from '../maincomponent/ShoppingCartView';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
-  const [selectedItem, setSelectedItem] = useState('UserOrders'); // Default selected item
+  const [selectedItem, setSelectedItem] = useState('UserOrders');
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
 
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/profile', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      const data = await response.json();
+      setUser(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('No token found. Please login again.');
-        navigate('/LoginPage'); 
-        return;
-      }
-
-      try {
-        const response = await fetch('https://mrrapo.onrender.com/profile', {
-          credentials: 'include', 
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-
-        const data = await response.json();
-        setUser(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserData();
-  }, [navigate]); // Include navigate in dependency array
+  }, [navigate]);
 
   if (loading) {
     return <div>Loading...</div>;

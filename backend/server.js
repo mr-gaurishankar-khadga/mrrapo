@@ -26,10 +26,15 @@ const randomize = require('randomatic');
 
 const app = express();
 
+
+
+
 app.use(cors({
   origin: 'http://localhost:3000',
-  credentials: true,
+  credentials: true, // Allow credentials
 }));
+
+
 app.use(express.json());
 
 const mongoDbUrl = process.env.MONGO_DB_CONNECTION_MY_DATABASE;
