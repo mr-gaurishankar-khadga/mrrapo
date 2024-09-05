@@ -25,7 +25,7 @@ const SearchedProduct = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(`${baseURL}/api/products/search?query=${query}`);
-        setProducts(response.data); // Set products to the search results
+        setProducts(response.data);
       } catch (err) {
         setError(err);
       } finally {
@@ -34,7 +34,7 @@ const SearchedProduct = () => {
     };
 
     fetchProducts();
-  }, [query]); // Trigger fetch whenever the query changes
+  }, [query]);
 
   const handleMouseEnter = (index) => {
     setHoveredIndex(index);

@@ -41,7 +41,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, []); // Fixed dependency array
+  }, [navigate]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -75,7 +75,7 @@ const Profile = () => {
       <Box sx={{ display: 'flex', backgroundColor: '' }}>
         <Box sx={{ height: '150vh', width: '240px', backgroundColor: '', color: 'black', padding: '10px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '2px 0 5px rgba(0,0,0,0.1)', position: 'fixed' }}>
           <Box sx={{ marginBottom: '20px', textAlign: 'center' }}>
-            <Avatar src="" alt={user?.displayName || "User Avatar"} sx={{ width: 140, height: 110, borderRadius: '10%' }} />
+            <Avatar src="" alt={user.displayName} sx={{ width: 140, height: 110, borderRadius: '10%' }} />
             <Typography variant="body2" sx={{ color: 'black' }}>{user.displayName}</Typography>
             <Typography variant="body2" sx={{ color: 'black' }}>{user.email}</Typography>
           </Box>

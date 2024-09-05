@@ -206,47 +206,6 @@ app.get('/logout', (req, res) => {
 });
 
 
-// app.post('/api/likes', async (req, res) => {
-//   if (!req.isAuthenticated()) {
-//     return res.status(401).json({ message: 'User not authenticated' });
-//   }
-
-//   const { productId } = req.body;
-
-//   try {
-//     const user = await User.findById(req.user.id); 
-
-//     // Check if the product is already liked
-//     const isLiked = user.likedProducts.includes(productId);
-
-//     if (isLiked) {
-//       // If already liked, remove the product from likedProducts
-//       user.likedProducts.pull(productId);
-//       await user.save();
-//       return res.status(200).json({ message: 'Product unliked successfully' });
-//     } else {
-//       // If not liked, add the product to likedProducts
-//       user.likedProducts.push(productId);
-//       await user.save();
-//       return res.status(200).json({ message: 'Product liked successfully' });
-//     }
-//   } catch (error) {
-//     console.error('Error handling likes:', error);
-//     return res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -321,17 +280,6 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
 
 
 

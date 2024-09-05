@@ -11,13 +11,14 @@ const CompleteView = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const product = location.state?.product; 
+  const product = location.state?.product;
 
   const [initialLoad, setInitialLoad] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [showNotification, setShowNotification] = useState(false);
   const [shopAnchor, setShopAnchor] = useState(null);
+  const [showLikeNotification, setShowLikeNotification] = useState(false);
 
   useEffect(() => {
     if (!product) {
@@ -46,7 +47,7 @@ const CompleteView = () => {
   };
 
   const handleAddToCart = (event) => {
-    if (product) { 
+    if (product) {
       setCartItems((prevItems) => [
         ...prevItems,
         {
@@ -59,14 +60,40 @@ const CompleteView = () => {
           quantity: quantity,
         },
       ]);
-  
+
       // Show notification
       setShowNotification(true);
       setShopAnchor(event.currentTarget);
       setTimeout(() => {
         setShowNotification(false);
         setShopAnchor(null);
-      }, 2000); 
+      }, 2000);
+    }
+  };
+
+  const handleLikes = () => {
+    if (product) {
+      const likedItems = JSON.parse(localStorage.getItem('likedItems')) || [];
+      
+      // Check if the product is already liked
+      const isAlreadyLiked = likedItems.some(item => item.id === product.id);
+      if (!isAlreadyLiked) {
+        likedItems.push({
+          id: product.id,
+          name: product.title,
+          price: product.price,
+          image: product.frontImage,
+          color: product.colors[0] || 'Default Color',
+          size: product.sizes[0] || 'Default Size',
+        });
+        localStorage.setItem('likedItems', JSON.stringify(likedItems));
+
+        // Show like notification
+        setShowLikeNotification(true);
+        setTimeout(() => {
+          setShowLikeNotification(false);
+        }, 2000);
+      }
     }
   };
 
@@ -76,13 +103,11 @@ const CompleteView = () => {
     }
   };
 
-
   return (
     <>
       <div className="complete-view">
         {product ? (
           <>
-
             <div className="frames">
               {[product.frontImage, product.backImage, product.extraImage1, product.extraImage2].map((src, index) => (
                 <div 
@@ -99,14 +124,12 @@ const CompleteView = () => {
               ))}
             </div>
 
-
             <div className="product-info" style={{ marginTop: '20px' }}>
               <h1 style={{ fontFamily: 'Twentieth Century sans-serif' }}>{product.title}</h1>
               <div className="price">
                 <span className="current-price">Rs.{product.price}</span>
                 <span className="discount" style={{ fontFamily: 'Twentieth Century sans-serif' }}>Save {product.discount}% right now</span>
               </div>
-
 
               <div className="colors">
                 <h4>Colors</h4>
@@ -121,7 +144,6 @@ const CompleteView = () => {
                 </div>
               </div>
 
-
               <div className="Size-option">
                 <h4>Size</h4>
                 <div className="Size-options">
@@ -129,7 +151,6 @@ const CompleteView = () => {
                     <button key={index} className={`size ${size}`}>{size}</button>
                   ))}
                 </div>
-
 
                 <div className="selectitem">
                   <select name="quantity" id="quantity" onChange={handleQuantityChange} value={quantity}>
@@ -158,6 +179,25 @@ const CompleteView = () => {
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 >
                   Add to Cart
+                </Button>
+
+                <Button 
+                  onClick={handleLikes} 
+                  style={{
+                    backgroundColor: 'rgb(251, 100, 27)',
+                    color: 'white',
+                    padding: '10px 20px',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    textTransform: 'none',
+                    borderRadius: '5px',
+                    transition: 'transform 0.3s ease-in-out',
+                    marginRight: '10px',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  Like
                 </Button>
 
                 <Popover
@@ -210,22 +250,24 @@ const CompleteView = () => {
               <div className="features" style={{ marginTop: '10px' }}>
                 <h4 style={{ fontFamily: 'Twentieth Century sans-serif' }}>Features</h4>
                 <ul>
-                  <li style={{ paddingRight: '20px', letterSpacing: '2px' }}>{product.description}</li>
+                  {product.features && product.features.map((feature, index) => (
+                    <li key={index}>{feature}</li>
+                  ))}
                 </ul>
               </div>
             </div>
           </>
         ) : (
-          <p>No product data available.</p> 
+          <p>Loading product details...</p>
         )}
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
 
-      <ProductGrid/>
+      {/* Like notification */}
+      {showLikeNotification && (
+        <div className="notification">
+          Product liked successfully!
+        </div>
+      )}
     </>
   );
 };
