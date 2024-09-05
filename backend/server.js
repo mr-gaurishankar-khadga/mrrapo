@@ -27,7 +27,7 @@ const randomize = require('randomatic');
 const app = express();
 
 app.use(cors({
-  origin: 'https://myhalf.netlify.app',
+  origin: ['https://myhalf.netlify.app','https://localhost:3000'],
   credentials: true,
 }));
 app.use(express.json());
