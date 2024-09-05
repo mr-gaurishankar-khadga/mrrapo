@@ -118,12 +118,15 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser:
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Configure Google Strategy **this is the method for localhost and production based product development**
+// Determine the correct callback URL based on the environment
+const callbackURL = process.env.NODE_ENV === 'production'
+  ? 'https://mrrapo.onrender.com/auth/google/callback'
+  : 'http://localhost:8000/auth/google/callback';
+
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'https://mrrapo.onrender.com/auth/google/callback'
-    // : 'http://localhost:8000/auth/google/callback',
+  callbackURL: callbackURL 
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
@@ -142,7 +145,6 @@ async (accessToken, refreshToken, profile, done) => {
     done(error, null);
   }
 }));
-
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
