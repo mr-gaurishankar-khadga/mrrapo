@@ -28,7 +28,7 @@ const app = express();
 
 
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: 'https://mylll.netlify.app', 
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -168,7 +168,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('http://localhost:3000/profile');
+    res.redirect('https://mylll.netlify.app/profile');
   }
 );
 
