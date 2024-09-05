@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -6,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
-const cors = require('cors'); 
+const cors = require('cors');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -14,97 +13,78 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { Schema } = mongoose;
 const crypto = require('crypto');
-const Payment = require('./models/paymentModel');
-const twilio = require('twilio'); 
 const randomize = require('randomatic');
-
-
-
-
-
-
 
 const app = express();
 
-app.use(cors({
-  origin: ['https://myhalf.netlify.app','https://localhost:3000'],
-  credentials: true,
-}));
-app.use(express.json());
+// CORS configuration
+const allowedOrigins = ['http://localhost:3000', 'https://myhalf.netlify.app'];
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true // Allow credentials to be included
+};
+
+app.use(cors(corsOptions));
+app.use(express.json()); // Parse JSON request bodies
+
+// MongoDB connection
 const mongoDbUrl = process.env.MONGO_DB_CONNECTION_MY_DATABASE;
 
-mongoose.connect(mongoDbUrl)
-.then(() => {
-  console.log('MongoDB connected');
-})
-.catch((err) => {
-  console.error('Failed to connect to MongoDB', err);
-});
+mongoose.connect(mongoDbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('MongoDB connected');
+  })
+  .catch((err) => {
+    console.error('Failed to connect to MongoDB', err);
+  });
 
-
-
-
-
-
-
-let otpStore = {}; 
+// OTP Handling
+let otpStore = {};
 
 // Endpoint to send OTP
 app.post('/send-otp-to-user', (req, res) => {
-    const { mobileNumber } = req.body;
-    const otp = randomize('0', 6); 
+  const { mobileNumber } = req.body;
+  const otp = randomize('0', 6);
+  otpStore[mobileNumber] = otp;
 
-    otpStore[mobileNumber] = otp; 
-    res.json({ message: 'OTP sent successfully' });
+  // Here you should ideally send the OTP to the user's mobile number using Twilio or another service
+
+  res.json({ message: 'OTP sent successfully', otp }); // For debugging, remove otp in production
 });
 
 // Endpoint to verify OTP
 app.post('/verify-otp-to-user', (req, res) => {
-    const { mobileNumber, otp } = req.body;
-    if (otpStore[mobileNumber] && otpStore[mobileNumber] === otp) {
-        delete otpStore[mobileNumber];
-        return res.json({ message: 'OTP verified successfully' });
-    }
-    return res.status(400).json({ message: 'Invalid OTP' });
+  const { mobileNumber, otp } = req.body;
+  if (otpStore[mobileNumber] && otpStore[mobileNumber] === otp) {
+    delete otpStore[mobileNumber];
+    return res.json({ message: 'OTP verified successfully' });
+  }
+  return res.status(400).json({ message: 'Invalid OTP' });
 });
-
-
-
-
-
-
-
-
-
 
 // MongoDB User Schema
 const UserSchema = new mongoose.Schema({
-  googleId: {
-    type: String,
-    required: true,
-  },
-  displayName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
+  googleId: { type: String, required: true },
+  displayName: { type: String, required: true },
+  email: { type: String, required: true },
   likedProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 });
 
 const User = mongoose.model('User', UserSchema);
 
-
-const generateRandomSecretKey = () => {
-  return crypto.randomBytes(32).toString('hex'); 
-};
+// Generate random secret key for session
+const generateRandomSecretKey = () => crypto.randomBytes(32).toString('hex');
 
 // Session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || generateRandomSecretKey(), 
+  secret: process.env.SESSION_SECRET || generateRandomSecretKey(),
   resave: false,
   saveUninitialized: false,
 }));
@@ -113,20 +93,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
-
-// Determine the correct callback URL based on the environment
+// Callback URL based on the environment
 const callbackURL = process.env.NODE_ENV === 'production'
   ? 'https://mrrapo.onrender.com/auth/google/callback'
   : 'http://localhost:8000/auth/google/callback';
 
+// Google OAuth Strategy
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: callbackURL 
+  callbackURL: callbackURL
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
@@ -145,6 +121,7 @@ async (accessToken, refreshToken, profile, done) => {
     done(error, null);
   }
 }));
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -159,32 +136,29 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Routes
+// Google Authentication routes
 app.get('/auth/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-  })
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('https://myhalf.netlify.app/profile');
+    const redirectUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://myhalf.netlify.app/profile' 
+      : 'http://localhost:3000/profile';
+    res.redirect(redirectUrl);
   }
 );
 
+// Profile route
 app.get('/profile', async (req, res) => {
-  console.log('Profile route accessed');
-
   if (!req.isAuthenticated()) {
-    console.log('User not authenticated');
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
-  const user = req.user; 
-
+  const user = req.user;
   if (!user) {
-    console.log('User not found in session');
     return res.status(404).json({ message: 'User not found' });
   }
 
@@ -205,6 +179,55 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // app.post('/api/likes', async (req, res) => {
