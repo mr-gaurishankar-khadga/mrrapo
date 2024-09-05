@@ -27,12 +27,13 @@ const randomize = require('randomatic');
 const app = express();
 
 
-app.use(cors({
-  origin: 'http://localhost:3000', 
-  credentials: true,
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://mrrapo.onrender.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  credentials: true,
+};
+
 
 
 
