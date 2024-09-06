@@ -30,7 +30,7 @@ const Loginwithgoogle = () => {
     const top = window.screen.height / 2 - height / 2;
 
     const loginWindow = window.open(
-      'https://mrrapo.onrender.com/auth/google',
+      'http://localhost:8000/auth/google',
       '_blank',
       `width=${width},height=${height},top=${top},left=${left}`
     );
@@ -44,7 +44,7 @@ const Loginwithgoogle = () => {
   };
 
   const logout = () => {
-    fetch('https://mrrapo.onrender.com/logout', {
+    fetch('http://localhost:8000/logout', {
       method: 'GET',
       credentials: 'include',
     }).then(() => {

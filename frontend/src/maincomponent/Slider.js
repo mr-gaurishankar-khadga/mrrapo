@@ -10,7 +10,6 @@ import slider1 from './images/m1.webp';
 import slider2 from './images/m2.jpg';
 import slider3 from './images/m3.jpg';
 import slider4 from './images/m4.webp';
-// import slider1 from './images/b1.webp';
 
 
 

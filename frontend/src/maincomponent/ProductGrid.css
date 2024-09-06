@@ -19,7 +19,7 @@
   background-color: #f9f9f9;
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
 }
 
 .product-card:hover {
@@ -42,7 +42,7 @@
 }
 
 .product-card:hover .product-image {
-  transform: scale(1.1);
+  transform: scale(1.5);
 }
 
 
@@ -213,9 +213,9 @@
 
 
 
-.product-image {
+/* .product-image {
   transition: opacity 0.9s ease-in-out, transform 0.9s ease-in-out; 
-}
+} */
 
 .hidden {
   opacity: 0; 
@@ -269,33 +269,32 @@
 
 
 
-.skeleton-container {
-  display: flex;                           /* Use flexbox to align items in a row */
-  justify-content: space-between;          /* Space between the waves */
-  margin: 10px 0;                         /* Optional: spacing above and below */
+/* .skeleton-container {
+  display: flex;                         
+  justify-content: space-between;          
+  margin: 10px 0;                        
 }
 
 .skeleton-wave {
   background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
-  animation: wave 1.5s infinite;          /* Wave animation */
+  animation: wave 1.5s infinite;         
   border-radius: 4px; 
   margin-bottom: 10px; 
   height: 20px; 
-  flex: 1;                                /* Allow waves to grow equally */
-  position: relative;                     /* Position for the pseudo-elements */
-  overflow: hidden;                       /* Hide overflow for the glow effect */
-  box-shadow: 0 0 10px rgba(240, 240, 240, 0.6); /* Glow effect */
+  flex: 1;                                
+  position: relative;                    
+  overflow: hidden;                      
+  box-shadow: 0 0 10px rgba(240, 240, 240, 0.6); 
 }
 
 .skeleton-wave:last-child {
-  margin-right: 0;                        /* Remove margin for the last wave */
+  margin-right: 0;                       
 }
 
 .skeleton-wave:first-child {
-  height: 200px;                          /* Change height for the first child if needed */
+  height: 200px;                         
 }
 
-/* Adding pseudo-elements for more visual effect */
 .skeleton-wave:before,
 .skeleton-wave:after {
   content: '';
@@ -305,19 +304,19 @@
   width: 100%;
   height: 100%;
   border-radius: 4px; 
-  animation: pulse 1.5s infinite;         /* Pulse animation */
+  animation: pulse 1.5s infinite;      
 }
 
 .skeleton-wave:before {
   background: rgba(240, 240, 240, 0.5);
   opacity: 0.5;
-  z-index: 1;                             /* Place it above the background */
+  z-index: 1;                           
 }
 
 .skeleton-wave:after {
   background: rgba(255, 255, 255, 0.1);
   opacity: 0.3;
-  z-index: 2;                             /* Place it above the pulse effect */
+  z-index: 2;                           
 }
 
 @keyframes wave {
@@ -344,12 +343,32 @@
   }
 }
 
+
+  
+*/
+
+
+@keyframes zoomIn {
+  from {
+    transform: scale(2);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+
 .product-card {
   background-color: #fff; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
+  transition: transform 0.3s, opacity 0.3s;
+  opacity: 1;
 }
 
 .product-card:hover {
   transform: scale(1.05);
+  opacity: 9;
 }
+
+
+

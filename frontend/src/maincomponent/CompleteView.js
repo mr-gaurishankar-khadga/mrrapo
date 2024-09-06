@@ -116,7 +116,7 @@ const CompleteView = () => {
                   style={{ overflow: 'hidden', position: 'relative' }}
                 >
                   <img
-                    src={`https://mrrapo.onrender.com/${src}`}
+                    src={`http://localhost:8000/${src}`}
                     alt={product.title}
                     className={initialLoad ? 'initial-zoom' : ''}
                   />
@@ -247,14 +247,14 @@ const CompleteView = () => {
                 <FeatureSection />
               </div>
 
+              {/* Product Features */}
               <div className="features" style={{ marginTop: '10px' }}>
                 <h4 style={{ fontFamily: 'Twentieth Century sans-serif' }}>Features</h4>
                 <ul>
-                  {product.features && product.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
-                  ))}
+                  <li style={{ paddingRight: '20px', letterSpacing: '2px' }}>{product.description}</li>
                 </ul>
               </div>
+
             </div>
           </>
         ) : (
@@ -268,6 +268,14 @@ const CompleteView = () => {
           Product liked successfully!
         </div>
       )}
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <ProductGrid/>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
 import axios from 'axios';
@@ -27,20 +27,31 @@ const ProductGrid = ({ searchQuery = '', user }) => {
   };
 
   const fetchProducts = useCallback(async () => {
-    if (loading) return;
+    if (loading || !hasMore) return; 
     setLoading(true);
 
     try {
-      const response = await axios.get(`https://mrrapo.onrender.com/api/products?page=${page}&search=${searchQuery}`);
-      const shuffledProducts = shuffleArray(response.data.products);
-      setProducts((prev) => [...prev, ...shuffledProducts]);
-      setHasMore(response.data.products.length > 0);
+      const response = await axios.get(`http://localhost:8000/api/products?page=${page}&search=${searchQuery}`);
+      const newProducts = response.data.products;
+
+      if (newProducts.length === 0) {
+        setHasMore(false); 
+      } else {
+        const shuffledProducts = shuffleArray(newProducts);
+        
+        // Filter out duplicate products
+        setProducts((prevProducts) => {
+          const existingProductIds = new Set(prevProducts.map(p => p._id));
+          const filteredProducts = shuffledProducts.filter(product => !existingProductIds.has(product._id));
+          return [...prevProducts, ...filteredProducts];
+        });
+      }
     } catch (err) {
       setError(err);
     } finally {
       setLoading(false);
     }
-  }, [page, searchQuery, loading]);
+  }, [page, searchQuery, loading, hasMore]);
 
   useEffect(() => {
     fetchProducts();
@@ -53,9 +64,22 @@ const ProductGrid = ({ searchQuery = '', user }) => {
   }, [hasMore, loading]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const debouncedHandleScroll = debounce(handleScroll, 200);
+    window.addEventListener('scroll', debouncedHandleScroll);
+    return () => window.removeEventListener('scroll', debouncedHandleScroll);
   }, [handleScroll]);
+
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        func.apply(null, args);
+      }, delay);
+    };
+  };
 
   const handleClick = (product) => {
     window.scrollTo(0, 0);
@@ -68,20 +92,22 @@ const ProductGrid = ({ searchQuery = '', user }) => {
     <div className="product-grid">
       <h2>New Arrivals</h2>
       <div className="products">
-        {products.map((product, index) => (
-          <ProductCard 
-            key={product._id}
-            product={product}
-            index={index}
-            hoveredIndex={hoveredIndex}
-            setHoveredIndex={setHoveredIndex}
-            loadedImages={loadedImages}
-            setLoadedImages={setLoadedImages}
-            likedProducts={likedProducts}
-            setLikedProducts={setLikedProducts}
-            handleClick={handleClick}
-          />
-        ))}
+        <Suspense fallback={<p>Loading products...</p>}>
+          {products.map((product, index) => (
+            <ProductCard 
+              key={product._id}
+              product={product}
+              index={index}
+              hoveredIndex={hoveredIndex}
+              setHoveredIndex={setHoveredIndex}
+              loadedImages={loadedImages}
+              setLoadedImages={setLoadedImages}
+              likedProducts={likedProducts}
+              setLikedProducts={setLikedProducts}
+              handleClick={handleClick}
+            />
+          ))}
+        </Suspense>
         {loading && <p>Loading more products...</p>}
       </div>
     </div>
@@ -98,57 +124,71 @@ const ProductCard = React.memo(({
   likedProducts, 
   setLikedProducts, 
   handleClick 
-}) => (
-  <div
-    className="product-card"
-    onMouseEnter={() => setHoveredIndex(index)}
-    onMouseLeave={() => setHoveredIndex(null)}
-    onClick={() => handleClick(product)}
-  >
-    <div className="image-container">
-      <LazyLoad height={250} offset={100}>
-        <img
-          src={
-            hoveredIndex === index && product.backImage
-              ? `https://mrrapo.onrender.com/${product.backImage}`
-              : `https://mrrapo.onrender.com/${product.frontImage}`
-          }
-          alt={product.title}
-          className={`product-image ${loadedImages.has(index) ? 'fade-in' : 'hidden'}`}
-          onLoad={() => setLoadedImages((prev) => new Set(prev).add(index))}
-        />
-      </LazyLoad>
+}) => {
+  const imageStyle = {
+    height: '100%',
+    width: '100%',
+    display: 'block',
+    transition: 'transform 0.5s ease, transform-origin 5s ease',
+    transformOrigin: 'center',
+    animation: loadedImages.has(index) ? 'zoomIn 0.7s ease-out forwards' : 'none',
+  };
 
-      <div className="likeiconbtn" onClick={(e) => { e.stopPropagation(); handleLikeClick(product._id); }}>
-        <FavoriteIcon className={`like-icon ${likedProducts.has(product._id) ? 'liked' : ''}`} />
+
+
+
+  return (
+    <div
+      className="product-card"
+      onMouseEnter={() => setHoveredIndex(index)}
+      onMouseLeave={() => setHoveredIndex(null)}
+      onClick={() => handleClick(product)}
+    >
+      <div className="image-container">
+        <LazyLoad height={250} offset={100}>
+          <img
+            src={
+              hoveredIndex === index && product.backImage
+                ? `http://localhost:8000/${product.backImage}`
+                : `http://localhost:8000/${product.frontImage}`
+            }
+            alt={product.title}
+            style={imageStyle}
+            onLoad={() => setLoadedImages((prev) => new Set(prev).add(index))}
+          />
+        </LazyLoad>
+
+        <div className="likeiconbtn" onClick={(e) => { e.stopPropagation(); handleLikeClick(product._id); }}>
+          <FavoriteIcon className={`like-icon ${likedProducts.has(product._id) ? 'liked' : ''}`} />
+        </div>
+
+        <div className="categories">
+          <span className="category">{product.categories}</span>
+        </div>
       </div>
 
-      <div className="categories">
-        <span className="category">{product.categories}</span>
+      <div className="product-details">
+        <h3 style={{ fontFamily: 'Twentieth Century' }}>{product.title}</h3>
+        <div className="price">
+          <span className="current-price" style={{ fontFamily: 'Twentieth Century sans-serif' }}>
+            Rs. {product.price}
+          </span>
+        </div>
+        <div className="rating" style={{ width: '50%', textAlign: 'center', marginLeft: '-15px', justifyContent: 'flex-start' }}>
+          {[...Array(5)].map((_, i) => (
+            <span key={i}><GradeIcon className="ratingicon" /></span>
+          ))}
+        </div>
+        <div className="Size-options">
+          <button className="size">S</button>
+          <button className="size">M</button>
+          <button className="size">L</button>
+          <button className="size">XL</button>
+          <ShoppingCartIcon className="cart-icon" />
+        </div>
       </div>
     </div>
-
-    <div className="product-details">
-      <h3 style={{ fontFamily: 'Twentieth Century' }}>{product.title}</h3>
-      <div className="price">
-        <span className="current-price" style={{ fontFamily: 'Twentieth Century sans-serif' }}>
-          Rs. {product.price}
-        </span>
-      </div>
-      <div className="rating" style={{ width: '50%', textAlign: 'center', marginLeft: '-15px', justifyContent: 'flex-start' }}>
-        {[...Array(5)].map((_, i) => (
-          <span key={i}><GradeIcon className="ratingicon" /></span>
-        ))}
-      </div>
-      <div className="Size-options">
-        <button className="size">S</button>
-        <button className="size">M</button>
-        <button className="size">L</button>
-        <button className="size">XL</button>
-        <ShoppingCartIcon className="cart-icon" />
-      </div>
-    </div>
-  </div>
-));
+  );
+});
 
 export default ProductGrid;
