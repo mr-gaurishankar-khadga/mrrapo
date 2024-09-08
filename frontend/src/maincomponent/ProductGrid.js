@@ -7,16 +7,29 @@ import GradeIcon from '@mui/icons-material/Grade';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import './ProductGrid.css';
 
+
+
 const ProductGrid = ({ searchQuery = '', user }) => {  
+
   const [products, setProducts] = useState([]);
+
   const [page, setPage] = useState(1);
+
   const [hasMore, setHasMore] = useState(true);
+
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState(null);
+
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
   const [loadedImages, setLoadedImages] = useState(new Set());
+
   const [likedProducts, setLikedProducts] = useState(new Set()); 
+
   const navigate = useNavigate();
+
+
 
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -108,11 +121,12 @@ const ProductGrid = ({ searchQuery = '', user }) => {
             />
           ))}
         </Suspense>
-        {loading && <p>Loading more products...</p>}
+        {/* {loading && <p>Loading more products...</p>} */}
       </div>
     </div>
   );
 };
+
 
 const ProductCard = React.memo(({ 
   product, 
@@ -131,7 +145,7 @@ const ProductCard = React.memo(({
     display: 'block',
     transition: 'transform 0.5s ease, transform-origin 5s ease',
     transformOrigin: 'center',
-    animation: loadedImages.has(index) ? 'zoomIn 0.7s ease-out forwards' : 'none',
+    animation: loadedImages.has(index) ? 'zoomIn 1.0s ease-out forwards' : 'none',
   };
 
 

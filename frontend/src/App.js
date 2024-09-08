@@ -45,6 +45,8 @@ import HomePage from './maincomponent/pages/HomePage';
 import SearchIngine from './maincomponent/SearchIngine';
 import ShoppingCartIcon from './maincomponent/ShoppingCartIcon';
 import MensSlider from './maincomponent/pages/MensSlider';
+import OtpVerification from './OtpVerification';
+import ReviewPage from './maincomponent/ReviewPage';
 
 
 
@@ -97,7 +99,7 @@ useEffect(() => {
 
         {/* Desktop View */}
         <div className="nav-desktop">
-        <img src={Logo} alt="" className="" style={{ height: '150px', width: '300px', marginTop: '5px', marginLeft: '-20px' }} />
+        <img src={Logo} alt="" className="" style={{ height: '120px', width: '300px', marginTop: '15px', marginLeft: '-20px' }} />
         <ul className="nav-links">
           <li><Link to="/ContactPage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>Contact</Link></li>
           <li><Link to="/HomePage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>Home</Link></li>
@@ -127,9 +129,8 @@ useEffect(() => {
 
       <Popover open={Boolean(accountAnchor)} anchorEl={accountAnchor} onClose={handleAccountClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }} transformOrigin={{     vertical: 'top',     horizontal: 'right', }} >
         <Paper style={{ maxWidth: 300, padding: 10, color:'white',backgroundColor:'rgb(15,15,15)' }}>
-            <Box display="flex" alignItems="center" mb={2}>
+            {/* <Box display="flex" alignItems="center" mb={2}>
                 <Avatar alt="User Avatar" src={slider1} style={{border:'2px solid white'}}/> 
-                
                 <Box ml={2}>
                     <Typography variant="h6">
                         gshankar
@@ -138,7 +139,8 @@ useEffect(() => {
                         @MRGAURISHANKAR413
                     </Typography>
                 </Box>
-            </Box>
+            </Box> */}
+
             <div className="divider"></div>
             <List>
               <ListItem button component={Link} to="/LoginPage">
@@ -252,12 +254,17 @@ useEffect(() => {
           </Drawer>
         </div>
       </nav>
+      <div className="divider">
+        
+      </div>
 
       
 
       <div className="maincontent" style={{height:'',backgroundColor:''}}>
         <Routes>
+          {/* <Route path="/" element={<OtpVerification/>} /> */}
           <Route path="/" element={<MainHome/>} />
+          <Route path="/ReviewPage" element={<ReviewPage/>} />
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route path="/CompleteView" element={<CompleteView />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
@@ -288,3 +295,19 @@ useEffect(() => {
 };
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

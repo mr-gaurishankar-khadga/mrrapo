@@ -1,0 +1,15 @@
+.reviews {
+    margin-top: 20px;
+  }
+  
+  .review {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  
+  .media-container img, .media-container video {
+    margin-right: 10px;
+  }
+  

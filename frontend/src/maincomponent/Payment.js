@@ -220,8 +220,8 @@ const Payment = () => {
         <table className="payment-table">
           <thead>
             <tr style={{backgroundColor:''}}>
-              <th>Product</th>
-              <th>Product Title</th>
+              <th>Image</th>
+              <th>Title</th>
               <th>Price</th>
               <th>Quantity</th>
               <th>Total</th>
@@ -323,7 +323,6 @@ const Payment = () => {
             <QRCode value="upi://pay?pa=your-vpa@upi&pn=Your Name&am=10.00&cu=INR" style={{margin:'20px'}}/>
           </div>
         )}
-
           <label>Address:</label>
         <div className="address-container" style={{display:'flex',height:'auto'}}>
           <input
@@ -332,12 +331,12 @@ const Payment = () => {
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Enter your address"
             className="address-of-user"
-            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
+            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'40%'}}
             required
           />
 
           <button type="button" className="location-btn" onClick={fetchCurrentLocation}
-            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
+            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'40%'}}
           >
             Current Location
           </button>
@@ -354,7 +353,7 @@ const Payment = () => {
             onBlur={() => validateMobileNumber(mobileNumber)}
             placeholder="+91"
             className="address-of-user"
-            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
+            style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'40%'}}
             required
           />
           <button type="button" onClick={handleSendOtp}
@@ -367,15 +366,16 @@ const Payment = () => {
         {otpSent && !otpVerified && (
           <>
             <label> Enter OTP: </label>
-            <div className="otp-popup" >
+            <div className="otp-popup" style={{display:'flex',justifyContent:'center'}}>
                 <input
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  style={{padding:'10px',margin:'10px'}}
+                  // style={{padding:'10px',margin:'10px'}}
+                  style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'40%'}}
                 />
               <button type="button" onClick={handleVerifyOtp}
-               style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'41%'}}
+               style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'40%'}}
               >
                 Verify OTP
               </button>
@@ -385,7 +385,7 @@ const Payment = () => {
           
 
         <button className="submit-payment-btn" onClick={handlePaymentSubmission}
-        style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'90%',marginTop:'20px'}}
+          style={{padding:'10px',margin:'10px',letterSpacing:'3px',width:'87%',marginTop:'20px',justifyContent:'center'}}
         >
           Submit Payment
         </button>

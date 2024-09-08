@@ -181,7 +181,7 @@ const CompleteView = () => {
                   Add to Cart
                 </Button>
 
-                <Button 
+                {/* <Button 
                   onClick={handleLikes} 
                   style={{
                     backgroundColor: 'rgb(251, 100, 27)',
@@ -198,7 +198,7 @@ const CompleteView = () => {
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 >
                   Like
-                </Button>
+                </Button> */}
 
                 <Popover
                   className='mypover'
@@ -262,7 +262,6 @@ const CompleteView = () => {
         )}
       </div>
 
-      {/* Like notification */}
       {showLikeNotification && (
         <div className="notification">
           Product liked successfully!

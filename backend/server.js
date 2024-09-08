@@ -49,7 +49,6 @@ mongoose.connect(mongoDbUrl)
 });
 
 let otpStore = {}; 
-
 // Endpoint to send OTP
 app.post('/send-otp-to-user', (req, res) => {
     const { mobileNumber } = req.body;
@@ -831,6 +830,87 @@ app.post('/api/reply', async (req, res) => {
     res.status(500).json({ error: 'Failed to send reply.' });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const reviewSchema = new Schema({
+  productId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true
+  },
+  reviewText: {
+    type: String,
+    required: true
+  },
+  media: {
+    type: [String], 
+    default: []
+  },
+  mediaType: {
+    type: [String], 
+    default: []
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+const Review = mongoose.model('Review', reviewSchema);
+
+app.post('/api/reviews', upload.array('media', 6), async (req, res) => {
+  const { productId, reviewText } = req.body;
+  const mediaFiles = req.files || [];
+  const mediaUrls = mediaFiles.map(file => `/uploads/${file.filename}`);
+  const mediaTypes = mediaFiles.map(file => file.mimetype.split('/')[0]); 
+
+  try {
+    const review = new Review({
+      productId,
+      reviewText,
+      media: mediaUrls,
+      mediaType: mediaTypes
+    });
+    await review.save();
+    res.json(review);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/reviews/:productId', async (req, res) => {
+  try {
+    const reviews = await Review.find({ productId: req.params.productId });
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 
