@@ -91,7 +91,6 @@ useEffect(() => {
 
   return (
     <Router>
-
         <div className="logocontainer" style={{width:'',display:'flex',justifyContent:'center',backgroundColor:'black',color:'white',letterSpacing:'2px'}}>
           <TextSlider/>
         </div>

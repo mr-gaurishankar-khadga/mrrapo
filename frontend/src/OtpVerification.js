@@ -13,7 +13,7 @@ const OtpVerification = () => {
         try {
             const response = await axios.post('http://localhost:5000/api/send-otp', { phoneNumber });
             setMessage(response.data.message);
-            setSimulatedOtp(response.data.otp); // Store the simulated OTP
+            setSimulatedOtp(response.data.otp); 
             setStep('otp');
         } catch (error) {
             setMessage(error.response?.data?.message || 'Error sending OTP');
@@ -25,7 +25,7 @@ const OtpVerification = () => {
         try {
             const response = await axios.post('http://localhost:5000/api/verify-otp', { phoneNumber, otp });
             setMessage(response.data.message);
-            setSimulatedOtp(''); // Clear the simulated OTP after verification
+            setSimulatedOtp('');
         } catch (error) {
             setMessage(error.response?.data?.message || 'Error verifying OTP');
         }
