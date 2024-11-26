@@ -1,36 +1,31 @@
-
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const path = require('path');
+const bcrypt = require('bcryptjs'); 
+const jwt = require('jsonwebtoken'); 
+const multer = require('multer'); 
+const path = require('path'); 
 const cors = require('cors'); 
-const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const { Schema } = mongoose;
-const crypto = require('crypto');
-const Payment = require('./models/paymentModel');
+const nodemailer = require('nodemailer'); 
+const bodyParser = require('body-parser'); 
+const session = require('express-session'); 
+const passport = require('passport'); 
+const GoogleStrategy = require('passport-google-oauth20').Strategy; 
+const { Schema } = mongoose; 
+const crypto = require('crypto'); 
+const Payment = require('./models/paymentModel'); 
 const twilio = require('twilio'); 
 const randomize = require('randomatic');
 
 
-
-
-
-
-
 const app = express();
+app.use(bodyParser);
 
 
 app.use(cors({
   origin: 'http://localhost:3000', 
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
@@ -96,7 +91,6 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema);
 
-
 const generateRandomSecretKey = () => {
   return crypto.randomBytes(32).toString('hex'); 
 };
@@ -113,9 +107,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// mongoose.connect(process.env.MONGO_DB_CONNECTION_MY_DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => console.log('MongoDB connected'))
+//   .catch(err => console.error('MongoDB connection error:', err));
+
+
+
+
 
 // Configure Google Strategy **this is the method for localhost and production based product development**
 passport.use(new GoogleStrategy({
@@ -125,6 +123,9 @@ passport.use(new GoogleStrategy({
   ? 'https://mrrapo.onrender.com/auth/google/callback' 
   : 'http://localhost:8000/auth/google/callback',
 },
+
+
+
 async (accessToken, refreshToken, profile, done) => {
   try {
     const existingUser = await User.findOne({ googleId: profile.id });
@@ -136,6 +137,7 @@ async (accessToken, refreshToken, profile, done) => {
       displayName: profile.displayName,
       email: profile.emails[0].value,
     });
+
     done(null, newUser);
   } catch (error) {
     console.error('Error in Google Strategy:', error);
@@ -310,12 +312,12 @@ const productSchema = new Schema({
   extraImage1: String,
   extraImage2: String,
 });
-const Product = mongoose.model('Product', productSchema);
 
+const Product = mongoose.model('Product', productSchema);
 
 const upload = multer({ dest: 'uploads/' });
 
-app.post('/api/products', upload.fields([
+app.post('/api/products', upload.fields([ 
   { name: 'front', maxCount: 1 },
   { name: 'back', maxCount: 1 },
   { name: 'f3', maxCount: 1 },
@@ -323,6 +325,7 @@ app.post('/api/products', upload.fields([
 ]), async (req, res) => {
   try {
     const { title, categories, description, price, sizes, colors, quantity, discount } = req.body;
+
     const frontImage = req.files['front'] ? req.files['front'][0].path : null;
     const backImage = req.files['back'] ? req.files['back'][0].path : null;
     const extraImage1 = req.files['f3'] ? req.files['f3'][0].path : null;
@@ -342,7 +345,9 @@ app.post('/api/products', upload.fields([
       extraImage1,
       extraImage2
     });
+
     await newProduct.save();
+
     res.status(200).json({ message: 'Product uploaded successfully', product: newProduct });
   } catch (error) {
     console.error('Error saving product:', error);
@@ -422,7 +427,9 @@ app.put('/api/products/:id', upload.fields([
 
 app.delete('/api/products/:id', async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+
+    const product = await Product.findByIdAndDelete(req.params.id);//main query delete the product from here
+
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -434,7 +441,7 @@ app.delete('/api/products/:id', async (req, res) => {
 
 
 
-// ***Search api ****
+// *** Search api ****
 app.get('/api/products/search', async (req, res) => {
   const query = req.query.query;
   try {
@@ -569,7 +576,7 @@ app.post('/api/signup', async (req, res) => {
   try {
       const userExists = await Signup.findOne({ email });
       if (userExists) {
-          return res.status(400).json({ message: 'User already exists' });
+        return res.status(400).json({ message: 'User already exists' });
       }
 
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -583,7 +590,6 @@ app.post('/api/signup', async (req, res) => {
           subject: 'OTP Verification',
           text: `Your OTP is ${otp}`,
       });
-
       res.status(200).json({ message: 'User created. Check your email for OTP.' });
   } catch (error) {
       console.error('Signup error:', error);
@@ -735,6 +741,8 @@ app.get('/api/signups', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch signups.' });
   }
 });
+
+
 
 
 // DELETE endpoint to delete a signup by ID
@@ -919,6 +927,8 @@ app.get('/api/reviews/:productId', async (req, res) => {
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Start server
+
+
 const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
