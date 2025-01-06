@@ -4,7 +4,7 @@ import ZoomImageSlider from './Slider'
 const MainHome = () => {
   return (
     <div>
-        <ZoomImageSlider/>
+      <ZoomImageSlider/>
     </div>
   )
 }

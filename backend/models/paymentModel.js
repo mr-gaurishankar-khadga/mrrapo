@@ -1,45 +1,16 @@
-
+// models/paymentModel.js
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
-  product: {
-    type: Object,
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-  },
-  paymentMethod: {
-    type: String,
-    required: true,
-  },
-  price: { 
-    type: Number, 
-    required: true 
-  },
-  mobileNumber:{
-    type:String,
-    required:true
-  },
-  address:{
-    type:String,
-    required:true
-  },
-  cardNumber: {
-    type: String, 
-    required: function () { return this.paymentMethod === 'Card Payment'; },
-  },
-  expiryDate: {
-    type: String,
-    required: function () { return this.paymentMethod === 'Card Payment'; },
-  },
-  cvv: {
-    type: String,
-    required: function () { return this.paymentMethod === 'Card Payment'; },
-  },
-}, { timestamps: true }); 
+  product: String,
+  quantity: Number,
+  paymentMethod: String,
+  price: Number,
+  cardNumber: String,
+  expiryDate: String,
+  mobileNumber: String,
+  address: String,
+  cvv: String,
+});
 
-const Payment = mongoose.model('Payment', paymentSchema);
-
-module.exports = Payment;
+module.exports = mongoose.model('Payment', paymentSchema);

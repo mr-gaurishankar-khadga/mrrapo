@@ -49,9 +49,7 @@ const MyProduct = () => {
     setHoveredIndex(null);
   };
 
-  const handleClick = (product) => {
-    navigate('/CompleteView', { state: { product } });
-  };
+
 
   const handleEditClick = (product) => {
     setEditingProduct(product);

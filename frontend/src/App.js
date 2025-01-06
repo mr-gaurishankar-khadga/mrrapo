@@ -36,7 +36,10 @@ import Logout from './CreateAccount/Logout';
 import ShoppingCartView from './maincomponent/ShoppingCartView';
 import LoginPage from './CreateAccount/LoginPage';
 import Profile from './User/Profile';
-import Logo from './images/logo.png';
+
+
+import Logo from './images/WENLI.svg';
+
 import TextSlider from './maincomponent/TextSlider';
 import Loginwithgoogle from './CreateAccount/Loginwithgoogle';
 import Search from './maincomponent/Search';
@@ -46,48 +49,52 @@ import SearchIngine from './maincomponent/SearchIngine';
 import ShoppingCartIcon from './maincomponent/ShoppingCartIcon';
 import MensSlider from './maincomponent/pages/MensSlider';
 import OtpVerification from './OtpVerification';
-import ReviewPage from './maincomponent/ReviewPage';
+import PaymentStatus from './maincomponent/PaymentStatus ';
 
 
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [isActive, setIsActive] = useState(false);
+
   const [accountAnchor, setAccountAnchor] = useState(null);
+
   const [ shopAnchor, setShopAnchor ] = useState(null);
 
-
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
   const handleSearch = () => setIsActive(!isActive);
 
   const [token, setToken] = useState(null);
+
   const [isAdmin, setIsAdmin] = useState(false);
 
 
   const handleAccountClick = (event) => {
     setAccountAnchor(event.currentTarget);
-};
+  };
 
-const handleAccountClose = () => {
+  const handleAccountClose = () => {
     setAccountAnchor(null);
-};
+  };
 
 
   const handleShopClick = (event) => {
     setShopAnchor(event.currentTarget);
-};
+  };
 
-const handleShopClose = () => {
+  const handleShopClose = () => {
     setShopAnchor(null);
-};
+  };
 
-const [totalProducts, setTotalProducts] = useState(0);
-
-useEffect(() => {
-  const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-  const total = savedCartItems.reduce((acc, item) => acc + item.quantity, 0);
-  setTotalProducts(total);
-}, []);
+  const [totalProducts, setTotalProducts] = useState(0);
+ 
+  useEffect(() => {
+    const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const total = savedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    setTotalProducts(total);
+  }, []);
 
   return (
     <Router>
@@ -98,7 +105,7 @@ useEffect(() => {
 
         {/* Desktop View */}
         <div className="nav-desktop">
-        <img src={Logo} alt="" className="" style={{ height: '120px', width: '300px', marginTop: '15px', marginLeft: '-20px' }} />
+        <img src={Logo} alt="" className="" style={{ height: '230px', width: '300px', marginTop: '0', marginLeft: '-20px' }} />
         <ul className="nav-links">
           <li><Link to="/ContactPage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>Contact</Link></li>
           <li><Link to="/HomePage" style={{justifyContent:'space-between',letterSpacing:'2px'}}>Home</Link></li>
@@ -114,7 +121,7 @@ useEffect(() => {
           </li>
 
           <li style={{marginTop:'-3px'}}>
-            <PersonIcon style={{ color: 'black', cursor: 'pointer' }} onClick={handleAccountClick} />
+            <PersonIcon style={{ color: 'black', cursor: 'pointer',height:'30px',width:'30px' }} onClick={handleAccountClick} />
           </li>
 
           <li onClick={handleShopClick} style={{marginTop:'-3px',marginRight:'50px'}}>
@@ -126,8 +133,10 @@ useEffect(() => {
 
 
 
+
       <Popover open={Boolean(accountAnchor)} anchorEl={accountAnchor} onClose={handleAccountClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }} transformOrigin={{     vertical: 'top',     horizontal: 'right', }} >
         <Paper style={{ maxWidth: 300, padding: 10, color:'white',backgroundColor:'rgb(15,15,15)' }}>
+            
             {/* <Box display="flex" alignItems="center" mb={2}>
                 <Avatar alt="User Avatar" src={slider1} style={{border:'2px solid white'}}/> 
                 <Box ml={2}>
@@ -135,7 +144,7 @@ useEffect(() => {
                         gshankar
                     </Typography>
                     <Typography variant="subtitle1">
-                        @MRGAURISHANKAR413
+                        MRGAURISHANKAR
                     </Typography>
                 </Box>
             </Box> */}
@@ -165,6 +174,7 @@ useEffect(() => {
         </Popover>
         <Popover open={Boolean(shopAnchor)} onClose={handleShopClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} PaperProps={{ style: {color: 'white',maxHeight:'' } }} > 
           <Paper style={{color: 'white',backgroundColor: '',overflowY: 'scroll',scrollbarWidth: 'none', }} >
+            
             <style>
               {`
                 /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
@@ -174,6 +184,7 @@ useEffect(() => {
                   }
                   `}
             </style>
+
           </Paper>
             <ShoppingCart />
         </Popover>
@@ -181,24 +192,32 @@ useEffect(() => {
 
 
 
+
+
+
         {/* Mobile View */}
-        <div className="nav-mobile" style={{width:'100%'}}>
+        <div className="nav-mobile" style={{width:'100%',marginTop:'20px',height:'60px'}}>
           {!isActive && (
-            <li style={{listStyleType:'none',fontSize:'30px'}}> <MenuIcon onClick={toggleSidebar} style={{color:'black'}}/>  WENLI !</li>
+
+            <li style={{listStyleType:'none',fontSize:'30px',display:'flex',width:'200px'}}> 
+              <MenuIcon  onClick={toggleSidebar}  style={{ color: 'black',  width: '30px',  height: '30px',  marginTop: '80px',color: 'rgb(17, 18, 21)' }}  />
+              <img src={Logo} alt="" style={{height: '190px', width: '210px',marginLeft:'40px'}}/>
+            </li>
+
           )}
 
           <div className="rightside" style={{textAlign:'right',width:'100%'}}> 
             {isActive && ( 
-              <input className={`search-input ${isActive ? 'active' : ''}`} placeholder="Search..." style={{ paddingLeft: '15px', height: '20px', padding: '7px', backgroundColor: 'rgb(212,214,218)', borderRadius: '12px', border: 'none', outline: 'none', transition: 'width 0.4s ease', width:'60%' }} /> 
+              <input className={`search-input ${isActive ? 'active' : ''}`} placeholder="Search..." style={{ paddingLeft: '15px', height: '20px', padding: '10px', backgroundColor: 'rgb(212,214,218)', borderRadius: '2px', border: 'none', outline: 'none', transition: 'width 1.8s ease', width:'70%' }} /> 
             )}
 
-          <IconButton className="more-button" onClick={handleSearch} style={{marginRight:'auto'}}>
-            <SearchIcon className="search-icon" style={{color:'black'}}/>
+          <IconButton className="more-button" onClick={handleSearch} style={{marginRight:'auto',color: 'black',  width: '40px',  height: '40px'}}>
+            <SearchIcon className="search-icon" style={{ color: 'black',  width: '30px',  height: '30px' }}/>
           </IconButton>
 
 
           <IconButton className="more-button">
-            <AddShoppingCartIcon style={{color:'black'}}/>
+            <AddShoppingCartIcon style={{color:'black',color: 'black',  width: '30px',  height: '30px'}}/>
           </IconButton>
           </div>
 
@@ -237,7 +256,7 @@ useEffect(() => {
                 <ListItem button component={Link} to="/MensWearPage" onClick={toggleSidebar}>
                   <ListItemIcon><SubscriptionsIcon style={{color:'black'}}/></ListItemIcon>
                   <ListItemText primary="MensWear" style={{color:'black'}}/>
-                </ListItem>
+                </ListItem> 
 
                 <ListItem button component={Link} to="/SalesPage" onClick={toggleSidebar}>
                   <ListItemIcon><SubscriptionsIcon style={{color:'black'}}/></ListItemIcon>
@@ -263,7 +282,6 @@ useEffect(() => {
         <Routes>
           {/* <Route path="/" element={<OtpVerification/>} /> */}
           <Route path="/" element={<MainHome/>} />
-          <Route path="/ReviewPage" element={<ReviewPage/>} />
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route path="/CompleteView" element={<CompleteView />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
@@ -286,6 +304,7 @@ useEffect(() => {
           <Route path="/Search" element={<Search />} />
           <Route path="/MensSlider" element={<MensSlider />} />
           <Route path="/Loginwithgoogle" element={<Loginwithgoogle />} />
+          <Route path="/payment-status" element={<PaymentStatus />} />
           <Route path="/LoginPage" element={<LoginPage setToken={setToken} setIsAdmin={setIsAdmin}/>} />
         </Routes>
       </div>
@@ -298,7 +317,18 @@ export default App;
 
 
 
+// import React from 'react'
+// import Cashfree from './Cashfree'
 
+// const App = () => {
+//   return (
+//     <div>
+//       <Cashfree />
+//     </div>
+//   )
+// }
+
+// export default App
 
 
 

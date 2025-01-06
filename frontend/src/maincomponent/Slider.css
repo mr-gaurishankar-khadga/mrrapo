@@ -23,9 +23,16 @@
   transition: transform 0.8s ease-in-out; 
 }
 
+
+
+
+
 .slider-image {
   transition: transform 1s ease-out;
   object-fit: cover;
+  min-height: 800px;
+  max-height: 1000px;
+  width: 100%;
 }
 
 .zoom-effect {
@@ -113,17 +120,13 @@
 }
 
 
+
 @media (max-width: 768px) {
   .slider-wrapper {
-    height: 30vh; 
+    height: 50vh; 
   }
 
   .slick-slide {
-    height: 100%; 
-  }
-
-  .slider-image {
-    width: 100%;
     height: 100%; 
   }
 
@@ -135,14 +138,16 @@
 
 
 
+
 @media (min-width: 769px) {
   .slider-wrapper {
     height: 100vh; 
   }
 
   .slider-image {
+    min-height: 100px;
+    max-height: auto;
     width: 100%;
-    height: 100%;
   }
 
   .main-bottom-container {
@@ -161,3 +166,15 @@
     font-size: 1.3em;
   }
 }
+
+
+
+/* style={{height:'800px'}} */
+
+
+
+
+
+
+
+

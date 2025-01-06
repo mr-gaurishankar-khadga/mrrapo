@@ -84,6 +84,7 @@ const ProductGrid = ({ searchQuery = '', user }) => {
 
   const debounce = (func, delay) => {
     let timeoutId;
+    
     return (...args) => {
       if (timeoutId) {
         clearTimeout(timeoutId);
@@ -100,6 +101,10 @@ const ProductGrid = ({ searchQuery = '', user }) => {
   };
 
   if (error) return <p>Error loading products: {error.message}</p>;
+
+
+
+
 
   return (
     <div className="product-grid">
@@ -126,6 +131,9 @@ const ProductGrid = ({ searchQuery = '', user }) => {
     </div>
   );
 };
+
+
+
 
 
 const ProductCard = React.memo(({ 
@@ -188,18 +196,27 @@ const ProductCard = React.memo(({
             Rs. {product.price}
           </span>
         </div>
-        <div className="rating" style={{ width: '50%', textAlign: 'center', marginLeft: '-15px', justifyContent: 'flex-start' }}>
+
+
+
+        <div className="rating">
           {[...Array(5)].map((_, i) => (
             <span key={i}><GradeIcon className="ratingicon" /></span>
           ))}
         </div>
-        <div className="Size-options">
+
+
+
+        <div className="Size-options" style={{display:'none'}}>
           <button className="size">S</button>
           <button className="size">M</button>
           <button className="size">L</button>
           <button className="size">XL</button>
-          <ShoppingCartIcon className="cart-icon" />
+
+          <ShoppingCartIcon className="cart-icon" style={{ display: window.innerWidth >= 768 ? 'block' : 'none' }} />
+
         </div>
+
       </div>
     </div>
   );

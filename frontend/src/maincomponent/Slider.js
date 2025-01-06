@@ -31,6 +31,8 @@ const ZoomImageSlider = () => {
     setZoomedIndex(current); 
   };
 
+
+  
   const settings = {
     dots: true,
     infinite: true, 
@@ -47,7 +49,7 @@ const ZoomImageSlider = () => {
 
 
 
-  const images = [slider1, slider2, slider4, slider3,slider1, slider2, slider4, slider3,slider1, slider2, slider4, slider3];
+  const images = [slider1, slider4,slider1, slider4,slider1, slider4,slider1, slider4];
 
 
   return (
@@ -57,7 +59,7 @@ const ZoomImageSlider = () => {
           {images.map((image, index) => (
             <div key={index} className={`zoom-effect ${index === zoomedIndex ? 'zoomed' : ''}`}>
               <LazyLoad height={250} offset={100}>
-                <img src={image} alt={`slide-${index}`} className="slider-image" style={{height:'800px'}}/>
+                <img src={image} alt={`slide-${index}`} className="slider-image" />
               </LazyLoad>
             </div>
           ))}

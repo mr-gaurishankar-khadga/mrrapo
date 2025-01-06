@@ -85,6 +85,7 @@ const SearchedProduct = () => {
               onMouseLeave={handleMouseLeave}
               onClick={() => handleClick(product)}
             >
+              
               <div className="image-container">
                 <LazyLoad height={250} offset={100}>
                   <img

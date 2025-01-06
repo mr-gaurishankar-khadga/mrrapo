@@ -1,3 +1,6 @@
+
+
+
 @media (max-width: 2668px) {
   .complete-view {
     margin: 0;
@@ -80,7 +83,7 @@
     background-color: #f9f9f9;
     border-radius: 8px;
     margin-top: 0;
-
+    /* position: fixed; */
   }
   
   .product-details .rating {
@@ -170,15 +173,11 @@
     margin-left: 20px;
   }
 
-
-
-  
-  
     .selectitem {
       margin-top: 20px;
       position: relative;
       display: inline-block;
-      width: 200px;
+      width: 325px;
       padding: 10px;
       border-radius: 25px;
       overflow: hidden;
@@ -187,7 +186,7 @@
       transition: all 0.3s ease;
     }
     
-    .selectitem select {
+  .selectitem select {
     
     appearance: none;
     background: transparent;
@@ -199,6 +198,7 @@
     color: #333;
     outline: none;
     font-weight: bold;
+    /* width: 130px; */
   }
   
   .selectitem select option {
@@ -285,12 +285,13 @@
       grid-template-rows: repeat(2, 1fr);
       gap: 5px;
       padding: 0;
+      margin-left: -15px;
     }
     
     .frame {
       width: 100%;
       max-width: 300px;
-      max-height: 250px;
+      max-height: 260px;
     }
     
     .right-side {
@@ -331,7 +332,7 @@
     margin-top: 20px;
     position: relative;
     display: inline-block;
-    width: 200px;
+    width: 325px;
     padding: 10px;
     border-radius: 25px;
     overflow: hidden;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './LoginPage.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import img from './images/loginback.webp'
+import img from './images/WENLI.svg'
 import { Box, IconButton, Avatar, Typography, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Dashboard, VideoLibrary, Analytics, Comment, Subtitles, Copyright, Settings, Feedback, People,ThumbDown,ThumbUp} from '@mui/icons-material';
 
@@ -13,7 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 
 import ForgotPasswordModal from './ForgotPasswordModal';
-import Logo from './images/logo.png';
+import Logo from './images/WENLI.svg';
 import Loginwithgoogle from './Loginwithgoogle';
 
 const LoginPage = ({ setToken, setIsAdmin }) => {
@@ -86,7 +86,7 @@ const LoginPage = ({ setToken, setIsAdmin }) => {
             <form onSubmit={handleSubmit}>
             <div className="phone-frame">
                 <div className="login-container" >
-                    <img src={Logo} alt="" className="animated-logo" style={{marginTop:'-20px'}}/>
+                    <img src={Logo} alt="" className="animated-logo" style={{marginTop:'-20px',height:'220px'}}/>
                     <div className="information" >
                         <h2 className="animated" style={{fontFamily:'Twentieth Century sans-serif'}}>Welcome To WENLI</h2>
                         <p className="subheading animated-subheading" style={{textAlignLast:'center', marginTop:'', fontFamily:'Twentieth Century sans-serif'}}>Keep your data safe</p>

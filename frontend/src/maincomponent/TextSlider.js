@@ -1,5 +1,12 @@
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import './TextSlider.css'; 
+
+
+
 
 const TextSlider = () => {
   const texts = [

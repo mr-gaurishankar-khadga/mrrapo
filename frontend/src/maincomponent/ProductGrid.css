@@ -30,7 +30,7 @@
 .image-container {
   position: relative;
   overflow: hidden;
-  height: 470px;
+  max-height: 470px;
 }
 
 
@@ -123,13 +123,21 @@
   margin-bottom: 20px;
 }
 
+
+
+
 .size {
   border: 1px solid #ccc;
   padding: 5px;
   border-radius: 3px;
   font-size: 14px;
+  /* background-color: red; */
 }
 
+
+
+
+/* Card Icon From Main Page */
 .cart-icon {
   position: absolute;
   bottom: 20px;
@@ -142,6 +150,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   cursor: pointer;
+  display: flex;
 }
 
 
@@ -202,13 +211,22 @@
 
   .product-details .price,
   .product-details .rating {
-    font-size: 14px;
+    font-size: 34px;
   }
 
   .cart-icon {
-    font-size: 28px;
+    display: none;
+
   }
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -369,6 +387,23 @@
   transform: scale(1.05);
   opacity: 9;
 }
+
+
+.rating {
+  width: 50%;
+  margin-left: 15px;
+}
+
+
+@media (max-width: 968px) {
+  .rating {
+    width: 50%;
+    margin-left: 15px;
+    display: none;
+  }
+}
+
+
 
 
 

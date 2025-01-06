@@ -65,6 +65,13 @@ const ProductUpload = () => {
     f4: null,
     categories: '',
     description: '',
+    minitext1: '',
+    minitext2: '',
+    minitext3: '',
+    minitext4: '',
+    minitext5: '',
+    minitext6: '',
+
     title: '',
     price: '',
     sizes: [],
@@ -121,6 +128,13 @@ const ProductUpload = () => {
     return (
       formData.title &&
       formData.description &&
+      formData.minitext1 &&
+      formData.minitext2 &&
+      formData.minitext3 &&
+      formData.minitext4 &&
+      formData.minitext5 &&
+      formData.minitext6 &&
+
       formData.price &&
       formData.categories &&
       formData.sizes.length > 0 &&
@@ -161,6 +175,12 @@ const ProductUpload = () => {
         f4: null,
         categories: '',
         description: '',
+        minitext1: '',
+        minitext2: '',
+        minitext3: '',
+        minitext4: '',
+        minitext5: '',
+        minitext6: '',
         title: '',
         price: '',
         sizes: [],
@@ -193,8 +213,24 @@ const ProductUpload = () => {
           />
         </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div className="styled-animated-input">
-          <label>Description</label>
+          <label>Detail Description </label>
           <textarea
             name="description"
             value={formData.description}
@@ -202,6 +238,90 @@ const ProductUpload = () => {
             required
           ></textarea>
         </div>
+
+        <div className="styled-animated-input">
+          <label>Mini-Description 1: </label>
+          <textarea
+            name="minitext1"
+            value={formData.minitext1}
+            onChange={handleChange}
+            required
+          ></textarea>
+        </div>
+
+        
+        <div className="styled-animated-input">
+          <label>Mini-Description 2:</label>
+          <textarea
+            name="minitext2"
+            value={formData.minitext2}
+            onChange={handleChange}
+            required
+          ></textarea>
+        </div>
+
+
+        <div className="styled-animated-input">
+          <label>Mini-Description 3:</label>
+          <textarea
+            name="minitext3"
+            value={formData.minitext3}
+            onChange={handleChange}
+            required
+          ></textarea>
+        </div>
+
+
+
+        <div className="styled-animated-input">
+          <label>Mini-Description 4:</label>
+          <textarea
+            name="minitext4"
+            value={formData.minitext4}
+            onChange={handleChange}
+            required
+          ></textarea>
+        </div>
+
+
+        <div className="styled-animated-input">
+          <label>Mini-Description 5:</label>
+          <textarea
+            name="minitext5"
+            value={formData.minitext5}
+            onChange={handleChange}
+            required
+          ></textarea>
+        </div>
+
+
+        <div className="styled-animated-input">
+          <label>Mini-Description 6:</label>
+          <textarea
+            name="minitext6"
+            value={formData.minitext6}
+            onChange={handleChange}
+            required
+          ></textarea>
+        </div>
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <div className="styled-animated-input">
           <label>Price</label>
